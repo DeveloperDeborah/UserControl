@@ -1,12 +1,31 @@
 package no.runsafe.UserControl.command;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Morten Nilsen
- * Date: 04.11.12
- * Time: 23:22
- * To change this template use File | Settings | File Templates.
- */
-public class UnBan
+import no.runsafe.framework.command.RunsafeCommand;
+import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.player.RunsafePlayer;
+
+public class UnBan extends RunsafeCommand
 {
+	public UnBan()
+	{
+		super("unban", "player", "reason");
+	}
+
+	@Override
+	public String requiredPermission()
+	{
+		return "runsafe.usercontrol.unban";
+	}
+
+	@Override
+	public String OnExecute(RunsafePlayer executor, String[] args)
+	{
+		RunsafePlayer player = RunsafeServer.Instance.getPlayer(getArg("player"));
+		if(!player.isBanned())
+			return String.format("Player %s is not banned.", player.getName());
+
+		// TODO Log unbanning
+		player.setBanned(false);
+		return String.format("Player %s was unbanned.", player.getName());
+	}
 }

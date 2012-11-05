@@ -1,12 +1,20 @@
 package no.runsafe.UserControl;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Morten Nilsen
- * Date: 04.11.12
- * Time: 23:14
- * To change this template use File | Settings | File Templates.
- */
-public class Plugin
+import no.runsafe.UserControl.command.*;
+import no.runsafe.framework.RunsafePlugin;
+
+public class Plugin extends RunsafePlugin
 {
+	@Override
+	protected void PluginSetup()
+	{
+		addComponent(Ban.class);
+		addComponent(BanIP.class);
+		addComponent(Kick.class);
+		addComponent(KickAll.class);
+		addComponent(SuDo.class);
+		addComponent(TempBan.class);
+		addComponent(UnBan.class);
+		addComponent(UnBanIP.class);
+	}
 }

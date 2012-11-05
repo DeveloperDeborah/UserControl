@@ -1,12 +1,21 @@
 package no.runsafe.UserControl.command;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Morten Nilsen
- * Date: 04.11.12
- * Time: 23:21
- * To change this template use File | Settings | File Templates.
- */
-public class BanIP
+import no.runsafe.framework.command.RunsafeCommand;
+import no.runsafe.framework.configuration.IConfiguration;
+import no.runsafe.framework.event.IConfigurationChanged;
+
+public class BanIP extends RunsafeCommand implements IConfigurationChanged
 {
+	public BanIP()
+	{
+		super("banip", "player", "reason");
+	}
+
+	@Override
+	public void OnConfigurationChanged(IConfiguration configuration)
+	{
+		banMessage = configuration.getConfigValueAsString("messages.ban");
+	}
+
+	String banMessage = "%2$s";
 }

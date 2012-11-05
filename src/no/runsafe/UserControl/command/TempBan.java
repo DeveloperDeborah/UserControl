@@ -1,12 +1,21 @@
 package no.runsafe.UserControl.command;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Morten Nilsen
- * Date: 04.11.12
- * Time: 23:22
- * To change this template use File | Settings | File Templates.
- */
-public class TempBan
+import no.runsafe.framework.command.RunsafeCommand;
+import no.runsafe.framework.configuration.IConfiguration;
+import no.runsafe.framework.event.IConfigurationChanged;
+
+public class TempBan extends RunsafeCommand implements IConfigurationChanged
 {
+	public TempBan()
+	{
+		super("tempban", "player", "time", "reason");
+	}
+
+	@Override
+	public void OnConfigurationChanged(IConfiguration configuration)
+	{
+		banMessage = configuration.getConfigValueAsString("messages.tempban");
+	}
+
+	String banMessage = "%3$s";
 }

@@ -1,12 +1,11 @@
 package no.runsafe.UserControl.command;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Morten Nilsen
- * Date: 04.11.12
- * Time: 23:22
- * To change this template use File | Settings | File Templates.
- */
-public class UnBanIP
+import no.runsafe.framework.command.RunsafeCommand;
+
+public class UnBanIP extends RunsafeCommand
 {
+	public UnBanIP()
+	{
+		super("unbanip", "ip-address");
+	}
 }
