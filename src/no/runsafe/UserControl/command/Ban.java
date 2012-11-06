@@ -30,7 +30,7 @@ public class Ban extends RunsafeCommand implements IConfigurationChanged
 		String reason = StringUtils.join(args, " ", 1, args.length);
 		// TODO Store ban reason
 		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(getArg("player"));
-		if (victim == null || !victim.isOnline())
+		if (!victim.isOnline())
 		{
 			victim.setBanned(true);
 			return String.format("Banned offline player %s.", getArg("player"));
