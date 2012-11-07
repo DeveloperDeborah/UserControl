@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PlayerDatabase implements
-	IPluginEnabled, ISchemaChanges, IPlayerJoinEvent, IPlayerQuitEvent, IRepository<PlayerData, String>
+public class PlayerDatabase implements ISchemaChanges
 {
 	public PlayerDatabase(IOutput console, IDatabase database)
 	{
@@ -54,88 +53,10 @@ public class PlayerDatabase implements
 				")"
 		);
 		queries.put(1, sql);
-		sql = new ArrayList<String>();
-		sql.add(
-			"CREATE TABLE player_session (" +
-				"`name` varchar(255) NOT NULL," +
-				"`ip` int unsigned NOT NULL," +
-				"`login` datetime NOT NULL," +
-				"`logout` datetime NULL," +
-				"`quit_message` varchar(255) NULL," +
-				"`group` varchar(255) NULL," +
-				"PRIMARY KEY(`name`,`login`)" +
-				")"
-		);
-		queries.put(2, sql);
 		return queries;
 	}
 
-	@Override
-	public void OnPlayerJoinEvent(RunsafePlayerJoinEvent event)
-	{
-		logPlayerInfo(event.getPlayer());
-		logSessionStart(event.getPlayer());
-	}
-
-	@Override
-	public void OnPlayerQuit(RunsafePlayerQuitEvent event)
-	{
-		logPlayerLogout(event.getPlayer());
-		logSessionClosed(event.getPlayer(), event.getQuitMessage());
-	}
-
-	@Override
-	public void OnPluginEnabled()
-	{
-		closeAllSessions("Possible crash");
-		for(RunsafePlayer player : RunsafeServer.Instance.getOnlinePlayers())
-		{
-			logPlayerInfo(player);
-			logSessionStart(player);
-		}
-	}
-
-	@Override
-	public PlayerData get(String player)
-	{
-		PlayerData result = null;
-		PreparedStatement select = database.prepare(
-			"SELECT name, joined, login, logout, banned FROM player_db WHERE name=?"
-		);
-		try
-		{
-			select.setString(1, player);
-			ResultSet data = select.executeQuery();
-			if (data.first())
-			{
-				result = new PlayerData();
-				result.setName(data.getString(1));
-				result.setJoined(data.getDate(2));
-				result.setLogin(data.getDate(3));
-				result.setLogout(data.getDate(4));
-				result.setBanned(data.getDate(5));
-			}
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
-		return result;
-	}
-
-	@Override
-	public void persist(PlayerData data)
-	{
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public void delete(PlayerData data)
-	{
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	private void logPlayerInfo(RunsafePlayer player)
+	public void logPlayerInfo(RunsafePlayer player)
 	{
 		console.fine("Updating player_db with login time");
 		PreparedStatement update = database.prepare(
@@ -155,28 +76,7 @@ public class PlayerDatabase implements
 		}
 	}
 
-	private void logSessionStart(RunsafePlayer player)
-	{
-		PreparedStatement logSession = database.prepare(
-			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)"
-		);
-		try
-		{
-			logSession.setString(1, player.getName());
-			logSession.setString(2, player.getRawPlayer().getAddress().getAddress().getHostAddress());
-			List<String> groups = player.getGroups();
-			if (groups.size() == 0)
-				logSession.setString(3, null);
-			logSession.setString(3, StringUtils.join(groups, ","));
-			logSession.execute();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
-	}
-
-	private void logPlayerLogout(RunsafePlayer player)
+	public void logPlayerLogout(RunsafePlayer player)
 	{
 		console.fine("Updating player_db with logout time");
 		PreparedStatement update = database.prepare(
@@ -187,39 +87,6 @@ public class PlayerDatabase implements
 			update.setString(1, player.getName());
 			update.executeUpdate();
 			console.fine("Finished updating player_db with logout time");
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
-	}
-
-	private void logSessionClosed(RunsafePlayer player, String quitMessage)
-	{
-		PreparedStatement closeSession = database.prepare(
-			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE name=? AND logout IS NULL"
-		);
-		try
-		{
-			closeSession.setString(1, quitMessage);
-			closeSession.setString(2, player.getName());
-			closeSession.executeUpdate();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
-	}
-
-	private void closeAllSessions(String quitMessage)
-	{
-		PreparedStatement closeSession = database.prepare(
-			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE logout IS NULL"
-		);
-		try
-		{
-			closeSession.setString(1, quitMessage);
-			closeSession.executeUpdate();
 		}
 		catch (SQLException e)
 		{

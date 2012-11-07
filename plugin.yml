@@ -22,3 +22,5 @@ commands:
     description: Lift a temporary or permanent ban for a user
   unbanip:
     description: Lift a permanent ban from an IP-address
+  usercontrol:
+    description: Administrativ features
