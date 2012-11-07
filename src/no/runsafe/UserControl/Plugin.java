@@ -1,6 +1,7 @@
 package no.runsafe.UserControl;
 
 import no.runsafe.UserControl.command.*;
+import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.RunsafePlugin;
 
 public class Plugin extends RunsafePlugin
@@ -8,6 +9,7 @@ public class Plugin extends RunsafePlugin
 	@Override
 	protected void PluginSetup()
 	{
+		addComponent(PlayerDatabase.class);
 		addComponent(Ban.class);
 		addComponent(BanIP.class);
 		addComponent(Kick.class);
