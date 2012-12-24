@@ -6,21 +6,5 @@ authors: [mortenn]
 depend: []
 description: Tools for handling users
 commands:
-  sudo:
-    description: Make a user run a command
-  ban:
-    description: Ban a user from the server permanently
-  banip:
-    description: Ban an IP address from the server permanently
-  kick:
-    description: Kick a user from the server
-  kickall:
-    description: Kick all users from the server
-  tempban:
-    description: Ban a user from the server for a given time period
-  unban:
-    description: Lift a temporary or permanent ban for a user
-  unbanip:
-    description: Lift a permanent ban from an IP-address
   usercontrol:
     description: Administrativ features
