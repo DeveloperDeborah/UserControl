@@ -6,6 +6,7 @@ import no.runsafe.framework.database.ISchemaChanges;
 import no.runsafe.framework.event.IPluginEnabled;
 import no.runsafe.framework.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.event.player.IPlayerQuitEvent;
+import no.runsafe.framework.hook.IPlayerLookupService;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.event.player.RunsafePlayerJoinEvent;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PlayerDatabase implements ISchemaChanges
+public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 {
 	public PlayerDatabase(IOutput console, IDatabase database)
 	{
@@ -96,4 +97,26 @@ public class PlayerDatabase implements ISchemaChanges
 
 	private final IOutput console;
 	private final IDatabase database;
+
+	@Override
+	public List<String> findPlayer(String lookup)
+	{
+		PreparedStatement select = database.prepare(
+			"SELECT name FROM player_db WHERE name LIKE ?"
+		);
+		try
+		{
+			select.setString(1, String.format("%s%%", lookup));
+			ResultSet hits = select.executeQuery();
+			ArrayList<String> result = new ArrayList<String>();
+			while(hits.next())
+				result.add(hits.getString("name"));
+			return result;
+		}
+		catch (SQLException e)
+		{
+			console.write(e.getMessage());
+			return null;
+		}
+	}
 }
