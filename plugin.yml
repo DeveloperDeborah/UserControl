@@ -8,3 +8,11 @@ description: Tools for handling users
 commands:
   usercontrol:
     description: Administrativ features
+  ban:
+    description: Ban a user from the server permanently
+  unban:
+    description: Lift a temporary or permanent ban for a user
+  kick:
+    description: Kick a user from the server
+  kickall:
+    description: Kick all users from the server

@@ -15,13 +15,13 @@ public class Plugin extends RunsafePlugin
 		addComponent(PlayerDatabase.class);
 		addComponent(PlayerSessionLog.class);
 		addComponent(SessionLogger.class);
-		//addComponent(Ban.class);
+		addComponent(Ban.class);
 		//addComponent(BanIP.class);
-		//addComponent(Kick.class);
-		//addComponent(KickAll.class);
+		addComponent(Kick.class);
+		addComponent(KickAll.class);
 		//addComponent(SuDo.class);
 		//addComponent(TempBan.class);
-		//addComponent(UnBan.class);
+		addComponent(UnBan.class);
 		//addComponent(UnBanIP.class);
 
 		ICommand usercontrol = new RunsafeCommand("usercontrol");
