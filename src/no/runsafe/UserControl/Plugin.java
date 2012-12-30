@@ -1,7 +1,9 @@
 package no.runsafe.UserControl;
 
 import no.runsafe.UserControl.command.*;
+import no.runsafe.UserControl.database.IPBanList;
 import no.runsafe.UserControl.database.PlayerDatabase;
+import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.framework.RunsafePlugin;
 import no.runsafe.framework.command.ICommand;
@@ -14,15 +16,18 @@ public class Plugin extends RunsafePlugin
 	{
 		addComponent(PlayerDatabase.class);
 		addComponent(PlayerSessionLog.class);
+		addComponent(PlayerKickLog.class);
 		addComponent(SessionLogger.class);
 		addComponent(Ban.class);
-		//addComponent(BanIP.class);
+		addComponent(BanIP.class);
 		addComponent(Kick.class);
 		addComponent(KickAll.class);
-		//addComponent(SuDo.class);
+		addComponent(SuDo.class);
 		//addComponent(TempBan.class);
 		addComponent(UnBan.class);
-		//addComponent(UnBanIP.class);
+		addComponent(UnBanIP.class);
+		addComponent(BanEnforcer.class);
+		addComponent(IPBanList.class);
 
 		ICommand usercontrol = new RunsafeCommand("usercontrol");
 		usercontrol.addSubCommand(getInstance(EssentialsImport.class));

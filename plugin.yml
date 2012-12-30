@@ -16,3 +16,9 @@ commands:
     description: Kick a user from the server
   kickall:
     description: Kick all users from the server
+  sudo:
+    description: Make a user run a command
+  banip:
+    description: Ban an IP address from the server permanently
+  unbanip:
+    description: Lift a permanent ban from an IP-address
