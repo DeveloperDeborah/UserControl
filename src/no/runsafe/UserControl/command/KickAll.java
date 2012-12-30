@@ -1,5 +1,6 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.command.RunsafeCommand;
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
@@ -9,9 +10,10 @@ import org.apache.commons.lang.StringUtils;
 
 public class KickAll extends RunsafeCommand implements IConfigurationChanged
 {
-	public KickAll()
+	public KickAll(PlayerKickLog log)
 	{
 		super("kickall", "reason");
+		logger = log;
 	}
 
 	@Override
@@ -28,10 +30,14 @@ public class KickAll extends RunsafeCommand implements IConfigurationChanged
 		int n = 0;
 
 		for (RunsafePlayer victim : RunsafeServer.Instance.getOnlinePlayers())
-			if (executor == null || !victim.getName().equals(executor.getName()))
+			if (executor == null || (executor.canSee(victim) && !victim.getName().equals(executor.getName())))
 			{
-				victim.kick(String.format(kickMessageFormat, source, reason));
-				n++;
+				if (!victim.hasPermission("runsafe.usercontrol.kick.immune"))
+				{
+					victim.kick(String.format(kickMessageFormat, source, reason));
+					logger.logKick(executor, victim, reason, false);
+					n++;
+				}
 			}
 		return String.format("Kicked %d players from the server.", n);
 	}
@@ -43,4 +49,5 @@ public class KickAll extends RunsafeCommand implements IConfigurationChanged
 	}
 
 	String kickMessageFormat = "%2$s";
+	PlayerKickLog logger;
 }
