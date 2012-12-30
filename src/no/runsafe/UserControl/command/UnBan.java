@@ -1,14 +1,16 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.command.RunsafeCommand;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
 public class UnBan extends RunsafeCommand
 {
-	public UnBan()
+	public UnBan(PlayerDatabase playerDatabase)
 	{
 		super("unban", "player", "reason");
+		playerdb = playerDatabase;
 	}
 
 	@Override
@@ -24,8 +26,11 @@ public class UnBan extends RunsafeCommand
 		if(!player.isBanned())
 			return String.format("Player %s is not banned.", player.getName());
 
-		// TODO Log unbanning
+		// TODO Log unbanning reason
+		playerdb.logPlayerUnban(player);
 		player.setBanned(false);
 		return String.format("Player %s was unbanned.", player.getName());
 	}
+
+	PlayerDatabase playerdb;
 }
