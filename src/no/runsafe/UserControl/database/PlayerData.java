@@ -56,9 +56,20 @@ public class PlayerData extends RunsafeEntity
 		this.banned = banned;
 	}
 
+	public String getBanReason()
+	{
+		return banReason;
+	}
+
+	public void setBanReason(String reason)
+	{
+		banReason = reason;
+	}
+
 	private String name;
 	private Date joined;
 	private Date login;
 	private Date logout;
 	private Date banned;
+	private String banReason;
 }
