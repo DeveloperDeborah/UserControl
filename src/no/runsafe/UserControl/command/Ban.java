@@ -1,5 +1,7 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.UserControl.database.PlayerDatabase;
+import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.command.ICommand;
 import no.runsafe.framework.command.RunsafeCommand;
 import no.runsafe.framework.configuration.IConfiguration;
@@ -12,9 +14,11 @@ import java.util.Collection;
 
 public class Ban extends RunsafeCommand implements IConfigurationChanged
 {
-	public Ban()
+	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase)
 	{
 		super("ban", "player", "reason");
+		logger = log;
+		playerdb = playerDatabase;
 	}
 
 	@Override
@@ -28,15 +32,23 @@ public class Ban extends RunsafeCommand implements IConfigurationChanged
 	{
 		String source = executor == null ? "console" : executor.getName();
 		String reason = StringUtils.join(args, " ", 1, args.length);
-		// TODO Store ban reason
 		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(getArg("player"));
-		if (!victim.isOnline())
+		if(victim == null)
+			return "Player not found";
+
+		if(victim.hasPermission("runsafe.usercontrol.ban.immune"))
+			return "You cannot ban that player";
+
+		playerdb.logPlayerBan(victim, executor, reason);
+		if (!victim.isOnline() || (executor != null && !executor.canSee(victim)))
 		{
 			victim.setBanned(true);
+			logger.logKick(executor, victim, reason, true);
 			return String.format("Banned offline player %s.", getArg("player"));
 		}
 		victim.kick(String.format(banMessageFormat, source, reason));
 		victim.setBanned(true);
+		logger.logKick(executor, victim, reason, true);
 		return null;
 	}
 
@@ -47,4 +59,6 @@ public class Ban extends RunsafeCommand implements IConfigurationChanged
 	}
 
 	String banMessageFormat = "%2$s";
+	PlayerKickLog logger;
+	PlayerDatabase playerdb;
 }
