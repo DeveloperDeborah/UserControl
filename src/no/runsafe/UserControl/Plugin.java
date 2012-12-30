@@ -28,6 +28,7 @@ public class Plugin extends RunsafePlugin
 		addComponent(UnBanIP.class);
 		addComponent(BanEnforcer.class);
 		addComponent(IPBanList.class);
+		addComponent(Seen.class);
 
 		ICommand usercontrol = new RunsafeCommand("usercontrol");
 		usercontrol.addSubCommand(getInstance(EssentialsImport.class));

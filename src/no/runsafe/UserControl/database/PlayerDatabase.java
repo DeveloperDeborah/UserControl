@@ -135,11 +135,11 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 				return null;
 
 			PlayerData data = new PlayerData();
-			data.setBanned(result.getDate("banned"));
+			data.setBanned(result.getTimestamp("banned"));
 			data.setBanReason(result.getString("ban_reason"));
-			data.setJoined(result.getDate("joined"));
-			data.setLogin(result.getDate("login"));
-			data.setLogout(result.getDate("logout"));
+			data.setJoined(result.getTimestamp("joined"));
+			data.setLogin(result.getTimestamp("login"));
+			data.setLogout(result.getTimestamp("logout"));
 			data.setName(result.getString("name"));
 			return data;
 		}

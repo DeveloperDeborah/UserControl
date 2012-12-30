@@ -22,3 +22,5 @@ commands:
     description: Ban an IP address from the server permanently
   unbanip:
     description: Lift a permanent ban from an IP-address
+  seen:
+    description: Gives information of when a user was last on the server
