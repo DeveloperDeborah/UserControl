@@ -27,6 +27,12 @@ public class EssentialsImport extends RunsafeConsoleCommand
 	}
 
 	@Override
+	public String requiredPermission()
+	{
+		return "runsafe.usercontrol.import.essentials";
+	}
+
+	@Override
 	public String OnExecute(RunsafePlayer executor, String[] args)
 	{
 		scheduler.startAsyncTask(new Runnable()
@@ -55,6 +61,11 @@ public class EssentialsImport extends RunsafeConsoleCommand
 				"`ban_reason`=VALUES(`ban_reason`)"
 		);
 		File sourceDir = new File("plugins/Essentials/userdata");
+		if(!sourceDir.exists())
+		{
+			console.write(String.format("Essentials userdata not found, skipping!"));
+			return 0;
+		}
 		int count = 0;
 		for (File file : sourceDir.listFiles())
 		{
