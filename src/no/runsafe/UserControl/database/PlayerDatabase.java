@@ -1,18 +1,10 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.IDatabase;
-import no.runsafe.framework.database.IRepository;
 import no.runsafe.framework.database.ISchemaChanges;
-import no.runsafe.framework.event.IPluginEnabled;
-import no.runsafe.framework.event.player.IPlayerJoinEvent;
-import no.runsafe.framework.event.player.IPlayerQuitEvent;
 import no.runsafe.framework.hook.IPlayerLookupService;
 import no.runsafe.framework.output.IOutput;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.event.player.RunsafePlayerJoinEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import org.apache.commons.lang.StringUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,6 +69,43 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 		}
 	}
 
+	public void logPlayerBan(RunsafePlayer player, RunsafePlayer banner, String reason)
+	{
+		PreparedStatement update = database.prepare(
+			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?"
+		);
+		try
+		{
+			update.setString(1, reason);
+			if (banner == null)
+				update.setString(2, "console");
+			else
+				update.setString(2, banner.getName());
+			update.setString(3, player.getName());
+			update.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			console.write(e.getMessage());
+		}
+	}
+
+	public void logPlayerUnban(RunsafePlayer player)
+	{
+		PreparedStatement update = database.prepare(
+			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL WHERE `name`=?"
+		);
+		try
+		{
+			update.setString(1, player.getName());
+			update.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			console.write(e.getMessage());
+		}
+	}
+
 	public void logPlayerLogout(RunsafePlayer player)
 	{
 		console.fine("Updating player_db with logout time");
@@ -95,6 +124,32 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 		}
 	}
 
+	public PlayerData getData(RunsafePlayer player)
+	{
+		PreparedStatement select = database.prepare("SELECT * FROM player_db WHERE `name`=?");
+		try
+		{
+			select.setString(1, player.getName());
+			ResultSet result = select.executeQuery();
+			if (!result.first())
+				return null;
+
+			PlayerData data = new PlayerData();
+			data.setBanned(result.getDate("banned"));
+			data.setBanReason(result.getString("ban_reason"));
+			data.setJoined(result.getDate("joined"));
+			data.setLogin(result.getDate("login"));
+			data.setLogout(result.getDate("logout"));
+			data.setName(result.getString("name"));
+			return data;
+		}
+		catch (SQLException e)
+		{
+			console.write(e.getMessage());
+			return null;
+		}
+	}
+
 	private final IOutput console;
 	private final IDatabase database;
 
@@ -109,7 +164,7 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 			select.setString(1, String.format("%s%%", lookup));
 			ResultSet hits = select.executeQuery();
 			ArrayList<String> result = new ArrayList<String>();
-			while(hits.next())
+			while (hits.next())
 				result.add(hits.getString("name"));
 			return result;
 		}
