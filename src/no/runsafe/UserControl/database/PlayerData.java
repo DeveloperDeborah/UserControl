@@ -1,9 +1,7 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.RunsafeEntity;
-
-import java.sql.Date;
-import java.sql.Timestamp;
+import org.joda.time.DateTime;
 
 public class PlayerData extends RunsafeEntity
 {
@@ -17,42 +15,42 @@ public class PlayerData extends RunsafeEntity
 		this.name = name;
 	}
 
-	public Timestamp getJoined()
+	public DateTime getJoined()
 	{
 		return joined;
 	}
 
-	public void setJoined(Timestamp joined)
+	public void setJoined(DateTime joined)
 	{
 		this.joined = joined;
 	}
 
-	public Timestamp getLogin()
+	public DateTime getLogin()
 	{
 		return login;
 	}
 
-	public void setLogin(Timestamp login)
+	public void setLogin(DateTime login)
 	{
 		this.login = login;
 	}
 
-	public Timestamp getLogout()
+	public DateTime getLogout()
 	{
 		return logout;
 	}
 
-	public void setLogout(Timestamp logout)
+	public void setLogout(DateTime logout)
 	{
 		this.logout = logout;
 	}
 
-	public Timestamp getBanned()
+	public DateTime getBanned()
 	{
 		return banned;
 	}
 
-	public void setBanned(Timestamp banned)
+	public void setBanned(DateTime banned)
 	{
 		this.banned = banned;
 	}
@@ -68,9 +66,9 @@ public class PlayerData extends RunsafeEntity
 	}
 
 	private String name;
-	private Timestamp joined;
-	private Timestamp login;
-	private Timestamp logout;
-	private Timestamp banned;
+	private DateTime joined;
+	private DateTime login;
+	private DateTime logout;
+	private DateTime banned;
 	private String banReason;
 }
