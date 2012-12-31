@@ -1,5 +1,4 @@
 name: UserControl
-load: STARTUP
 main: no.runsafe.UserControl.Plugin
 version: 1.0
 authors: [mortenn]
