@@ -1,3 +1,5 @@
 messages.kick: "Kicked: %2$s"
 messages.ban: "Banned: %2$s"
 messages.tempban: "Temporary ban: %2$s"
+ban.lightning.strike: true
+ban.lightning.real: false
