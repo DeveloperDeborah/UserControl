@@ -46,19 +46,21 @@ public class Ban extends RunsafeCommand implements IConfigurationChanged
 			logger.logKick(executor, victim, reason, true);
 			return String.format("Banned offline player %s.", getArg("player"));
 		}
-		victim.kick(String.format(banMessageFormat, source, reason));
-		victim.setBanned(true);
-		logger.logKick(executor, victim, reason, true);
+		if(lightning)
+			victim.strikeWithLightning(fakeLightning);
+		RunsafeServer.Instance.banPlayer(executor, victim, reason);
 		return null;
 	}
 
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
-		banMessageFormat = configuration.getConfigValueAsString("messages.ban");
+		lightning = configuration.getConfigValueAsBoolean("ban.lightning.strike");
+		fakeLightning = !configuration.getConfigValueAsBoolean("ban.lightning.real");
 	}
 
-	String banMessageFormat = "%2$s";
 	PlayerKickLog logger;
 	PlayerDatabase playerdb;
+	boolean lightning;
+	boolean fakeLightning;
 }

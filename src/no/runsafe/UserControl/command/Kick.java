@@ -8,7 +8,7 @@ import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
-public class Kick extends RunsafeCommand implements IConfigurationChanged
+public class Kick extends RunsafeCommand
 {
 	public Kick(PlayerKickLog log)
 	{
@@ -32,19 +32,10 @@ public class Kick extends RunsafeCommand implements IConfigurationChanged
 		if(victim.hasPermission("runsafe.usercontrol.kick.immune"))
 			return "You cannot kick that player";
 
-		String source = executor == null ? "console" : executor.getName();
 		String reason = StringUtils.join(args, " ", 1, args.length);
-		victim.kick(String.format(kickMessageFormat, source, reason));
-		logger.logKick(executor, victim, reason, false);
+		RunsafeServer.Instance.kickPlayer(executor, victim, reason);
 		return null;
 	}
 
-	@Override
-	public void OnConfigurationChanged(IConfiguration configuration)
-	{
-		kickMessageFormat = configuration.getConfigValueAsString("messages.kick");
-	}
-
-	String kickMessageFormat = "%2$s";
 	PlayerKickLog logger;
 }
