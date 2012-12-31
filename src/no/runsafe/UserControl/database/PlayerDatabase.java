@@ -2,18 +2,21 @@ package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.IDatabase;
 import no.runsafe.framework.database.ISchemaChanges;
+import no.runsafe.framework.hook.IPlayerDataProvider;
 import no.runsafe.framework.hook.IPlayerLookupService;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.player.RunsafePlayer;
+import org.joda.time.DateTime;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
+public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPlayerDataProvider
 {
 	public PlayerDatabase(IOutput console, IDatabase database)
 	{
@@ -135,11 +138,11 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 				return null;
 
 			PlayerData data = new PlayerData();
-			data.setBanned(result.getTimestamp("banned"));
+			data.setBanned(convert(result.getTimestamp("banned")));
 			data.setBanReason(result.getString("ban_reason"));
-			data.setJoined(result.getTimestamp("joined"));
-			data.setLogin(result.getTimestamp("login"));
-			data.setLogout(result.getTimestamp("logout"));
+			data.setJoined(convert(result.getTimestamp("joined")));
+			data.setLogin(convert(result.getTimestamp("login")));
+			data.setLogout(convert(result.getTimestamp("logout")));
 			data.setName(result.getString("name"));
 			return data;
 		}
@@ -148,6 +151,13 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 			console.write(e.getMessage());
 			return null;
 		}
+	}
+
+	private DateTime convert(Timestamp timestamp)
+	{
+		if(timestamp == null)
+			return null;
+		return new DateTime(timestamp);
 	}
 
 	private final IOutput console;
@@ -173,5 +183,26 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService
 			console.write(e.getMessage());
 			return null;
 		}
+	}
+
+	@Override
+	public HashMap<String, String> GetPlayerData(RunsafePlayer player)
+	{
+		return null;
+	}
+
+	@Override
+	public DateTime GetPlayerLogout(RunsafePlayer player)
+	{
+		PlayerData data = getData(player);
+		if(data == null)
+			return null;
+		return data.getLogout();
+	}
+
+	@Override
+	public String GetPlayerBanReason(RunsafePlayer player)
+	{
+		return getData(player).getBanReason();
 	}
 }
