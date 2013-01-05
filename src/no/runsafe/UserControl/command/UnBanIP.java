@@ -14,7 +14,7 @@ public class UnBanIP extends RunsafeCommand
 	@Override
 	public String requiredPermission()
 	{
-		return "runsafe.unban.ip";
+		return "runsafe.usercontrol.unban.ip";
 	}
 
 	@Override

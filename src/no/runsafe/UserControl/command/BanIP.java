@@ -2,7 +2,9 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.command.RunsafeCommand;
 import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
+import org.apache.commons.lang.StringUtils;
 
 public class BanIP extends RunsafeCommand
 {
@@ -14,7 +16,7 @@ public class BanIP extends RunsafeCommand
 	@Override
 	public String requiredPermission()
 	{
-		return "runsafe.ban.ip";
+		return "runsafe.usercontrol.ban.ip";
 	}
 
 	@Override
@@ -24,6 +26,14 @@ public class BanIP extends RunsafeCommand
 		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(getArg("player"));
 		if (victim == null)
 			return "Player not found";
+
+		if (victim instanceof RunsafeAmbiguousPlayer)
+		{
+			return String.format(
+				"Multiple matches found: %s",
+				StringUtils.join(((RunsafeAmbiguousPlayer) victim).getAmbiguity(), ", ")
+			);
+		}
 
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";

@@ -55,6 +55,16 @@ public class PlayerData extends RunsafeEntity
 		this.banned = banned;
 	}
 
+	public DateTime getUnban()
+	{
+		return unban;
+	}
+
+	public void setUnban(DateTime unbanned)
+	{
+		unban = unbanned;
+	}
+
 	public String getBanReason()
 	{
 		return banReason;
@@ -70,5 +80,6 @@ public class PlayerData extends RunsafeEntity
 	private DateTime login;
 	private DateTime logout;
 	private DateTime banned;
+	private DateTime unban;
 	private String banReason;
 }

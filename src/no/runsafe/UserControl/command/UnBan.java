@@ -24,12 +24,12 @@ public class UnBan extends RunsafeCommand
 	{
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(getArg("player"));
 		if(!player.isBanned())
-			return String.format("Player %s is not banned.", player.getName());
+			return String.format("Player %s is not banned.", player.getPrettyName());
 
 		// TODO Log unbanning reason
 		playerdb.logPlayerUnban(player);
 		player.setBanned(false);
-		return String.format("Player %s was unbanned.", player.getName());
+		return String.format("Player %s was unbanned.", player.getPrettyName());
 	}
 
 	PlayerDatabase playerdb;

@@ -1,5 +1,5 @@
-messages.kick: "Kicked: %2$s"
-messages.ban: "Banned: %2$s"
-messages.tempban: "Temporary ban: %2$s"
+messages.kick: "Kicked: %1$s"
+messages.ban: "Banned: %1$s"
+messages.tempban: "Temporary ban: %1$s"
 ban.lightning.strike: true
 ban.lightning.real: false

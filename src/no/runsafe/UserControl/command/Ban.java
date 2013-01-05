@@ -7,6 +7,7 @@ import no.runsafe.framework.command.RunsafeCommand;
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
@@ -30,21 +31,28 @@ public class Ban extends RunsafeCommand implements IConfigurationChanged
 	@Override
 	public String OnExecute(RunsafePlayer executor, String[] args)
 	{
-		String source = executor == null ? "console" : executor.getName();
 		String reason = StringUtils.join(args, " ", 1, args.length);
 		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(getArg("player"));
 		if(victim == null)
 			return "Player not found";
 
+		if (victim instanceof RunsafeAmbiguousPlayer)
+		{
+			return String.format(
+				"Multiple matches found: %s",
+				StringUtils.join(((RunsafeAmbiguousPlayer) victim).getAmbiguity(), ", ")
+			);
+		}
+
 		if(victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";
 
-		playerdb.logPlayerBan(victim, executor, reason);
 		if (!victim.isOnline() || (executor != null && !executor.canSee(victim)))
 		{
 			victim.setBanned(true);
+			playerdb.logPlayerBan(victim, executor, reason);
 			logger.logKick(executor, victim, reason, true);
-			return String.format("Banned offline player %s.", getArg("player"));
+			return String.format("Banned offline player %s.", victim.getPrettyName());
 		}
 		if(lightning)
 			victim.strikeWithLightning(fakeLightning);

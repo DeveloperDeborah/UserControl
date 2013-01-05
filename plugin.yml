@@ -9,6 +9,8 @@ commands:
     description: Administrativ features
   ban:
     description: Ban a user from the server permanently
+  tempban:
+    description: Ban a user from the server for a given time period
   unban:
     description: Lift a temporary or permanent ban for a user
   kick:

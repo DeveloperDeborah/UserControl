@@ -22,7 +22,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(Kick.class);
 		addComponent(KickAll.class);
 		addComponent(SuDo.class);
-		//addComponent(TempBan.class);
+		addComponent(TempBan.class);
 		addComponent(UnBan.class);
 		addComponent(UnBanIP.class);
 		addComponent(BanEnforcer.class);

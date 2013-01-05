@@ -49,6 +49,9 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 				")"
 		);
 		queries.put(1, sql);
+		sql = new ArrayList<String>();
+		sql.add("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
+		queries.put(2, sql);
 		return queries;
 	}
 
@@ -93,10 +96,25 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 		}
 	}
 
+	public void setPlayerTemporaryBan(RunsafePlayer player, DateTime temporary)
+	{
+		PreparedStatement update = database.prepare("UPDATE player_db SET temp_ban=? WHERE `name`=?");
+		try
+		{
+			update.setTimestamp(1, convert(temporary));
+			update.setString(2, player.getName());
+			update.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			console.write(e.getMessage());
+		}
+	}
+
 	public void logPlayerUnban(RunsafePlayer player)
 	{
 		PreparedStatement update = database.prepare(
-			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL WHERE `name`=?"
+			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?"
 		);
 		try
 		{
@@ -143,6 +161,7 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 			data.setJoined(convert(result.getTimestamp("joined")));
 			data.setLogin(convert(result.getTimestamp("login")));
 			data.setLogout(convert(result.getTimestamp("logout")));
+			data.setUnban(convert(result.getTimestamp("temp_ban")));
 			data.setName(result.getString("name"));
 			return data;
 		}
@@ -155,9 +174,16 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 
 	private DateTime convert(Timestamp timestamp)
 	{
-		if(timestamp == null)
+		if (timestamp == null)
 			return null;
 		return new DateTime(timestamp);
+	}
+
+	private Timestamp convert(DateTime dateTime)
+	{
+		if (dateTime == null)
+			return null;
+		return new Timestamp(dateTime.getMillis());
 	}
 
 	private final IOutput console;
@@ -195,7 +221,7 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 	public DateTime GetPlayerLogout(RunsafePlayer player)
 	{
 		PlayerData data = getData(player);
-		if(data == null)
+		if (data == null)
 			return null;
 		return data.getLogout();
 	}
