@@ -7,6 +7,12 @@ import no.runsafe.framework.hook.IPlayerLookupService;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.PeriodFormat;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPlayerDataProvider
@@ -157,6 +164,7 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 
 			PlayerData data = new PlayerData();
 			data.setBanned(convert(result.getTimestamp("banned")));
+			data.setBanner(result.getString("ban_by"));
 			data.setBanReason(result.getString("ban_reason"));
 			data.setJoined(convert(result.getTimestamp("joined")));
 			data.setLogin(convert(result.getTimestamp("login")));
@@ -214,7 +222,28 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 	@Override
 	public HashMap<String, String> GetPlayerData(RunsafePlayer player)
 	{
-		return null;
+		PlayerData data = getData(player);
+		HashMap<String, String> result = new LinkedHashMap<String, String>();
+		if (data.getBanned() != null)
+		{
+			result.put("usercontrol.ban.status", "true");
+			result.put("usercontrol.ban.timestamp", DATE_FORMAT.print(data.getBanned()));
+			result.put("usercontrol.ban.reason", data.getBanReason());
+			if (data.getUnban() != null)
+				result.put("usercontrol.ban.temporary", DATE_FORMAT.print(data.getUnban()));
+			result.put("usercontrol.ban.by", data.getBanner());
+		}
+		else
+			result.put("usercontrol.ban.status", "false");
+		result.put("usercontrol.joined",  DATE_FORMAT.print(data.getJoined()));
+		result.put("usercontrol.login", DATE_FORMAT.print(data.getLogin()));
+		result.put("usercontrol.logout", DATE_FORMAT.print(data.getLogout()));
+		if (data.getLogout() != null && data.getLogout().isAfter(data.getLogin()))
+		{
+			Period period = new Period(data.getLogout(), DateTime.now(), SEEN_FORMAT);
+			result.put("usercontrol.seen", PeriodFormat.getDefault().print(period));
+		}
+		return result;
 	}
 
 	@Override
@@ -231,4 +260,7 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 	{
 		return getData(player).getBanReason();
 	}
+
+	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
+	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");;
 }

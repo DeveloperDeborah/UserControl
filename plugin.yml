@@ -25,3 +25,5 @@ commands:
     description: Lift a permanent ban from an IP-address
   seen:
     description: Gives information of when a user was last on the server
+  whois:
+    description: Queries the server about a player, printing available information.

@@ -3,3 +3,23 @@ messages.ban: "Banned: %1$s"
 messages.tempban: "Temporary ban: %1$s"
 ban.lightning.strike: true
 ban.lightning.real: false
+whois.labels.game:
+  health: Health
+  experience: Power level
+  level: Level
+  ip: IP
+  mode: Mode
+  op: OP
+  flying: Flying
+whois.labels.usercontrol:
+  ban.status: Ban active
+  ban.timestamp: Banned
+  ban.reason: Ban reason
+  ban.temporary: Banned until
+  ban.by: Banned by
+  joined: First login
+  login: Last login
+  logout: Last logout
+  seen: Offline for
+whois.formats.game:
+  experience: "%s xp"
