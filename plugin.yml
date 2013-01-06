@@ -6,7 +6,7 @@ depend: []
 description: Tools for handling users
 commands:
   usercontrol:
-    description: Administrativ features
+    description: Administrative features
   ban:
     description: Ban a user from the server permanently
   tempban:

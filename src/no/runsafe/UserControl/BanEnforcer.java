@@ -7,13 +7,14 @@ import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerPreLoginEvent;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
+class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 {
 	public BanEnforcer(PlayerDatabase playerDatabase)
 	{
@@ -36,11 +37,14 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			{
 				if (unban.isAfter(DateTime.now()))
 				{
+					Duration left = new Duration(DateTime.now(), unban);
 					event.playerBanned(
 						String.format(
 							tempBanMessageFormat,
 							data.getBanReason(),
-							PeriodFormat.getDefault().print(new Period(DateTime.now(), unban, TIME_LEFT))
+							PeriodFormat.getDefault().print(
+								left.toPeriod(ONE_MINUTE.isLongerThan(left) ? SHORT_TIME_LEFT : LONG_TIME_LEFT)
+							)
 						)
 					);
 				}
@@ -64,9 +68,11 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 		tempBanMessageFormat = configuration.getConfigValueAsString("messages.tempban");
 	}
 
-	PlayerDatabase playerdb;
-	String banMessageFormat = "Banned: %s";
-	String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";
+	private final PlayerDatabase playerdb;
+	private String banMessageFormat = "Banned: %s";
+	private String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";
 	private final ConcurrentHashMap<String, String> activeBans = new ConcurrentHashMap<String, String>();
-	private static final PeriodType TIME_LEFT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
+	private static final PeriodType LONG_TIME_LEFT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
+	private static final PeriodType SHORT_TIME_LEFT = PeriodType.standard().withMillisRemoved();
+	private static final Duration ONE_MINUTE = Duration.standardMinutes(1);
 }

@@ -10,10 +10,9 @@ import org.apache.commons.lang.StringUtils;
 
 public class KickAll extends RunsafeCommand
 {
-	public KickAll(PlayerKickLog log)
+	public KickAll()
 	{
 		super("kickall", "reason");
-		logger = log;
 	}
 
 	@Override
@@ -25,7 +24,6 @@ public class KickAll extends RunsafeCommand
 	@Override
 	public String OnExecute(RunsafePlayer executor, String[] args)
 	{
-		String source = executor == null ? "console" : executor.getName();
 		String reason = StringUtils.join(args, " ");
 		int n = 0;
 
@@ -40,6 +38,4 @@ public class KickAll extends RunsafeCommand
 			}
 		return String.format("Kicked %d players from the server.", n);
 	}
-
-	PlayerKickLog logger;
 }

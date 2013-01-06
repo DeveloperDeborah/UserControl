@@ -68,6 +68,6 @@ public class Seen extends RunsafeAsyncCommand
 		return PeriodFormat.getDefault().print(period);
 	}
 
-	private PlayerDatabase playerDatabase;
-	private PeriodType output_format = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
+	private final PlayerDatabase playerDatabase;
+	private final PeriodType output_format = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 }

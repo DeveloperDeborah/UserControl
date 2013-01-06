@@ -67,8 +67,8 @@ public class Ban extends RunsafeCommand implements IConfigurationChanged
 		fakeLightning = !configuration.getConfigValueAsBoolean("ban.lightning.real");
 	}
 
-	PlayerKickLog logger;
-	PlayerDatabase playerdb;
-	boolean lightning;
-	boolean fakeLightning;
+	private final PlayerKickLog logger;
+	private final PlayerDatabase playerdb;
+	private boolean lightning;
+	private boolean fakeLightning;
 }

@@ -2,18 +2,15 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.command.RunsafeCommand;
-import no.runsafe.framework.configuration.IConfiguration;
-import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
 public class Kick extends RunsafeCommand
 {
-	public Kick(PlayerKickLog log)
+	public Kick()
 	{
 		super("kick", "player", "reason");
-		logger = log;
 	}
 
 	@Override
@@ -36,6 +33,4 @@ public class Kick extends RunsafeCommand
 		RunsafeServer.Instance.kickPlayer(executor, victim, reason);
 		return null;
 	}
-
-	PlayerKickLog logger;
 }

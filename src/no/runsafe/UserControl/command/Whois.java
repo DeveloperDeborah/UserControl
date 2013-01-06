@@ -63,7 +63,7 @@ public class Whois extends RunsafeAsyncCommand implements IConfigurationChanged
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
 		labels = configuration.getSection("whois.labels");
-		outformat = configuration.getSection("whois.formats");
+		outFormat = configuration.getSection("whois.formats");
 	}
 
 	private String getLabel(String key)
@@ -76,14 +76,14 @@ public class Whois extends RunsafeAsyncCommand implements IConfigurationChanged
 
 	private String formatOutput(String key, String value)
 	{
-		if (outformat == null)
+		if (outFormat == null)
 			return value;
-		String format = outformat.getString(key.toLowerCase().replace(' ', '.'));
+		String format = outFormat.getString(key.toLowerCase().replace(' ', '.'));
 		if (format == null || format.isEmpty())
 			return value;
 		return String.format(format, value);
 	}
 
 	private ConfigurationSection labels;
-	private ConfigurationSection outformat;
+	private ConfigurationSection outFormat;
 }

@@ -66,6 +66,6 @@ public class PlayerKickLog implements ISchemaChanges
 		}
 	}
 
-	IDatabase database;
-	IOutput console;
+	private final IDatabase database;
+	private final IOutput console;
 }

@@ -32,5 +32,5 @@ public class UnBan extends RunsafeCommand
 		return String.format("Player %s was unbanned.", player.getPrettyName());
 	}
 
-	PlayerDatabase playerdb;
+	private final PlayerDatabase playerdb;
 }

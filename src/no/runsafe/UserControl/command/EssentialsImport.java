@@ -48,6 +48,7 @@ public class EssentialsImport extends RunsafeConsoleCommand
 		return "Started loading player data from Essentials.";
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private int playerImport()
 	{
 		PreparedStatement update = database.prepare(

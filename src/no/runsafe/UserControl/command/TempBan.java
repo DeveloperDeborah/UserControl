@@ -82,12 +82,10 @@ public class TempBan extends RunsafeCommand implements IConfigurationChanged
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
-		banMessage = configuration.getConfigValueAsString("messages.tempban");
 		lightning = configuration.getConfigValueAsBoolean("ban.lightning.strike");
 		fakeLightning = !configuration.getConfigValueAsBoolean("ban.lightning.real");
 	}
 
-	String banMessage = "%3$s";
 	private final PeriodFormatter timeParser;
 	private final PlayerDatabase playerdb;
 	private final PlayerKickLog logger;

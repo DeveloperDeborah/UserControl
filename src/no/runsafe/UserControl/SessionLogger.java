@@ -13,7 +13,7 @@ import no.runsafe.framework.server.event.player.RunsafePlayerKickEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
-public class SessionLogger implements IPluginEnabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
+class SessionLogger implements IPluginEnabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {
 	public SessionLogger(PlayerDatabase players, PlayerSessionLog sessions, PlayerKickLog kickLog)
 	{
@@ -57,7 +57,7 @@ public class SessionLogger implements IPluginEnabled, IPlayerJoinEvent, IPlayerQ
 		}
 	}
 
-	private PlayerDatabase playerdb;
-	private PlayerSessionLog sessiondb;
-	private PlayerKickLog kicklogger;
+	private final PlayerDatabase playerdb;
+	private final PlayerSessionLog sessiondb;
+	private final PlayerKickLog kicklogger;
 }
