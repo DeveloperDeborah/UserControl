@@ -14,7 +14,7 @@ import org.joda.time.format.PeriodFormat;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
+public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 {
 	public BanEnforcer(PlayerDatabase playerDatabase)
 	{
