@@ -27,3 +27,7 @@ commands:
     description: Gives information of when a user was last on the server
   whois:
     description: Queries the server about a player, printing available information.
+  op:
+    description: Makes a player an operator.
+  deop:
+    description: Revokes a players status as an operator

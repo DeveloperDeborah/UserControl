@@ -3,6 +3,8 @@ messages.ban: "Banned: %1$s"
 messages.tempban: "Temporary ban: %1$s"
 ban.lightning.strike: true
 ban.lightning.real: false
+control.op.login: true
+control.op.timer: 30
 whois.labels.game:
   health: Health
   experience: Power level
