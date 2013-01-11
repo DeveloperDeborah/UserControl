@@ -1,42 +1,42 @@
 <project name="UserControl" basedir="." default="jar">
 
-	<property name="src.dir" value="src"/>
-	<property name="build.dir" value="build"/>
-	<property name="classes.dir" value="${build.dir}/classes"/>
-	<property name="jar.dir" value="${build.dir}/jar"/>
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir" value="${build.dir}/jar"/>
 
-	<path id="classpath">
-		<fileset dir="${env.WORKSPACE}../../../../Framework/workspace/build/jar/" includes="framework.jar"/>
-		<fileset dir="${env.WORKSPACE}../../../../Framework/workspace/lib/" includes="**/*.jar"/>
-	</path>
+    <path id="classpath">
+        <fileset dir="${env.WORKSPACE}../../../../Framework/workspace/build/jar/" includes="framework.jar"/>
+        <fileset dir="${env.WORKSPACE}../../../../Framework/workspace/lib/" includes="**/*.jar"/>
+    </path>
 
-	<target name="clean">
-		<delete dir="${build.dir}"/>
+    <target name="clean">
+        <delete dir="${build.dir}"/>
         <delete dir="${jar.dir}"/>
-	</target>
+    </target>
 
-	<target name="compile">
+    <target name="injectVersion">
+        <copy file="${src.dir}/plugin.yml" todir="${build.dir}" />
+        <replaceregexp file="${build.dir}/plugin.yml" match="@BUILD@" replace="${build.number}"/>
+    </target>
+
+    <target name="compile">
         <buildnumber/>
-        <exec executable="/bin/sh">
-            <arg value="version.sh" />
-            <arg value="${src.dir}/plugin.yml" />
-            <arg value="${build.dir}/plugin.yml" />
-        </exec>
-		<mkdir dir="${classes.dir}"/>
-		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
-	</target>
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    </target>
 
-	<target name="jar" depends="compile">
-		<mkdir dir="${jar.dir}"/>
-		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
-			<manifest>
-				<attribute name="Class-Path" value="runsafe/framework.jar, runsafe/joda-time-2.1.jar" />
-			</manifest>
-			<fileset dir="${build.dir}" includes="plugin.yml"/>
-			<fileset dir="${src.dir}" includes="defaults.yml"/>
-		</jar>
-	</target>
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Class-Path" value="runsafe/framework.jar, runsafe/joda-time-2.1.jar"/>
+            </manifest>
+            <fileset dir="${build.dir}" includes="plugin.yml"/>
+            <fileset dir="${src.dir}" includes="defaults.yml"/>
+        </jar>
+    </target>
 
-	<target name="clean-build" depends="clean,jar"/>
+    <target name="clean-build" depends="clean,jar"/>
 
 </project>
