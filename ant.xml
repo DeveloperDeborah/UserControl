@@ -19,6 +19,8 @@
         <buildnumber/>
         <exec executable="/bin/sh">
             <arg value="version.sh" />
+            <arg value="${src.dir}/plugin.yml" />
+            <arg value="${build.dir}/plugin.yml" />
         </exec>
 		<mkdir dir="${classes.dir}"/>
 		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
@@ -30,7 +32,7 @@
 			<manifest>
 				<attribute name="Class-Path" value="runsafe/framework.jar, runsafe/joda-time-2.1.jar" />
 			</manifest>
-			<fileset dir="${src.dir}" includes="plugin.yml"/>
+			<fileset dir="${build.dir}" includes="plugin.yml"/>
 			<fileset dir="${src.dir}" includes="defaults.yml"/>
 		</jar>
 	</target>

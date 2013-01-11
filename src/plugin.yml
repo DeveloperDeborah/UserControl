@@ -1,6 +1,6 @@
 name: UserControl
 main: no.runsafe.UserControl.Plugin
-version: 1.0
+version: 1.0.*
 authors: [mortenn]
 depend: []
 description: Tools for handling users
