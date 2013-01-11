@@ -17,7 +17,7 @@
 
 	<target name="compile">
         <buildnumber/>
-        <exec command="./version.sh" />
+        <exec command="/bin/sh version.sh" />
 		<mkdir dir="${classes.dir}"/>
 		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
 	</target>
