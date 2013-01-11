@@ -1,4 +1,3 @@
 #!/bin/bash
-echo 'Hello, Jenkins'
-echo from $1
-echo to $2
+. build.number
+sed -e "s/*/${build.number}/" $1 > $2
