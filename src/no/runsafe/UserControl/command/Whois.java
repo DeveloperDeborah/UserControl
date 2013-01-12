@@ -6,7 +6,6 @@ import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -37,12 +36,12 @@ public class Whois extends RunsafeAsyncCommand implements IConfigurationChanged
 				continue;
 			String label = getLabel(key);
 			String value = formatOutput(key, data.get(key));
-			ChatColor color = ChatColor.RESET;
+			String format = "\n- &6%s: &r%s";
 			if (value.equals("true"))
-				color = ChatColor.GREEN;
+				format = "\n- &6%s: &a%s&r";
 			else if (value.equals("false"))
-				color = ChatColor.RED;
-			info.append(String.format("\n- %s%s: %s%s%s", ChatColor.GOLD, label, color, value, ChatColor.RESET));
+				format = "\n- &6%s: &c%s&r";
+			info.append(String.format(format, label, value));
 		}
 		return info.toString();
 	}

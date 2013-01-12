@@ -8,7 +8,6 @@ import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -46,15 +45,14 @@ public class Seen extends RunsafeAsyncCommand
 		PlayerData data = playerDatabase.getData(player);
 		if (player.isOnline() && (executor == null || executor.canSee(player)))
 			return String.format(
-				"Player %s is %sonline%s since %s",
+				"Player %s is &aonline&r since %s",
 				player.getPrettyName(),
-				ChatColor.GREEN, ChatColor.RESET,
 				formatTime(data.getLogin())
 			);
 
 		return String.format(
-			"Player %s is %soffline%s since %s",
-			player.getPrettyName(), ChatColor.RED, ChatColor.RESET,
+			"Player %s is %coffline&r since %s",
+			player.getPrettyName(),
 			formatTime(player.isOnline() ? data.getLogin() : data.getLogout())
 		);
 	}
