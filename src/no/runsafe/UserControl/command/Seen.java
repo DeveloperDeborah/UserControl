@@ -52,7 +52,7 @@ public class Seen extends RunsafeAsyncCommand
 			);
 
 		return String.format(
-			"Player %s is %coffline&r since %s",
+			"Player %s is &coffline&r since %s",
 			player.getPrettyName(),
 			formatTime(player.isOnline() ? data.getLogin() : data.getLogout())
 		);
