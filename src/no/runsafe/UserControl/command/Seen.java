@@ -30,9 +30,10 @@ public class Seen extends RunsafeAsyncCommand
 	@Override
 	public String OnExecute(RunsafePlayer executor, String[] args)
 	{
-		RunsafePlayer player = RunsafeServer.Instance.getPlayer(getArg("player"));
+		String playerName = args[0];
+		RunsafePlayer player = RunsafeServer.Instance.getPlayer(playerName);
 		if (player == null)
-			return String.format("No players found matching %s", getArg("player"));
+			return String.format("No players found matching %s", playerName);
 
 		if (player instanceof RunsafeAmbiguousPlayer)
 		{
