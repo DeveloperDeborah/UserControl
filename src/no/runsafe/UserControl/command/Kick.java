@@ -19,7 +19,11 @@ public class Kick extends ExecutableCommand
 	@Override
 	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
 	{
-		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		RunsafePlayer victim;
+		if (executor instanceof RunsafePlayer)
+			victim = RunsafeServer.Instance.getOnlinePlayer((RunsafePlayer) executor, parameters.get("player"));
+		else
+			victim = RunsafeServer.Instance.getOnlinePlayer(null, parameters.get("player"));
 		if (victim == null)
 			return "Player not found";
 
@@ -33,9 +37,6 @@ public class Kick extends ExecutableCommand
 
 		if (victim.hasPermission("runsafe.usercontrol.kick.immune"))
 			return "You cannot kick that player";
-
-		if (!victim.isOnline() || (executor instanceof RunsafePlayer && !((RunsafePlayer) executor).canSee(victim)))
-			return String.format("Player %s is not online!", victim.getPrettyName());
 
 		String reason = parameters.get("reason");
 		if (arguments.length > 0)
