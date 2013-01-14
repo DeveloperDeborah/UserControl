@@ -2,38 +2,35 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
-import no.runsafe.framework.command.ICommand;
-import no.runsafe.framework.command.RunsafeCommand;
+import no.runsafe.framework.command.ExecutableCommand;
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
+import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Collection;
+import java.util.HashMap;
 
-public class Ban extends RunsafeCommand implements IConfigurationChanged
+public class Ban extends ExecutableCommand implements IConfigurationChanged
 {
 	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase)
 	{
-		super("ban", "player", "reason");
+		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", "player", "reason");
 		logger = log;
 		playerdb = playerDatabase;
 	}
 
 	@Override
-	public String requiredPermission()
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
 	{
-		return "runsafe.usercontrol.ban";
-	}
+		String reason = parameters.get("reason");
+		if (arguments.length > 0)
+			reason += " " + StringUtils.join(arguments, " ", 1, arguments.length);
 
-	@Override
-	public String OnExecute(RunsafePlayer executor, String[] args)
-	{
-		String reason = StringUtils.join(args, " ", 1, args.length);
-		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(getArg("player"));
-		if(victim == null)
+		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		if (victim == null)
 			return "Player not found";
 
 		if (victim instanceof RunsafeAmbiguousPlayer)
@@ -44,19 +41,23 @@ public class Ban extends RunsafeCommand implements IConfigurationChanged
 			);
 		}
 
-		if(victim.hasPermission("runsafe.usercontrol.ban.immune"))
+		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";
 
-		if (!victim.isOnline() || (executor != null && !executor.canSee(victim)))
+		RunsafePlayer banningPlayer = null;
+		if (executor instanceof RunsafePlayer)
+			banningPlayer = (RunsafePlayer) executor;
+
+		if (!victim.isOnline() || (banningPlayer != null && !banningPlayer.canSee(victim)))
 		{
 			victim.setBanned(true);
-			playerdb.logPlayerBan(victim, executor, reason);
-			logger.logKick(executor, victim, reason, true);
+			playerdb.logPlayerBan(victim, banningPlayer, reason);
+			logger.logKick(banningPlayer, victim, reason, true);
 			return String.format("Banned offline player %s.", victim.getPrettyName());
 		}
-		if(lightning)
+		if (lightning)
 			victim.strikeWithLightning(fakeLightning);
-		RunsafeServer.Instance.banPlayer(executor, victim, reason);
+		RunsafeServer.Instance.banPlayer(banningPlayer, victim, reason);
 		return null;
 	}
 

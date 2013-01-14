@@ -2,7 +2,8 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
-import no.runsafe.framework.command.RunsafeAsyncCommand;
+import no.runsafe.framework.command.AsyncCommand;
+import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
@@ -13,24 +14,19 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 
-public class Seen extends RunsafeAsyncCommand
+import java.util.HashMap;
+
+public class Seen extends AsyncCommand
 {
 	public Seen(IScheduler scheduler, PlayerDatabase database)
 	{
-		super("seen", scheduler, "player");
+		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, "player");
 		playerDatabase = database;
 	}
 
-	@Override
-	public String requiredPermission()
+	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
 	{
-		return "runsafe.usercontrol.seen";
-	}
-
-	@Override
-	public String OnExecute(RunsafePlayer executor, String[] args)
-	{
-		String playerName = args[0];
+		String playerName = parameters.get("player");
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(playerName);
 		if (player == null)
 			return String.format("No players found matching %s", playerName);
@@ -43,8 +39,12 @@ public class Seen extends RunsafeAsyncCommand
 			);
 		}
 
+		RunsafePlayer checker = null;
+		if (executor instanceof RunsafePlayer)
+			checker = (RunsafePlayer) executor;
+
 		PlayerData data = playerDatabase.getData(player);
-		if (player.isOnline() && (executor == null || executor.canSee(player)))
+		if (player.isOnline() && (checker == null || checker.canSee(player)))
 			return String.format(
 				"Player %s is &aonline&r since %s",
 				player.getPrettyName(),

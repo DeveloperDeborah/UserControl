@@ -5,8 +5,6 @@ import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
-import no.runsafe.framework.command.ICommand;
-import no.runsafe.framework.command.RunsafeCommand;
 
 public class Plugin extends RunsafeConfigurablePlugin
 {
@@ -31,9 +29,5 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(Op.class);
 		addComponent(DeOp.class);
 		addComponent(OpController.class);
-
-		ICommand usercontrol = new RunsafeCommand("usercontrol");
-		usercontrol.addSubCommand(getInstance(EssentialsImport.class));
-		addComponent(usercontrol);
 	}
 }

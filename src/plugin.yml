@@ -5,8 +5,6 @@ authors: [mortenn]
 depend: []
 description: Tools for handling users
 commands:
-  usercontrol:
-    description: Administrative features
   ban:
     description: Ban a user from the server permanently
   tempban:

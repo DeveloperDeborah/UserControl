@@ -1,38 +1,39 @@
 package no.runsafe.UserControl.command;
 
-import no.runsafe.UserControl.database.PlayerKickLog;
-import no.runsafe.framework.command.RunsafeCommand;
-import no.runsafe.framework.configuration.IConfiguration;
-import no.runsafe.framework.event.IConfigurationChanged;
+import no.runsafe.framework.command.ExecutableCommand;
+import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
-public class KickAll extends RunsafeCommand
+import java.util.HashMap;
+
+public class KickAll extends ExecutableCommand
 {
 	public KickAll()
 	{
-		super("kickall", "reason");
+		super("kickall", "Kicks all players from the server", "runsafe.usercontrol.kickall", "reason");
 	}
 
 	@Override
-	public String requiredPermission()
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
 	{
-		return "runsafe.usercontrol.kickall";
-	}
+		String reason = parameters.get("reason");
+		if (arguments.length > 0)
+			reason += " " + StringUtils.join(arguments, " ", 1, arguments.length);
 
-	@Override
-	public String OnExecute(RunsafePlayer executor, String[] args)
-	{
-		String reason = StringUtils.join(args, " ");
 		int n = 0;
 
+		RunsafePlayer kicker = null;
+		if (executor instanceof RunsafePlayer)
+			kicker = (RunsafePlayer) executor;
+
 		for (RunsafePlayer victim : RunsafeServer.Instance.getOnlinePlayers())
-			if (executor == null || (executor.canSee(victim) && !victim.getName().equals(executor.getName())))
+			if (kicker == null || (kicker.canSee(victim) && !victim.getName().equals(executor.getName())))
 			{
 				if (!victim.hasPermission("runsafe.usercontrol.kick.immune"))
 				{
-					RunsafeServer.Instance.kickPlayer(executor, victim, reason);
+					RunsafeServer.Instance.kickPlayer(kicker, victim, reason);
 					n++;
 				}
 			}

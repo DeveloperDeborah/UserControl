@@ -1,29 +1,23 @@
 package no.runsafe.UserControl.command;
 
-import no.runsafe.framework.command.RunsafeCommand;
+import no.runsafe.framework.command.ExecutableCommand;
+import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.player.RunsafePlayer;
 
-public class UnBanIP extends RunsafeCommand
+import java.util.HashMap;
+
+public class UnBanIP extends ExecutableCommand
 {
 	public UnBanIP()
 	{
-		super("unbanip", "ip-address");
+		super("unbanip", "Bans an IP from connecting to this server", "runsafe.usercontrol.unban.ip", "ip-address");
 	}
 
 	@Override
-	public String requiredPermission()
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
 	{
-		return "runsafe.usercontrol.unban.ip";
-	}
-
-	@Override
-	public String OnExecute(RunsafePlayer executor, String[] args)
-	{
-		String ip = getArg("ip-address");
+		String ip = parameters.get("ip-address");
 		RunsafeServer.Instance.unbanIp(ip);
-		// TODO Log unbanning reason
-		//String reason = StringUtils.join(args, " ", 1, args.length);
 		return String.format("Unbanned IP %s from the server", ip);
 	}
 }

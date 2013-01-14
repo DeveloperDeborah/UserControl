@@ -3,6 +3,7 @@ package no.runsafe.UserControl;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
+import no.runsafe.framework.event.IPluginDisabled;
 import no.runsafe.framework.event.IPluginEnabled;
 import no.runsafe.framework.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.event.player.IPlayerKickEvent;
@@ -13,7 +14,7 @@ import no.runsafe.framework.server.event.player.RunsafePlayerKickEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
-public class SessionLogger implements IPluginEnabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
+public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {
 	public SessionLogger(PlayerDatabase players, PlayerSessionLog sessions, PlayerKickLog kickLog)
 	{
@@ -36,7 +37,6 @@ public class SessionLogger implements IPluginEnabled, IPlayerJoinEvent, IPlayerQ
 		sessiondb.logSessionClosed(event.getPlayer(), event.getQuitMessage());
 	}
 
-
 	@Override
 	public void OnPlayerKick(RunsafePlayerKickEvent event)
 	{
@@ -55,6 +55,12 @@ public class SessionLogger implements IPluginEnabled, IPlayerJoinEvent, IPlayerQ
 			playerdb.logPlayerInfo(player);
 			sessiondb.logSessionStart(player);
 		}
+	}
+
+	@Override
+	public void OnPluginDisabled()
+	{
+		sessiondb.closeAllSessions("Shutting down");
 	}
 
 	private final PlayerDatabase playerdb;

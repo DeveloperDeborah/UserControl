@@ -1,8 +1,9 @@
 package no.runsafe.UserControl.command;
 
-import no.runsafe.framework.command.RunsafeAsyncCommand;
+import no.runsafe.framework.command.AsyncCommand;
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
+import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
@@ -10,17 +11,19 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 
-public class Whois extends RunsafeAsyncCommand implements IConfigurationChanged
+public class Whois extends AsyncCommand implements IConfigurationChanged
 {
 	public Whois(IScheduler scheduler)
 	{
-		super("whois", scheduler, "player");
+		super("whois", "Queries the server about a player, printing available information.", "runsafe.usercontrol.whois", scheduler, "player");
 	}
 
 	@Override
-	public String OnExecute(RunsafePlayer executor, String[] args)
+	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
 	{
-		RunsafePlayer target = RunsafeServer.Instance.getPlayer(getArg("player"));
+		RunsafePlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		if (target == null)
+			return String.format("Could not locate a player using %s", parameters.get("player"));
 		HashMap<String, String> data = target.getData();
 		if (data == null || data.size() == 0)
 			return String.format("No data found for player %s.", target.getPrettyName());
@@ -44,18 +47,6 @@ public class Whois extends RunsafeAsyncCommand implements IConfigurationChanged
 			info.append(String.format(format, label, value));
 		}
 		return info.toString();
-	}
-
-	@Override
-	public String requiredPermission()
-	{
-		return "runsafe.usercontrol.whois";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Queries the server about a player, printing available information.";
 	}
 
 	@Override

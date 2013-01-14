@@ -1,36 +1,40 @@
 package no.runsafe.UserControl.command;
 
-import no.runsafe.UserControl.database.PlayerKickLog;
-import no.runsafe.framework.command.RunsafeCommand;
+import no.runsafe.framework.command.ExecutableCommand;
+import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
-public class Kick extends RunsafeCommand
+import java.util.HashMap;
+
+public class Kick extends ExecutableCommand
 {
 	public Kick()
 	{
-		super("kick", "player", "reason");
+		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", "player", "reason");
 	}
 
 	@Override
-	public String requiredPermission()
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
 	{
-		return "runsafe.usercontrol.kick";
-	}
-
-	@Override
-	public String OnExecute(RunsafePlayer executor, String[] args)
-	{
-		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(getArg("player"));
-		if(victim == null)
+		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		if (victim == null)
 			return "Player not found";
 
-		if(victim.hasPermission("runsafe.usercontrol.kick.immune"))
+		if (victim.hasPermission("runsafe.usercontrol.kick.immune"))
 			return "You cannot kick that player";
 
-		String reason = StringUtils.join(args, " ", 1, args.length);
-		RunsafeServer.Instance.kickPlayer(executor, victim, reason);
+		String reason = parameters.get("reason");
+		if (arguments.length > 0)
+			reason += " " + StringUtils.join(arguments, " ", 1, arguments.length);
+
+		if (executor instanceof RunsafePlayer)
+			RunsafeServer.Instance.kickPlayer((RunsafePlayer) executor, victim, reason);
+		else
+			RunsafeServer.Instance.kickPlayer(null, victim, reason);
+
 		return null;
 	}
+
 }
