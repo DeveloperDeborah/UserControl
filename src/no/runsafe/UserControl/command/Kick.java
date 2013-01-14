@@ -3,6 +3,7 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.command.ExecutableCommand;
 import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
@@ -22,8 +23,19 @@ public class Kick extends ExecutableCommand
 		if (victim == null)
 			return "Player not found";
 
+		if (victim instanceof RunsafeAmbiguousPlayer)
+		{
+			return String.format(
+				"Multiple matches found: %s",
+				StringUtils.join(((RunsafeAmbiguousPlayer) victim).getAmbiguity(), ", ")
+			);
+		}
+
 		if (victim.hasPermission("runsafe.usercontrol.kick.immune"))
 			return "You cannot kick that player";
+
+		if (!victim.isOnline() || (executor instanceof RunsafePlayer && !((RunsafePlayer) executor).canSee(victim)))
+			return String.format("Player %s is not online!", victim.getPrettyName());
 
 		String reason = parameters.get("reason");
 		if (arguments.length > 0)
