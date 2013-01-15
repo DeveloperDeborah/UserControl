@@ -24,7 +24,7 @@ public class SuDo extends ExecutableCommand
 
 		String command = parameters.get("command");
 		if (arguments.length > 0)
-			command += " " + StringUtils.join(arguments, " ", 1, arguments.length);
+			command += " " + StringUtils.join(arguments, " ");
 		target.getRawPlayer().performCommand(command);
 		return String.format("Forced %s to run /%s", target.getName(), command);
 	}

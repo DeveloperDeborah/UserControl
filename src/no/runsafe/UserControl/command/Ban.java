@@ -27,7 +27,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	{
 		String reason = parameters.get("reason");
 		if (arguments.length > 0)
-			reason += " " + StringUtils.join(arguments, " ", 1, arguments.length);
+			reason += " " + StringUtils.join(arguments, " ");
 
 		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (victim == null)
