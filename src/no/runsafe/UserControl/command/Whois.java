@@ -19,7 +19,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
+	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		RunsafePlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (target == null)

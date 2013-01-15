@@ -14,7 +14,7 @@ public class UnBanIP extends ExecutableCommand
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		String ip = parameters.get("ip-address");
 		RunsafeServer.Instance.unbanIp(ip);

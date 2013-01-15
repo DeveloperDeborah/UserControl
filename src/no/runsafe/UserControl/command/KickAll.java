@@ -13,15 +13,13 @@ public class KickAll extends ExecutableCommand
 	public KickAll()
 	{
 		super("kickall", "Kicks all players from the server", "runsafe.usercontrol.kickall", "reason");
+		captureTail();
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		String reason = parameters.get("reason");
-		if (arguments.length > 0)
-			reason += " " + StringUtils.join(arguments, " ");
-
 		int n = 0;
 
 		RunsafePlayer kicker = null;

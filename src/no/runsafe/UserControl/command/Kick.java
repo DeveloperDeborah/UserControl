@@ -14,10 +14,11 @@ public class Kick extends ExecutableCommand
 	public Kick()
 	{
 		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", "player", "reason");
+		captureTail();
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		RunsafePlayer victim;
 		if (executor instanceof RunsafePlayer)
@@ -39,8 +40,6 @@ public class Kick extends ExecutableCommand
 			return "You cannot kick that player";
 
 		String reason = parameters.get("reason");
-		if (arguments.length > 0)
-			reason += " " + StringUtils.join(arguments, " ");
 
 		if (executor instanceof RunsafePlayer)
 			RunsafeServer.Instance.kickPlayer((RunsafePlayer) executor, victim, reason);

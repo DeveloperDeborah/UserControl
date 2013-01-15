@@ -18,16 +18,15 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase)
 	{
 		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", "player", "reason");
+		captureTail();
 		logger = log;
 		playerdb = playerDatabase;
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		String reason = parameters.get("reason");
-		if (arguments.length > 0)
-			reason += " " + StringUtils.join(arguments, " ");
 
 		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (victim == null)

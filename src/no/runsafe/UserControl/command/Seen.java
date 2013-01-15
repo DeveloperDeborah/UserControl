@@ -24,7 +24,7 @@ public class Seen extends AsyncCommand
 		playerDatabase = database;
 	}
 
-	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
+	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		String playerName = parameters.get("player");
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(playerName);

@@ -22,6 +22,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	public TempBan(PlayerDatabase playerDatabase, PlayerKickLog logger)
 	{
 		super("tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary", "player", "time", "reason");
+		captureTail();
 		this.logger = logger;
 		timeParser = new PeriodFormatterBuilder()
 			.printZeroRarelyFirst().appendYears().appendSuffix("y")
@@ -35,15 +36,13 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters, String[] arguments)
+	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		try
 		{
 			Period duration = timeParser.parsePeriod(parameters.get("time"));
 			DateTime expires = DateTime.now().plus(duration);
 			String reason = parameters.get("reason");
-			if (arguments.length > 0)
-				reason += " " + StringUtils.join(arguments, " ");
 
 			RunsafePlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 			if (victim == null)
