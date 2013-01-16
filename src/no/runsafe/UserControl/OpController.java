@@ -13,7 +13,7 @@ import no.runsafe.framework.timer.Timer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class OpController extends Timer implements IConfigurationChanged, IPlayerLoginEvent, IPlayerOperatorEvent
 {
@@ -75,5 +75,5 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 
 	private boolean loginDeOp;
 	private Duration timerDeOp;
-	private final HashMap<String, DateTime> opExpiration = new HashMap<String, DateTime>();
+	private final ConcurrentHashMap<String, DateTime> opExpiration = new ConcurrentHashMap<String, DateTime>();
 }
