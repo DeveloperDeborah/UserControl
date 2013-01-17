@@ -7,9 +7,9 @@ import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Whois extends AsyncCommand implements IConfigurationChanged
 {
@@ -52,15 +52,15 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
-		labels = configuration.getSection("whois.labels");
-		outFormat = configuration.getSection("whois.formats");
+		labels = configuration.getConfigValuesAsMap("whois.labels");
+		outFormat = configuration.getConfigValuesAsMap("whois.formats");
 	}
 
 	private String getLabel(String key)
 	{
 		if (labels == null)
 			return key;
-		String label = labels.getString(key.toLowerCase().replace(' ', '.'));
+		String label = labels.get(key.toLowerCase().replace(' ', '.'));
 		return label == null || label.isEmpty() ? key : label;
 	}
 
@@ -68,12 +68,12 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 	{
 		if (outFormat == null)
 			return value;
-		String format = outFormat.getString(key.toLowerCase().replace(' ', '.'));
+		String format = outFormat.get(key.toLowerCase().replace(' ', '.'));
 		if (format == null || format.isEmpty())
 			return value;
 		return String.format(format, value);
 	}
 
-	private ConfigurationSection labels;
-	private ConfigurationSection outFormat;
+	private Map<String, String> labels;
+	private Map<String, String> outFormat;
 }
