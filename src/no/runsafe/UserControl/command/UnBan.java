@@ -1,5 +1,6 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.UserControl.BanEnforcer;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.command.ExecutableCommand;
 import no.runsafe.framework.server.ICommandExecutor;
@@ -10,15 +11,17 @@ import java.util.HashMap;
 
 public class UnBan extends ExecutableCommand
 {
-	public UnBan(PlayerDatabase playerDatabase)
+	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer)
 	{
 		super("unban", "Unbans a player from the server", "runsafe.usercontrol.unban", "player", "reason");
 		playerdb = playerDatabase;
+		this.enforcer = enforcer;
 	}
 
 	@Override
 	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
+		enforcer.flushCache();
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (!player.isBanned())
 			return String.format("Player %s is not banned.", player.getPrettyName());
@@ -30,4 +33,5 @@ public class UnBan extends ExecutableCommand
 	}
 
 	private final PlayerDatabase playerdb;
+	private final BanEnforcer enforcer;
 }

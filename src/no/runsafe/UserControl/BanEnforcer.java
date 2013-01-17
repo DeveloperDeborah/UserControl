@@ -67,6 +67,11 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 		tempBanMessageFormat = configuration.getConfigValueAsString("messages.tempban");
 	}
 
+	public void flushCache()
+	{
+		activeBans.clear();
+	}
+
 	private final PlayerDatabase playerdb;
 	private String banMessageFormat = "Banned: %s";
 	private String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";
