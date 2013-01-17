@@ -1,6 +1,5 @@
 package no.runsafe.UserControl.database;
 
-import no.runsafe.framework.database.RunsafeEntity;
 import org.joda.time.DateTime;
 
 public class PlayerData
