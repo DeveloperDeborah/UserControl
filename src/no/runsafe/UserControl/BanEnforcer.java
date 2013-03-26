@@ -29,7 +29,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			return;
 		}
 		PlayerData data = playerdb.getData(event.getPlayer());
-		if (data.getBanned() != null)
+		if (data != null && data.getBanned() != null)
 		{
 			DateTime unban = data.getUnban();
 			if (unban != null)
