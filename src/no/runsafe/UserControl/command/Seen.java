@@ -45,7 +45,10 @@ public class Seen extends AsyncCommand
 
 		PlayerData data = playerDatabase.getData(player);
 
-		if (data != null && data.getBanned() != null)
+		if (data == null)
+			return String.format("No data for %s found..", player.getPrettyName());
+
+		if (data.getBanned() != null)
 			return String.format(
 				"Player %s has been &4banned&r since %s",
 				player.getPrettyName(),
