@@ -44,6 +44,14 @@ public class Seen extends AsyncCommand
 			checker = (RunsafePlayer) executor;
 
 		PlayerData data = playerDatabase.getData(player);
+
+		if (data != null && data.getBanned() != null)
+			return String.format(
+				"Player %s has been &4banned&r since %s",
+				player.getPrettyName(),
+				formatTime(data.getBanned())
+			);
+
 		if (player.isOnline() && (checker == null || checker.canSee(player)))
 			return String.format(
 				"Player %s is &aonline&r since %s",
