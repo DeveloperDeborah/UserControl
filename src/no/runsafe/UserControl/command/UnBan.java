@@ -5,6 +5,7 @@ import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.command.ExecutableCommand;
 import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
 import java.util.HashMap;
@@ -23,6 +24,8 @@ public class UnBan extends ExecutableCommand
 	{
 		enforcer.flushCache();
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		if (player instanceof RunsafeAmbiguousPlayer)
+			return player.toString();
 		if (!player.isBanned())
 			return String.format("Player %s is not banned.", player.getPrettyName());
 

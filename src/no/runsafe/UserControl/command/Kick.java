@@ -29,12 +29,7 @@ public class Kick extends ExecutableCommand
 			return "Player not found";
 
 		if (victim instanceof RunsafeAmbiguousPlayer)
-		{
-			return String.format(
-				"Multiple matches found: %s",
-				StringUtils.join(((RunsafeAmbiguousPlayer) victim).getAmbiguity(), ", ")
-			);
-		}
+			return victim.toString();
 
 		if (victim.hasPermission("runsafe.usercontrol.kick.immune"))
 			return "You cannot kick that player";

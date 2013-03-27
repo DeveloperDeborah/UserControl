@@ -32,12 +32,7 @@ public class Seen extends AsyncCommand
 			return String.format("No players found matching %s", playerName);
 
 		if (player instanceof RunsafeAmbiguousPlayer)
-		{
-			return String.format(
-				"Multiple matches found: %s",
-				StringUtils.join(((RunsafeAmbiguousPlayer) player).getAmbiguity(), ", ")
-			);
-		}
+			return player.toString();
 
 		RunsafePlayer checker = null;
 		if (executor instanceof RunsafePlayer)

@@ -5,6 +5,7 @@ import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 
@@ -24,6 +25,8 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		RunsafePlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (target == null)
 			return String.format("Could not locate a player using %s", parameters.get("player"));
+		if (target instanceof RunsafeAmbiguousPlayer)
+			return target.toString();
 		HashMap<String, String> data = target.getData();
 		if (data == null || data.size() == 0)
 			return String.format("No data found for player %s.", target.getPrettyName());
@@ -34,7 +37,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		{
 			if (
 				!(showAll || executor.hasPermission(
-					String.format("runsafe.usercontrol.see.%s", key.toLowerCase().replace(' ', '.'))
+					String.format("runsafe.usercontrol.whois.see.%s", key.toLowerCase().replace(' ', '.'))
 				)))
 				continue;
 			String label = getLabel(key);

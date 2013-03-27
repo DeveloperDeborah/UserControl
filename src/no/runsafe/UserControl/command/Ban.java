@@ -9,7 +9,6 @@ import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 
@@ -33,12 +32,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 			return "Player not found";
 
 		if (victim instanceof RunsafeAmbiguousPlayer)
-		{
-			return String.format(
-				"Multiple matches found: %s",
-				StringUtils.join(((RunsafeAmbiguousPlayer) victim).getAmbiguity(), ", ")
-			);
-		}
+			return victim.toString();
 
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";

@@ -49,12 +49,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 				return "Player not found";
 
 			if (victim instanceof RunsafeAmbiguousPlayer)
-			{
-				return String.format(
-					"Multiple matches found: %s",
-					StringUtils.join(((RunsafeAmbiguousPlayer) victim).getAmbiguity(), ", ")
-				);
-			}
+				return victim.toString();
 
 			if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 				return "You cannot ban that player";

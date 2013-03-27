@@ -3,6 +3,7 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.command.ExecutableCommand;
 import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
@@ -20,6 +21,9 @@ public class SuDo extends ExecutableCommand
 	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 		RunsafePlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		if (target instanceof RunsafeAmbiguousPlayer)
+			return target.toString();
+
 		if (target.hasPermission("runsafe.usercontrol.sudo.immune"))
 			return "You cannot make that user run commands";
 

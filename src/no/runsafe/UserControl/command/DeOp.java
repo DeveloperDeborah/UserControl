@@ -21,12 +21,7 @@ public class DeOp extends ExecutableCommand
 	{
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (player instanceof RunsafeAmbiguousPlayer)
-		{
-			return String.format(
-				"Multiple matches found: %s",
-				StringUtils.join(((RunsafeAmbiguousPlayer) player).getAmbiguity(), ", ")
-			);
-		}
+			return player.toString();
 		if (!player.isOP())
 			return String.format("%s was not an operator.", player.getPrettyName());
 		player.deOP();
