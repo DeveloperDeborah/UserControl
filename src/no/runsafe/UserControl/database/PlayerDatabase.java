@@ -1,7 +1,7 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.IDatabase;
-import no.runsafe.framework.database.ISchemaChanges;
+import no.runsafe.framework.database.Repository;
 import no.runsafe.framework.hook.IPlayerDataProvider;
 import no.runsafe.framework.hook.IPlayerLookupService;
 import no.runsafe.framework.output.IOutput;
@@ -13,12 +13,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.*;
 
-public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPlayerDataProvider
+public class PlayerDatabase extends Repository implements IPlayerLookupService, IPlayerDataProvider
 {
 	public PlayerDatabase(IOutput console, IDatabase database)
 	{
@@ -60,91 +57,43 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 	public void logPlayerInfo(RunsafePlayer player)
 	{
 		console.fine("Updating player_db with login time");
-		PreparedStatement update = database.prepare(
+		database.Update(
 			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
-				"ON DUPLICATE KEY UPDATE `login`=VALUES(`login`), `ip`=VALUES(`ip`)"
+				"ON DUPLICATE KEY UPDATE `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
+			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
-		try
-		{
-			update.setString(1, player.getName());
-			update.setString(2, player.getRawPlayer().getAddress().getAddress().getHostAddress());
-			update.executeUpdate();
-			console.fine("Finished updating player_db with login time");
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
 	public void logPlayerBan(RunsafePlayer player, RunsafePlayer banner, String reason)
 	{
-		PreparedStatement update = database.prepare(
-			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?"
+		database.Update(
+			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
+			reason, banner == null ? "console" : banner, player.getName()
 		);
-		try
-		{
-			update.setString(1, reason);
-			if (banner == null)
-				update.setString(2, "console");
-			else
-				update.setString(2, banner.getName());
-			update.setString(3, player.getName());
-			update.executeUpdate();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
 	public void setPlayerTemporaryBan(RunsafePlayer player, DateTime temporary)
 	{
-		PreparedStatement update = database.prepare("UPDATE player_db SET temp_ban=? WHERE `name`=?");
-		try
-		{
-			update.setTimestamp(1, convert(temporary));
-			update.setString(2, player.getName());
-			update.executeUpdate();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
+		database.Update(
+			"UPDATE player_db SET temp_ban=? WHERE `name`=?",
+			convert(temporary), player.getName()
+		);
 	}
 
 	public void logPlayerUnban(RunsafePlayer player)
 	{
-		PreparedStatement update = database.prepare(
-			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?"
+		database.Update(
+			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?",
+			player.getName()
 		);
-		try
-		{
-			update.setString(1, player.getName());
-			update.executeUpdate();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
 	public void logPlayerLogout(RunsafePlayer player)
 	{
-		console.fine("Updating player_db with logout time");
-		PreparedStatement update = database.prepare(
-			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?"
+		database.Update(
+			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?",
+			player.getName()
 		);
-		try
-		{
-			update.setString(1, player.getName());
-			update.executeUpdate();
-			console.fine("Finished updating player_db with logout time");
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
 	public PlayerData getData(RunsafePlayer player)
@@ -153,57 +102,16 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 		if (raw == null)
 			return null;
 		PlayerData data = new PlayerData();
-		data.setBanned(convert((Timestamp) raw.get("banned")));
+		data.setBanned(convert(raw.get("banned")));
 		data.setBanner((String) raw.get("ban_by"));
 		data.setBanReason((String) raw.get("ban_reason"));
-		data.setJoined(convert((Timestamp) raw.get("joined")));
-		data.setLogin(convert((Timestamp) raw.get("login")));
-		data.setLogout(convert((Timestamp) raw.get("logout")));
-		data.setUnban(convert((Timestamp) raw.get("temp_ban")));
+		data.setJoined(convert(raw.get("joined")));
+		data.setLogin(convert(raw.get("login")));
+		data.setLogout(convert(raw.get("logout")));
+		data.setUnban(convert(raw.get("temp_ban")));
 		data.setName((String) raw.get("name"));
 		return data;
-//		PreparedStatement select = database.prepare("SELECT * FROM player_db WHERE `name`=?");
-//		try
-//		{
-//			select.setString(1, player.getName());
-//			ResultSet result = select.executeQuery();
-//			if (!result.first())
-//				return null;
-//
-//			PlayerData data = new PlayerData();
-//			data.setBanned(convert(result.getTimestamp("banned")));
-//			data.setBanner(result.getString("ban_by"));
-//			data.setBanReason(result.getString("ban_reason"));
-//			data.setJoined(convert(result.getTimestamp("joined")));
-//			data.setLogin(convert(result.getTimestamp("login")));
-//			data.setLogout(convert(result.getTimestamp("logout")));
-//			data.setUnban(convert(result.getTimestamp("temp_ban")));
-//			data.setName(result.getString("name"));
-//			return data;
-//		}
-//		catch (SQLException e)
-//		{
-//			console.write(e.getMessage());
-//			return null;
-//		}
 	}
-
-	private DateTime convert(Timestamp timestamp)
-	{
-		if (timestamp == null)
-			return null;
-		return new DateTime(timestamp);
-	}
-
-	private Timestamp convert(DateTime dateTime)
-	{
-		if (dateTime == null)
-			return null;
-		return new Timestamp(dateTime.getMillis());
-	}
-
-	private final IOutput console;
-	private final IDatabase database;
 
 	@Override
 	public List<String> findPlayer(String lookup)
@@ -212,22 +120,6 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 		for (Object hit : database.QueryColumn("SELECT name FROM player_db WHERE name LIKE ?", String.format("%s%%", lookup)))
 			result.add((String) hit);
 		return result;
-//		PreparedStatement select = database.prepare(
-//			"SELECT name FROM player_db WHERE name LIKE ?"
-//		);
-//		try
-//		{
-//			select.setString(1, String.format("%s%%", lookup));
-//			ResultSet hits = select.executeQuery();
-//			while (hits.next())
-//				result.add(hits.getString("name"));
-//			return result;
-//		}
-//		catch (SQLException e)
-//		{
-//			console.write(e.getMessage());
-//			return null;
-//		}
 	}
 
 	@Override
@@ -272,6 +164,8 @@ public class PlayerDatabase implements ISchemaChanges, IPlayerLookupService, IPl
 		return getData(player).getBanReason();
 	}
 
+	private final IOutput console;
+	private final IDatabase database;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 }

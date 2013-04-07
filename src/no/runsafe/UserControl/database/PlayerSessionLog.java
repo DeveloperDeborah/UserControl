@@ -1,22 +1,18 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.IDatabase;
-import no.runsafe.framework.database.ISchemaChanges;
-import no.runsafe.framework.output.IOutput;
+import no.runsafe.framework.database.Repository;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PlayerSessionLog implements ISchemaChanges
+public class PlayerSessionLog extends Repository
 {
-	public PlayerSessionLog(IOutput output, IDatabase db)
+	public PlayerSessionLog(IDatabase db)
 	{
-		console = output;
 		database = db;
 	}
 
@@ -48,58 +44,33 @@ public class PlayerSessionLog implements ISchemaChanges
 
 	public void logSessionStart(RunsafePlayer player)
 	{
-		PreparedStatement logSession = database.prepare(
-			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)"
+		String group = null;
+		List<String> groups = player.getGroups();
+		if (groups.size() > 0)
+			group = StringUtils.join(groups, ",");
+		database.Update(
+			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)",
+			player.getName(),
+			player.getRawPlayer().getAddress().getAddress().getHostAddress(),
+			group
 		);
-		try
-		{
-			logSession.setString(1, player.getName());
-			logSession.setString(2, player.getRawPlayer().getAddress().getAddress().getHostAddress());
-			List<String> groups = player.getGroups();
-			if (groups.size() == 0)
-				logSession.setString(3, null);
-			logSession.setString(3, StringUtils.join(groups, ","));
-			logSession.execute();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
 	public void logSessionClosed(RunsafePlayer player, String quitMessage)
 	{
-		PreparedStatement closeSession = database.prepare(
-			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE name=? AND logout IS NULL"
+		database.Update(
+			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE name=? AND logout IS NULL",
+			quitMessage, player.getName()
 		);
-		try
-		{
-			closeSession.setString(1, quitMessage);
-			closeSession.setString(2, player.getName());
-			closeSession.executeUpdate();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
 	public void closeAllSessions(String quitMessage)
 	{
-		PreparedStatement closeSession = database.prepare(
-			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE logout IS NULL"
+		database.Update(
+			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE logout IS NULL",
+			quitMessage
 		);
-		try
-		{
-			closeSession.setString(1, quitMessage);
-			closeSession.executeUpdate();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
-	private final IOutput console;
 	private final IDatabase database;
 }

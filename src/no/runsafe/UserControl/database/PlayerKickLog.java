@@ -1,22 +1,18 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.IDatabase;
-import no.runsafe.framework.database.ISchemaChanges;
-import no.runsafe.framework.output.IOutput;
+import no.runsafe.framework.database.Repository;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PlayerKickLog implements ISchemaChanges
+public class PlayerKickLog extends Repository
 {
-	public PlayerKickLog(IDatabase db, IOutput output)
+	public PlayerKickLog(IDatabase db)
 	{
 		database = db;
-		console = output;
 	}
 
 	@Override
@@ -46,26 +42,11 @@ public class PlayerKickLog implements ISchemaChanges
 
 	public void logKick(RunsafePlayer kicker, RunsafePlayer player, String reason, boolean banned)
 	{
-		PreparedStatement logEntry = database.prepare(
-			"INSERT INTO player_kick_log (`name`, `timestamp`, `kick_by`, `reason`, `banned`) VALUES (?, NOW(), ?, ?, ?)"
+		database.Update(
+			"INSERT INTO player_kick_log (`name`, `timestamp`, `kick_by`, `reason`, `banned`) VALUES (?, NOW(), ?, ?, ?)",
+			player.getName(), kicker == null ? "console" : kicker.getName(), reason, banned
 		);
-		try
-		{
-			logEntry.setString(1, player.getName());
-			if (kicker == null)
-				logEntry.setString(2, "console");
-			else
-				logEntry.setString(2, kicker.getName());
-			logEntry.setString(3, reason);
-			logEntry.setBoolean(4, banned);
-			logEntry.execute();
-		}
-		catch (SQLException e)
-		{
-			console.write(e.getMessage());
-		}
 	}
 
 	private final IDatabase database;
-	private final IOutput console;
 }
