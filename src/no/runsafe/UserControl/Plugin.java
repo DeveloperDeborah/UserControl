@@ -11,6 +11,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 	@Override
 	protected void PluginSetup()
 	{
+		addComponent(PlayerHandler.class);
 		addComponent(PlayerDatabase.class);
 		addComponent(PlayerSessionLog.class);
 		addComponent(PlayerKickLog.class);
