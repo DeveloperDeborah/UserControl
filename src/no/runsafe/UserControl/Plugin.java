@@ -33,5 +33,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(OpController.class);
 		addComponent(LoginRedirectManager.class);
 		addComponent(Login.class);
+		addComponent(SetRedirectLocation.class);
+		addComponent(RemoveRedirectLocation.class);
 	}
 }

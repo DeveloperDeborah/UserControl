@@ -31,3 +31,5 @@ commands:
     description: Revokes a players status as an operator
   setredirectlocation:
     description: Sets the location to redirect players to on login.
+  removeredirectlocation:
+    description: Removes the re-direction location.

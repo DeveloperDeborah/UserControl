@@ -19,5 +19,10 @@ public class LoginRedirectManager
 		return (this.redirectLocation != null);
 	}
 
+	public void removeRedirectLocation()
+	{
+		this.redirectLocation = null;
+	}
+
 	private RunsafeLocation redirectLocation;
 }

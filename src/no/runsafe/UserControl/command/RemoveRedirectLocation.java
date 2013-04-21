@@ -6,19 +6,19 @@ import no.runsafe.framework.server.player.RunsafePlayer;
 
 import java.util.HashMap;
 
-public class SetRedirectLocation extends PlayerCommand
+public class RemoveRedirectLocation extends PlayerCommand
 {
-	public SetRedirectLocation(LoginRedirectManager loginRedirectManager)
+	public RemoveRedirectLocation(LoginRedirectManager loginRedirectManager)
 	{
-		super("setredirectlocation", "Sets a server-wide re-direction location for when players log-in", "runsafe.usercontrol.setredirectlocation");
+		super("removeredirectlocation", "Removes the re-direction location", "runsafe.usercontrol.removeredirectlocation");
 		this.loginRedirectManager = loginRedirectManager;
 	}
 
 	@Override
 	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
 	{
-		this.loginRedirectManager.setRedirectLocation(executor.getLocation());
-		executor.sendMessage("Re-direction location set to your location.");
+		this.loginRedirectManager.removeRedirectLocation();
+		executor.sendMessage("Re-direction location has been removed.");
 		return null;
 	}
 
