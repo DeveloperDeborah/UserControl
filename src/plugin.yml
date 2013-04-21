@@ -29,3 +29,5 @@ commands:
     description: Makes a player an operator.
   deop:
     description: Revokes a players status as an operator
+  setredirectlocation:
+    description: Sets the location to redirect players to on login.
