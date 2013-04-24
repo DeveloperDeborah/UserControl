@@ -54,12 +54,10 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 
 	public void sendKickMessage(RunsafePlayer victim, RunsafePlayer player, String reason)
 	{
-		RunsafeServer.Instance.broadcastMessage(
-				(player != null ? this.onKickMessage : this.onServerKickMessage)
-				.replaceAll("%target%", victim.getPrettyName())
-				.replaceAll("%player%", (player != null ? player.getPrettyName() : ""))
-				.replaceAll("%reason%", reason)
-		);
+		if (player != null)
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onKickMessage, victim.getPrettyName(), reason, player.getPrettyName()));
+		else
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerKickMessage, victim.getPrettyName(), reason));
 	}
 
 	@Override
