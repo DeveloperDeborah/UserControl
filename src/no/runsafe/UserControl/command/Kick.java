@@ -1,6 +1,8 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.command.ExecutableCommand;
+import no.runsafe.framework.configuration.IConfiguration;
+import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
@@ -8,7 +10,7 @@ import no.runsafe.framework.server.player.RunsafePlayer;
 
 import java.util.HashMap;
 
-public class Kick extends ExecutableCommand
+public class Kick extends ExecutableCommand implements IConfigurationChanged
 {
 	public Kick()
 	{
@@ -36,13 +38,37 @@ public class Kick extends ExecutableCommand
 		String reason = parameters.get("reason");
 
 		if (executor instanceof RunsafePlayer)
-			RunsafeServer.Instance.kickPlayer((RunsafePlayer) executor, victim, reason);
+		{
+			RunsafePlayer executorPlayer = (RunsafePlayer) executor;
+			RunsafeServer.Instance.kickPlayer(executorPlayer, victim, reason);
+			this.sendKickMessage(victim, executorPlayer, reason);
+		}
 		else
+		{
 			RunsafeServer.Instance.kickPlayer(null, victim, reason);
-
-
+			this.sendKickMessage(victim, null, reason);
+		}
 
 		return null;
 	}
 
+	public void sendKickMessage(RunsafePlayer victim, RunsafePlayer player, String reason)
+	{
+		RunsafeServer.Instance.broadcastMessage(
+				(player != null ? this.onKickMessage : this.onServerKickMessage)
+				.replaceAll("%target%", victim.getPrettyName())
+				.replaceAll("%player%", (player != null ? player.getPrettyName() : ""))
+				.replaceAll("%reason%", reason)
+		);
+	}
+
+	@Override
+	public void OnConfigurationChanged(IConfiguration configuration)
+	{
+		this.onKickMessage = configuration.getConfigValueAsString("messages.onKick");
+		this.onServerKickMessage = configuration.getConfigValueAsString("messages.onServerKick");
+	}
+
+	private String onKickMessage;
+	private String onServerKickMessage;
 }
