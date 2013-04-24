@@ -51,6 +51,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 		if (lightning)
 			victim.strikeWithLightning(fakeLightning);
 		RunsafeServer.Instance.banPlayer(banningPlayer, victim, reason);
+		this.sendBanMessage(victim, banningPlayer, reason);
 		return null;
 	}
 
