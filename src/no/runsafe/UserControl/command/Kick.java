@@ -5,7 +5,6 @@ import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 
@@ -40,6 +39,8 @@ public class Kick extends ExecutableCommand
 			RunsafeServer.Instance.kickPlayer((RunsafePlayer) executor, victim, reason);
 		else
 			RunsafeServer.Instance.kickPlayer(null, victim, reason);
+
+
 
 		return null;
 	}
