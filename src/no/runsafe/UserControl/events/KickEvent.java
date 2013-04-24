@@ -11,7 +11,6 @@ public class KickEvent implements IPlayerKickEvent
 	@Override
 	public void OnPlayerKick(RunsafePlayerKickEvent event)
 	{
-		if (event.getKicker() != null)
-			event.setLeaveMessage(null);
+		event.setLeaveMessage("");
 	}
 }
