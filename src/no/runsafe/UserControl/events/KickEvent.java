@@ -4,9 +4,9 @@ import no.runsafe.framework.event.player.IPlayerKickEvent;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.event.player.RunsafePlayerKickEvent;
 
-public class Kick implements IPlayerKickEvent
+public class KickEvent implements IPlayerKickEvent
 {
-	public Kick(IOutput output)
+	public KickEvent(IOutput output)
 	{
 		this.output = output;
 	}
