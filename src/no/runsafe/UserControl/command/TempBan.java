@@ -70,6 +70,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 			if (lightning)
 				victim.strikeWithLightning(fakeLightning);
 			RunsafeServer.Instance.banPlayer(banner, victim, reason);
+			this.sendTempBanMessage(victim, executor, reason);
 			return null;
 		}
 		catch (IllegalArgumentException e)
@@ -78,11 +79,21 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 		}
 	}
 
+	private void sendTempBanMessage(RunsafePlayer victim, ICommandExecutor executor, String reason)
+	{
+		if (executor instanceof RunsafePlayer)
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onTempBanMessage, victim.getPrettyName(), ((RunsafePlayer) executor).getPrettyName(), reason));
+		else
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerTempBanMessage, victim.getPrettyName(), reason));
+	}
+
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
 		lightning = configuration.getConfigValueAsBoolean("ban.lightning.strike");
 		fakeLightning = !configuration.getConfigValueAsBoolean("ban.lightning.real");
+		this.onTempBanMessage = configuration.getConfigValueAsString("messages.onTempBan");
+		this.onServerTempBanMessage = configuration.getConfigValueAsString("messages.onServerTempBan");
 	}
 
 	private final PeriodFormatter timeParser;
@@ -90,4 +101,6 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	private final PlayerKickLog logger;
 	private boolean lightning;
 	private boolean fakeLightning;
+	private String onTempBanMessage;
+	private String onServerTempBanMessage;
 }

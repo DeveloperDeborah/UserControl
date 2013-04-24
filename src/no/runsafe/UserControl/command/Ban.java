@@ -54,15 +54,27 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 		return null;
 	}
 
+	private void sendBanMessage(RunsafePlayer victim, RunsafePlayer player, String reason)
+	{
+		if (player != null)
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onBanMessage, victim.getPrettyName(), reason, player.getPrettyName()));
+		else
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerBanMessage, victim.getPrettyName(), reason));
+	}
+
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
 		lightning = configuration.getConfigValueAsBoolean("ban.lightning.strike");
 		fakeLightning = !configuration.getConfigValueAsBoolean("ban.lightning.real");
+		this.onBanMessage = configuration.getConfigValueAsString("messages.onBan");
+		this.onServerBanMessage = configuration.getConfigValueAsString("messages.onServerBan");
 	}
 
 	private final PlayerKickLog logger;
 	private final PlayerDatabase playerdb;
 	private boolean lightning;
 	private boolean fakeLightning;
+	private String onBanMessage;
+	private String onServerBanMessage;
 }

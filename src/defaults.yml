@@ -1,12 +1,12 @@
 messages.kick: "Kicked: %1$s"
 messages.ban: "Banned: %1$s"
 messages.tempban: "Temporary ban: %1$s"
-messages.onKick: "%1$s was kicked from the server by %3$s."
-messages.onBan: "%1$s was banned from the server by %3$s."
-messages.onTempBan: "%1$s was temporarily banned from the server by %3$s."
-messages.onServerKick: "%1$s was kicked from the server."
-messages.onServerBan: "%1$s was banned from the server."
-messages.onServerTempBan: "%1$s was temporarily banned from the server."
+messages.onKick: "%1$s &ewas kicked from the server by %3$s."
+messages.onBan: "%1$s &ewas banned from the server by %3$s."
+messages.onTempBan: "%1$s &ewas temporarily banned from the server by %3$s."
+messages.onServerKick: "%1$s &ewas kicked from the server."
+messages.onServerBan: "%1$s &ewas banned from the server."
+messages.onServerTempBan: "%1$s &ewas temporarily banned from the server."
 ban.lightning.strike: true
 ban.lightning.real: false
 control.op.login: true
