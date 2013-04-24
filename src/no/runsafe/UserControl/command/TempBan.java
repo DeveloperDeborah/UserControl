@@ -82,7 +82,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	private void sendTempBanMessage(RunsafePlayer victim, ICommandExecutor executor, String reason)
 	{
 		if (executor instanceof RunsafePlayer)
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onTempBanMessage, victim.getPrettyName(), ((RunsafePlayer) executor).getPrettyName(), reason));
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onTempBanMessage, victim.getPrettyName(), reason, ((RunsafePlayer) executor) .getPrettyName()));
 		else
 			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerTempBanMessage, victim.getPrettyName(), reason));
 	}
