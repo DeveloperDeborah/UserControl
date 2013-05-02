@@ -6,6 +6,7 @@ import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerPreLoginEvent;
+import no.runsafe.framework.server.player.RunsafePlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.PeriodType;
@@ -28,35 +29,41 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			event.playerBanned(activeBans.get(event.getName()));
 			return;
 		}
-		PlayerData data = playerdb.getData(event.getPlayer());
-		if (data != null && data.getBanned() != null)
+
+		RunsafePlayer player = event.getPlayer();
+
+		if (player != null)
 		{
-			DateTime unban = data.getUnban();
-			if (unban != null)
+			PlayerData data = playerdb.getData(player);
+			if (data != null && data.getBanned() != null)
 			{
-				if (unban.isAfter(DateTime.now()))
+				DateTime unban = data.getUnban();
+				if (unban != null)
 				{
-					Duration left = new Duration(DateTime.now(), unban);
-					event.playerBanned(
-						String.format(
-							tempBanMessageFormat,
-							data.getBanReason(),
-							PeriodFormat.getDefault().print(
-								left.toPeriod(ONE_MINUTE.isLongerThan(left) ? SHORT_TIME_LEFT : LONG_TIME_LEFT)
+					if (unban.isAfter(DateTime.now()))
+					{
+						Duration left = new Duration(DateTime.now(), unban);
+						event.playerBanned(
+							String.format(
+								tempBanMessageFormat,
+								data.getBanReason(),
+								PeriodFormat.getDefault().print(
+									left.toPeriod(ONE_MINUTE.isLongerThan(left) ? SHORT_TIME_LEFT : LONG_TIME_LEFT)
+								)
 							)
-						)
-					);
+						);
+					}
+					else
+					{
+						playerdb.logPlayerUnban(event.getPlayer());
+						event.getPlayer().setBanned(false);
+					}
+					return;
 				}
-				else
-				{
-					playerdb.logPlayerUnban(event.getPlayer());
-					event.getPlayer().setBanned(false);
-				}
-				return;
+				String banReason = String.format(banMessageFormat, data.getBanReason());
+				event.playerBanned(banReason);
+				activeBans.put(event.getName(), banReason);
 			}
-			String banReason = String.format(banMessageFormat, data.getBanReason());
-			event.playerBanned(banReason);
-			activeBans.put(event.getName(), banReason);
 		}
 	}
 
