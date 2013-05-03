@@ -116,8 +116,13 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	@Override
 	public List<String> findPlayer(String lookup)
 	{
+		if (lookup == null)
+			return null;
 		ArrayList<String> result = new ArrayList<String>();
-		for (Object hit : database.QueryColumn("SELECT name FROM player_db WHERE name LIKE ?", String.format("%s%%", lookup)))
+		List<Object> hits = database.QueryColumn("SELECT name FROM player_db WHERE name LIKE ?", String.format("%s%%", lookup));
+		if (hits == null)
+			return null;
+		for (Object hit : hits)
 			result.add((String) hit);
 		return result;
 	}
