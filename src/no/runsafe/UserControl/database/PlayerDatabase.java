@@ -68,7 +68,7 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	{
 		database.Update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
-			reason, banner == null ? "console" : banner, player.getName()
+			reason, banner == null ? "console" : banner.getName(), player.getName()
 		);
 	}
 
