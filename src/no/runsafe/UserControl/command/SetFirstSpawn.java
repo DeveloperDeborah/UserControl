@@ -25,6 +25,7 @@ public class SetFirstSpawn extends PlayerCommand
 		this.config.setConfigValue("firstJoinLocation.z", location.getZ());
 		this.config.setConfigValue("firstJoinLocation.yaw", location.getYaw());
 		this.config.setConfigValue("firstJoinLocation.pitch", location.getPitch());
+		this.config.save();
 		return "&2The location for first-join server has been set.";
 	}
 
