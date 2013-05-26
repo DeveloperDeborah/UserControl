@@ -1,11 +1,20 @@
 package no.runsafe.UserControl.events;
 
 import no.runsafe.UserControl.LoginRedirectManager;
+import no.runsafe.framework.configuration.IConfiguration;
+import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.player.IPlayerJoinEvent;
+import no.runsafe.framework.event.player.IPlayerPreLoginEvent;
+import no.runsafe.framework.server.RunsafeLocation;
+import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.event.player.RunsafePlayerJoinEvent;
+import no.runsafe.framework.server.event.player.RunsafePlayerPreLoginEvent;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
-public class Login implements IPlayerJoinEvent
+import java.util.ArrayList;
+import java.util.List;
+
+public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPreLoginEvent
 {
 	public Login(LoginRedirectManager loginRedirectManager)
 	{
@@ -13,12 +22,41 @@ public class Login implements IPlayerJoinEvent
 	}
 
 	@Override
+	public void OnBeforePlayerLogin(RunsafePlayerPreLoginEvent event)
+	{
+		if (event.getPlayer().isNew())
+			this.newPlayers.add(event.getPlayer().getName());
+	}
+
+	@Override
 	public void OnPlayerJoinEvent(RunsafePlayerJoinEvent event)
 	{
 		RunsafePlayer player = event.getPlayer();
 		if (this.loginRedirectManager.hasRedirectLocation())
+		{
 			player.teleport(this.loginRedirectManager.getRedirectLocation());
+		}
+		else if (this.newPlayers.contains(player.getName()))
+		{
+			player.teleport(firstSpawnLocation);
+			this.newPlayers.remove(player.getName());
+		}
 	}
 
+	@Override
+	public void OnConfigurationChanged(IConfiguration config)
+	{
+		this.firstSpawnLocation = new RunsafeLocation(
+				RunsafeServer.Instance.getWorld(config.getConfigValueAsString("firstJoinLocation.world")),
+				config.getConfigValueAsDouble("firstJoinLocation.x"),
+				config.getConfigValueAsDouble("firstJoinLocation.y"),
+				config.getConfigValueAsDouble("firstJoinLocation.z"),
+				config.getConfigValueAsFloat("firstJoinLocation.yaw"),
+				config.getConfigValueAsFloat("firstJoinLocation.pitch")
+		);
+	}
+
+	private List<String> newPlayers = new ArrayList<String>();
+	private RunsafeLocation firstSpawnLocation;
 	private LoginRedirectManager loginRedirectManager;
 }

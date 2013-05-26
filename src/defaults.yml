@@ -31,3 +31,10 @@ whois.labels.usercontrol:
   seen: Offline for
 whois.formats.game:
   experience: "%s xp"
+firstJoinLocation:
+  world: 'spawn'
+  x: 0
+  y: 0
+  z: 0
+  yaw: 0
+  pitch: 0

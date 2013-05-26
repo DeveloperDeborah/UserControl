@@ -33,3 +33,5 @@ commands:
     description: Sets the location to redirect players to on login.
   removeredirectlocation:
     description: Removes the re-direction location.
+  setfirstspawn:
+    description: Sets the first-join spawn point
