@@ -52,14 +52,15 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 		if (initialWorld != null)
 		{
 			RunsafeWorld world = RunsafeServer.Instance.getWorld(initialWorld);
-			this.firstSpawnLocation = new RunsafeLocation(
-				world,
-				config.getConfigValueAsDouble("firstJoinLocation.x"),
-				config.getConfigValueAsDouble("firstJoinLocation.y"),
-				config.getConfigValueAsDouble("firstJoinLocation.z"),
-				config.getConfigValueAsFloat("firstJoinLocation.yaw"),
-				config.getConfigValueAsFloat("firstJoinLocation.pitch")
-			);
+			if (world != null)
+				this.firstSpawnLocation = new RunsafeLocation(
+					world,
+					config.getConfigValueAsDouble("firstJoinLocation.x"),
+					config.getConfigValueAsDouble("firstJoinLocation.y"),
+					config.getConfigValueAsDouble("firstJoinLocation.z"),
+					config.getConfigValueAsFloat("firstJoinLocation.yaw"),
+					config.getConfigValueAsFloat("firstJoinLocation.pitch")
+				);
 		}
 	}
 
