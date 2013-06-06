@@ -14,6 +14,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository implements IPlayerLookupService, IPlayerDataProvider
 {
@@ -119,7 +120,10 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 		if (lookup == null)
 			return null;
 		ArrayList<String> result = new ArrayList<String>();
-		List<Object> hits = database.QueryColumn("SELECT name FROM player_db WHERE name LIKE ?", String.format("%s%%", lookup));
+		List<Object> hits = database.QueryColumn(
+			"SELECT name FROM player_db WHERE name LIKE ?",
+			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\$1"))
+		);
 		if (hits == null)
 			return null;
 		for (Object hit : hits)
@@ -173,4 +177,5 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	private final IDatabase database;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+	private final Pattern SQLWildcard = Pattern.compile("([%_])");
 }
