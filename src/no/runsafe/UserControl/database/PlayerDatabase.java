@@ -122,7 +122,7 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 		ArrayList<String> result = new ArrayList<String>();
 		List<Object> hits = database.QueryColumn(
 			"SELECT name FROM player_db WHERE name LIKE ?",
-			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\$1"))
+			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
 		);
 		if (hits == null)
 			return null;
