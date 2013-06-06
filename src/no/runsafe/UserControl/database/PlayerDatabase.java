@@ -60,7 +60,7 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 		console.fine("Updating player_db with login time");
 		database.Update(
 			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
-				"ON DUPLICATE KEY UPDATE `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
+				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
 			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
 	}
