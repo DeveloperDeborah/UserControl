@@ -14,6 +14,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository implements IPlayerLookupService, IPlayerDataProvider
@@ -63,6 +64,7 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
 			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
+		lookupCache.clear();
 	}
 
 	public void logPlayerBan(RunsafePlayer player, RunsafePlayer banner, String reason)
@@ -119,6 +121,9 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	{
 		if (lookup == null)
 			return null;
+		if (lookupCache.containsKey(lookup))
+			return lookupCache.get(lookup);
+
 		ArrayList<String> result = new ArrayList<String>();
 		List<Object> hits = database.QueryColumn(
 			"SELECT name FROM player_db WHERE name LIKE ?",
@@ -128,6 +133,8 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 			return null;
 		for (Object hit : hits)
 			result.add((String) hit);
+		if (!lookupCache.containsKey(lookup))
+			lookupCache.put(lookup, result);
 		return result;
 	}
 
@@ -178,4 +185,5 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");
+	private final ConcurrentHashMap<String, List<String>> lookupCache = new ConcurrentHashMap<String, List<String>>();
 }
