@@ -47,14 +47,15 @@ public class PlayerSessionLog extends Repository
 	public Duration GetTimePlayed(RunsafePlayer player)
 	{
 		Map<String, Object> raw = database.QueryRow(
-			"SELECT CAST(SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS BIGINT) AS time " +
+			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
 				"WHERE `name`=?",
 			player.getName()
 		);
 		if (raw == null || !raw.containsKey("time"))
 			return null;
-		return Duration.standardMinutes((Long) raw.get("time"));
+		Long time = getLongValue(raw.get("time"));
+		return time == null ? null : Duration.standardMinutes(time);
 	}
 
 	public void logSessionStart(RunsafePlayer player)
