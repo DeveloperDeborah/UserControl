@@ -47,7 +47,7 @@ public class PlayerSessionLog extends Repository
 	public Duration GetTimePlayed(RunsafePlayer player)
 	{
 		Map<String, Object> raw = database.QueryRow(
-			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
+			"SELECT CAST(SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS BIGINT) AS time " +
 				"FROM player_session " +
 				"WHERE `name`=?",
 			player.getName()
