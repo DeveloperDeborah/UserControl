@@ -1,7 +1,9 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerSessionLog;
+import no.runsafe.framework.ANSI.Colour;
 import no.runsafe.framework.command.player.PlayerAsyncCommand;
+import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 import org.joda.time.DateTime;
@@ -24,7 +26,7 @@ public class Played extends PlayerAsyncCommand
 	public String OnAsyncExecute(RunsafePlayer executor, HashMap<String, String> parameters)
 	{
 		Duration played = database.GetTimePlayed(executor);
-		return String.format("You have played &4%s", formatTime(played));
+		return String.format("You have played &6%s", formatTime(played));
 	}
 
 	private String formatTime(Duration time)
