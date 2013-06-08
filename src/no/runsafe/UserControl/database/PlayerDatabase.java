@@ -10,7 +10,6 @@ import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 import no.runsafe.framework.timer.TimedCache;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.DateTimeFormat;
@@ -127,7 +126,6 @@ public class PlayerDatabase extends Repository
 		data.setLogin(convert(raw.get("login")));
 		data.setLogout(convert(raw.get("logout")));
 		data.setUnban(convert(raw.get("temp_ban")));
-		data.setName((String) raw.get("name"));
 
 		return dataCache.Cache(player.getName(), data);
 	}

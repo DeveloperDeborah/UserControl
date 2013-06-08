@@ -55,6 +55,6 @@ public class PlayerHandler implements IPlayerSeen
 		return PeriodFormat.getDefault().print(period);
 	}
 
-	PlayerDatabase database;
+	private final PlayerDatabase database;
 	private final PeriodType output_format = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 }

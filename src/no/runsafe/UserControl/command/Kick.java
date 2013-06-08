@@ -52,19 +52,19 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 		return null;
 	}
 
-	public void sendKickMessage(RunsafePlayer victim, RunsafePlayer player, String reason)
-	{
-		if (player != null)
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onKickMessage, victim.getPrettyName(), reason, player.getPrettyName()));
-		else
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerKickMessage, victim.getPrettyName(), reason));
-	}
-
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
 		this.onKickMessage = configuration.getConfigValueAsString("messages.onKick");
 		this.onServerKickMessage = configuration.getConfigValueAsString("messages.onServerKick");
+	}
+
+	private void sendKickMessage(RunsafePlayer victim, RunsafePlayer player, String reason)
+	{
+		if (player != null)
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onKickMessage, victim.getPrettyName(), reason, player.getPrettyName()));
+		else
+			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerKickMessage, victim.getPrettyName(), reason));
 	}
 
 	private String onKickMessage;

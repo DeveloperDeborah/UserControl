@@ -64,7 +64,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 		}
 	}
 
-	private List<String> newPlayers = new ArrayList<String>();
+	private final List<String> newPlayers = new ArrayList<String>();
 	private RunsafeLocation firstSpawnLocation;
-	private LoginRedirectManager loginRedirectManager;
+	private final LoginRedirectManager loginRedirectManager;
 }

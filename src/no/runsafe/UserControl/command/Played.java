@@ -1,9 +1,7 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerSessionLog;
-import no.runsafe.framework.ANSI.Colour;
 import no.runsafe.framework.command.player.PlayerAsyncCommand;
-import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 import org.joda.time.DateTime;

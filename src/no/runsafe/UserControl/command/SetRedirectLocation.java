@@ -22,5 +22,5 @@ public class SetRedirectLocation extends PlayerCommand
 		return null;
 	}
 
-	private LoginRedirectManager loginRedirectManager;
+	private final LoginRedirectManager loginRedirectManager;
 }

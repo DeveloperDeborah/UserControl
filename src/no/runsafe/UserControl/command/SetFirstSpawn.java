@@ -29,5 +29,5 @@ public class SetFirstSpawn extends PlayerCommand
 		return "&2The location for first-join server has been set.";
 	}
 
-	private IConfiguration config;
+	private final IConfiguration config;
 }

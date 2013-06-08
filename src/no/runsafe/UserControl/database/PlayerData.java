@@ -4,16 +4,6 @@ import org.joda.time.DateTime;
 
 public class PlayerData
 {
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
 	public DateTime getJoined()
 	{
 		return joined;
@@ -84,7 +74,6 @@ public class PlayerData
 		banner = name;
 	}
 
-	private String name;
 	private DateTime joined;
 	private DateTime login;
 	private DateTime logout;

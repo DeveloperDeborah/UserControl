@@ -5,16 +5,21 @@
       <w>banip</w>
       <w>deop</w>
       <w>essentialsimport</w>
+      <w>ifnull</w>
       <w>inet</w>
       <w>joda</w>
       <w>kickall</w>
       <w>kicklogger</w>
       <w>playerdb</w>
+      <w>removeredirectlocation</w>
       <w>sessiondb</w>
+      <w>setfirstspawn</w>
+      <w>setredirectlocation</w>
       <w>soffline</w>
       <w>sonline</w>
       <w>sudo</w>
       <w>tempban</w>
+      <w>timestampdiff</w>
       <w>unbanip</w>
       <w>unbans</w>
       <w>usercontrol</w>
