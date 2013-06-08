@@ -6,6 +6,8 @@ import no.runsafe.framework.hook.IPlayerDataProvider;
 import no.runsafe.framework.hook.IPlayerLookupService;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.timer.IScheduler;
+import no.runsafe.framework.timer.TimedCache;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -19,10 +21,11 @@ import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository implements IPlayerLookupService, IPlayerDataProvider
 {
-	public PlayerDatabase(IOutput console, IDatabase database)
+	public PlayerDatabase(IOutput console, IDatabase database, IScheduler scheduler)
 	{
 		this.console = console;
 		this.database = database;
+		this.lookupCache = new TimedCache<String, List<String>>(scheduler);
 	}
 
 	@Override
@@ -64,7 +67,6 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
 			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
-		lookupCache.clear();
 	}
 
 	public void logPlayerBan(RunsafePlayer player, RunsafePlayer banner, String reason)
@@ -121,21 +123,20 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	{
 		if (lookup == null)
 			return null;
-		if (lookupCache.containsKey(lookup))
-			return lookupCache.get(lookup);
 
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = lookupCache.Cache(lookup);
+		if(result != null)
+			return result;
 		List<Object> hits = database.QueryColumn(
 			"SELECT name FROM player_db WHERE name LIKE ?",
 			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
 		);
 		if (hits == null)
 			return null;
+		result = new ArrayList<String>();
 		for (Object hit : hits)
 			result.add((String) hit);
-		if (!lookupCache.containsKey(lookup))
-			lookupCache.put(lookup, result);
-		return result;
+		return lookupCache.Cache(lookup, result);
 	}
 
 	@Override
@@ -185,5 +186,5 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");
-	private final ConcurrentHashMap<String, List<String>> lookupCache = new ConcurrentHashMap<String, List<String>>();
+	private final TimedCache<String, List<String>> lookupCache;
 }
