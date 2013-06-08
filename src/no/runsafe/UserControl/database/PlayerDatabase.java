@@ -27,6 +27,7 @@ public class PlayerDatabase extends Repository
 		this.console = console;
 		this.database = database;
 		this.lookupCache = new TimedCache<String, List<String>>(scheduler);
+		this.dataCache = new TimedCache<String, PlayerData>(scheduler);
 	}
 
 	@Override
@@ -68,6 +69,7 @@ public class PlayerDatabase extends Repository
 				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
 			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
+		dataCache.Invalidate(player.getName());
 	}
 
 	public void logPlayerBan(RunsafePlayer player, RunsafePlayer banner, String reason)
@@ -76,6 +78,7 @@ public class PlayerDatabase extends Repository
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
 			reason, banner == null ? "console" : banner.getName(), player.getName()
 		);
+		dataCache.Invalidate(player.getName());
 	}
 
 	public void setPlayerTemporaryBan(RunsafePlayer player, DateTime temporary)
@@ -84,6 +87,7 @@ public class PlayerDatabase extends Repository
 			"UPDATE player_db SET temp_ban=? WHERE `name`=?",
 			convert(temporary), player.getName()
 		);
+		dataCache.Invalidate(player.getName());
 	}
 
 	public void logPlayerUnban(RunsafePlayer player)
@@ -92,6 +96,7 @@ public class PlayerDatabase extends Repository
 			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?",
 			player.getName()
 		);
+		dataCache.Invalidate(player.getName());
 	}
 
 	public void logPlayerLogout(RunsafePlayer player)
@@ -100,14 +105,19 @@ public class PlayerDatabase extends Repository
 			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?",
 			player.getName()
 		);
+		dataCache.Invalidate(player.getName());
 	}
 
 	public PlayerData getData(RunsafePlayer player)
 	{
+		PlayerData data = dataCache.Cache(player.getName());
+		if (data != null)
+			return data;
+
 		Map<String, Object> raw = database.QueryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
 		if (raw == null)
 			return null;
-		PlayerData data = new PlayerData();
+		data = new PlayerData();
 		data.setBanned(convert(raw.get("banned")));
 		data.setBanner((String) raw.get("ban_by"));
 		data.setBanReason((String) raw.get("ban_reason"));
@@ -116,7 +126,8 @@ public class PlayerDatabase extends Repository
 		data.setLogout(convert(raw.get("logout")));
 		data.setUnban(convert(raw.get("temp_ban")));
 		data.setName((String) raw.get("name"));
-		return data;
+
+		return dataCache.Cache(player.getName(), data);
 	}
 
 	@Override
@@ -194,4 +205,5 @@ public class PlayerDatabase extends Repository
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");
 	private final TimedCache<String, List<String>> lookupCache;
+	private final TimedCache<String, PlayerData> dataCache;
 }
