@@ -70,6 +70,7 @@ public class PlayerDatabase extends Repository
 			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
 		dataCache.Invalidate(player.getName());
+		lookupCache.Purge();
 	}
 
 	public void logPlayerBan(RunsafePlayer player, RunsafePlayer banner, String reason)
