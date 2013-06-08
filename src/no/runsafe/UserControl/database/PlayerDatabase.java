@@ -4,6 +4,7 @@ import no.runsafe.framework.database.IDatabase;
 import no.runsafe.framework.database.Repository;
 import no.runsafe.framework.hook.IPlayerDataProvider;
 import no.runsafe.framework.hook.IPlayerLookupService;
+import no.runsafe.framework.hook.IPlayerSessionDataProvider;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
@@ -16,10 +17,10 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-public class PlayerDatabase extends Repository implements IPlayerLookupService, IPlayerDataProvider
+public class PlayerDatabase extends Repository
+	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider
 {
 	public PlayerDatabase(IOutput console, IDatabase database, IScheduler scheduler)
 	{
@@ -125,7 +126,7 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 			return null;
 
 		List<String> result = lookupCache.Cache(lookup);
-		if(result != null)
+		if (result != null)
 			return result;
 		List<Object> hits = database.QueryColumn(
 			"SELECT name FROM player_db WHERE name LIKE ?",
@@ -179,6 +180,12 @@ public class PlayerDatabase extends Repository implements IPlayerLookupService, 
 	public String GetPlayerBanReason(RunsafePlayer player)
 	{
 		return getData(player).getBanReason();
+	}
+
+	@Override
+	public boolean IsFirstSession(RunsafePlayer player)
+	{
+		return GetPlayerLogout(player) == null;
 	}
 
 	private final IOutput console;
