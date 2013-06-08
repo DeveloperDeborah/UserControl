@@ -13,11 +13,16 @@ public class Plugin extends RunsafeConfigurablePlugin
 	@Override
 	protected void PluginSetup()
 	{
+		// Components
 		addComponent(PlayerHandler.class);
 		addComponent(PlayerDatabase.class);
 		addComponent(PlayerSessionLog.class);
 		addComponent(PlayerKickLog.class);
 		addComponent(SessionLogger.class);
+		addComponent(OpController.class);
+		addComponent(LoginRedirectManager.class);
+
+		// Commands
 		addComponent(Ban.class);
 		addComponent(BanIP.class);
 		addComponent(Kick.class);
@@ -31,12 +36,10 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(Whois.class);
 		addComponent(Op.class);
 		addComponent(DeOp.class);
-		addComponent(OpController.class);
-		addComponent(LoginRedirectManager.class);
+		addComponent(Played.class);
+		addComponent(SetFirstSpawn.class);
 		addComponent(SetRedirectLocation.class);
 		addComponent(RemoveRedirectLocation.class);
-
-		addComponent(SetFirstSpawn.class);
 
 		// Events
 		addComponent(KickEvent.class);
