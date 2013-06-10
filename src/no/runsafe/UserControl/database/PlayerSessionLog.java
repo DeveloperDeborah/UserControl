@@ -2,6 +2,7 @@ package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.IDatabase;
 import no.runsafe.framework.database.Repository;
+import no.runsafe.framework.database.Row;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
@@ -9,7 +10,6 @@ import org.joda.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PlayerSessionLog extends Repository
 {
@@ -46,15 +46,16 @@ public class PlayerSessionLog extends Repository
 
 	public Duration GetTimePlayed(RunsafePlayer player)
 	{
-		Map<String, Object> raw = database.QueryRow(
+		Row raw = database.QueryRow(
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
 				"WHERE `name`=?",
 			player.getName()
 		);
-		if (raw == null || !raw.containsKey("time"))
+		if (raw == null)
 			return null;
-		Long time = getLongValue(raw.get("time"));
+
+		Long time = raw.Long("time");
 		return time == null ? null : Duration.standardMinutes(time);
 	}
 

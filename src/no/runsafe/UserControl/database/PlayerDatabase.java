@@ -2,6 +2,8 @@ package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.database.IDatabase;
 import no.runsafe.framework.database.Repository;
+import no.runsafe.framework.database.Row;
+import no.runsafe.framework.database.Value;
 import no.runsafe.framework.hook.IPlayerDataProvider;
 import no.runsafe.framework.hook.IPlayerLookupService;
 import no.runsafe.framework.hook.IPlayerSessionDataProvider;
@@ -65,9 +67,9 @@ public class PlayerDatabase extends Repository
 	{
 		console.fine("Updating player_db with login time");
 		database.Update(
-			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
-				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
+				"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
+						"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
+				player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
 		dataCache.Invalidate(player.getName());
 		lookupCache.Purge();
@@ -115,17 +117,17 @@ public class PlayerDatabase extends Repository
 		if (data != null)
 			return data;
 
-		Map<String, Object> raw = database.QueryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
+		Row raw = database.QueryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
 		if (raw == null)
 			return null;
 		data = new PlayerData();
-		data.setBanned(convert(raw.get("banned")));
-		data.setBanner((String) raw.get("ban_by"));
-		data.setBanReason((String) raw.get("ban_reason"));
-		data.setJoined(convert(raw.get("joined")));
-		data.setLogin(convert(raw.get("login")));
-		data.setLogout(convert(raw.get("logout")));
-		data.setUnban(convert(raw.get("temp_ban")));
+		data.setBanned(raw.DateTime("banned"));
+		data.setBanner(raw.String("ban_by"));
+		data.setBanReason(raw.String("ban_reason"));
+		data.setJoined(raw.DateTime("joined"));
+		data.setLogin(raw.DateTime("login"));
+		data.setLogout(raw.DateTime("logout"));
+		data.setUnban(raw.DateTime("temp_ban"));
 
 		return dataCache.Cache(player.getName(), data);
 	}
@@ -139,15 +141,16 @@ public class PlayerDatabase extends Repository
 		List<String> result = lookupCache.Cache(lookup);
 		if (result != null)
 			return result;
-		List<Object> hits = database.QueryColumn(
+		List<Value> hits = database.QueryColumn(
 			"SELECT name FROM player_db WHERE name LIKE ?",
 			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
 		);
 		if (hits == null)
 			return null;
 		result = new ArrayList<String>();
-		for (Object hit : hits)
-			result.add((String) hit);
+		for (Value hit : hits)
+			result.add(hit.String());
+
 		return lookupCache.Cache(lookup, result);
 	}
 
