@@ -2,7 +2,7 @@ package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.database.IDatabase;
 import no.runsafe.framework.api.database.IRow;
-import no.runsafe.framework.internal.database.Repository;
+import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
