@@ -86,10 +86,7 @@ public class PlayerDatabase extends Repository
 
 	public void setPlayerTemporaryBan(RunsafePlayer player, DateTime temporary)
 	{
-		database.Update(
-			"UPDATE player_db SET temp_ban=? WHERE `name`=?",
-			convert(temporary), player.getName()
-		);
+		database.Update("UPDATE player_db SET temp_ban=? WHERE `name`=?", temporary, player.getName());
 		dataCache.Invalidate(player.getName());
 	}
 
