@@ -1,9 +1,9 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerSessionLog;
-import no.runsafe.framework.command.player.PlayerAsyncCommand;
-import no.runsafe.framework.server.player.RunsafePlayer;
-import no.runsafe.framework.timer.IScheduler;
+import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.command.player.PlayerAsyncCommand;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;

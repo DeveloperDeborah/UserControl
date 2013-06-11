@@ -2,11 +2,11 @@ package no.runsafe.UserControl;
 
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
-import no.runsafe.framework.configuration.IConfiguration;
-import no.runsafe.framework.event.IConfigurationChanged;
-import no.runsafe.framework.event.player.IPlayerPreLoginEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerPreLoginEvent;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
+import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.PeriodType;

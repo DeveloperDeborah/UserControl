@@ -1,7 +1,7 @@
 package no.runsafe.UserControl.events;
 
-import no.runsafe.framework.event.player.IPlayerKickEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerKickEvent;
+import no.runsafe.framework.api.event.player.IPlayerKickEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerKickEvent;
 
 public class KickEvent implements IPlayerKickEvent
 {

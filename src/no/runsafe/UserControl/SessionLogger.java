@@ -3,16 +3,16 @@ package no.runsafe.UserControl;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
-import no.runsafe.framework.event.IPluginDisabled;
-import no.runsafe.framework.event.IPluginEnabled;
-import no.runsafe.framework.event.player.IPlayerJoinEvent;
-import no.runsafe.framework.event.player.IPlayerKickEvent;
-import no.runsafe.framework.event.player.IPlayerQuitEvent;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.event.player.RunsafePlayerJoinEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerKickEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
+import no.runsafe.framework.api.event.player.IPlayerKickEvent;
+import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
+import no.runsafe.framework.api.event.plugin.IPluginDisabled;
+import no.runsafe.framework.api.event.plugin.IPluginEnabled;
+import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerKickEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {

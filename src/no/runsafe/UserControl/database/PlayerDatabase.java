@@ -1,15 +1,15 @@
 package no.runsafe.UserControl.database;
 
-import no.runsafe.framework.database.IDatabase;
-import no.runsafe.framework.database.Repository;
-import no.runsafe.framework.database.Row;
-import no.runsafe.framework.database.Value;
-import no.runsafe.framework.hook.IPlayerDataProvider;
-import no.runsafe.framework.hook.IPlayerLookupService;
-import no.runsafe.framework.hook.IPlayerSessionDataProvider;
-import no.runsafe.framework.output.IOutput;
-import no.runsafe.framework.server.player.RunsafePlayer;
-import no.runsafe.framework.timer.IScheduler;
+import no.runsafe.framework.api.IOutput;
+import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.database.IDatabase;
+import no.runsafe.framework.api.hook.IPlayerDataProvider;
+import no.runsafe.framework.api.hook.IPlayerLookupService;
+import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
+import no.runsafe.framework.internal.database.Repository;
+import no.runsafe.framework.internal.database.Row;
+import no.runsafe.framework.internal.database.Value;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.timer.TimedCache;
 import org.joda.time.DateTime;
 import org.joda.time.Period;

@@ -1,8 +1,8 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.LoginRedirectManager;
-import no.runsafe.framework.command.player.PlayerCommand;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.command.player.PlayerCommand;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.HashMap;
 

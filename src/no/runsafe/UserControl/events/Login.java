@@ -1,16 +1,16 @@
 package no.runsafe.UserControl.events;
 
 import no.runsafe.UserControl.LoginRedirectManager;
-import no.runsafe.framework.configuration.IConfiguration;
-import no.runsafe.framework.event.IConfigurationChanged;
-import no.runsafe.framework.event.player.IPlayerJoinEvent;
-import no.runsafe.framework.event.player.IPlayerPreLoginEvent;
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.RunsafeWorld;
-import no.runsafe.framework.server.event.player.RunsafePlayerJoinEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerPreLoginEvent;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
+import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
+import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.RunsafeWorld;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;
 import java.util.List;

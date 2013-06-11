@@ -2,8 +2,8 @@ package no.runsafe.UserControl;
 
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
-import no.runsafe.framework.hook.IPlayerSeen;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.hook.IPlayerSeen;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;

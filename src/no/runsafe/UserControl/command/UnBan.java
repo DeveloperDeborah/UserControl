@@ -2,11 +2,11 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.BanEnforcer;
 import no.runsafe.UserControl.database.PlayerDatabase;
-import no.runsafe.framework.command.ExecutableCommand;
-import no.runsafe.framework.server.ICommandExecutor;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.player.RunsafeAmbiguousPlayer;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.internal.command.ExecutableCommand;
+import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.HashMap;
 
