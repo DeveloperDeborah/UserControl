@@ -3,12 +3,12 @@ package no.runsafe.UserControl.database;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.IDatabase;
+import no.runsafe.framework.api.database.IRow;
+import no.runsafe.framework.api.database.IValue;
+import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.IPlayerLookupService;
 import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
-import no.runsafe.framework.internal.database.Repository;
-import no.runsafe.framework.internal.database.Row;
-import no.runsafe.framework.internal.database.Value;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.timer.TimedCache;
 import org.joda.time.DateTime;
@@ -18,7 +18,10 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
@@ -67,9 +70,9 @@ public class PlayerDatabase extends Repository
 	{
 		console.fine("Updating player_db with login time");
 		database.Update(
-				"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
-						"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-				player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
+			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
+				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
+			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
 		);
 		dataCache.Invalidate(player.getName());
 		lookupCache.Purge();
@@ -114,7 +117,7 @@ public class PlayerDatabase extends Repository
 		if (data != null)
 			return data;
 
-		Row raw = database.QueryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
+		IRow raw = database.QueryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
 		if (raw == null)
 			return null;
 		data = new PlayerData();
@@ -138,14 +141,14 @@ public class PlayerDatabase extends Repository
 		List<String> result = lookupCache.Cache(lookup);
 		if (result != null)
 			return result;
-		List<Value> hits = database.QueryColumn(
+		List<IValue> hits = database.QueryColumn(
 			"SELECT name FROM player_db WHERE name LIKE ?",
 			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
 		);
 		if (hits == null)
 			return null;
 		result = new ArrayList<String>();
-		for (Value hit : hits)
+		for (IValue hit : hits)
 			result.add(hit.String());
 
 		return lookupCache.Cache(lookup, result);

@@ -1,8 +1,8 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.database.IDatabase;
+import no.runsafe.framework.api.database.IRow;
 import no.runsafe.framework.internal.database.Repository;
-import no.runsafe.framework.internal.database.Row;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
@@ -46,7 +46,7 @@ public class PlayerSessionLog extends Repository
 
 	public Duration GetTimePlayed(RunsafePlayer player)
 	{
-		Row raw = database.QueryRow(
+		IRow raw = database.QueryRow(
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
 				"WHERE `name`=?",
