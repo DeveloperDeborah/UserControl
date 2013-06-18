@@ -21,6 +21,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(SessionLogger.class);
 		addComponent(OpController.class);
 		addComponent(LoginRedirectManager.class);
+		addComponent(MaintenanceHandler.class);
 
 		// Commands
 		addComponent(Ban.class);
