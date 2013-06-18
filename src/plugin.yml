@@ -37,3 +37,5 @@ commands:
     description: Sets the first-join spawn point
   played:
     description: Tells you how much time you have spent on the server
+  maintenance:
+    description: Toggles the servers current maintenance state.
