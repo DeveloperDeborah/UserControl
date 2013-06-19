@@ -35,7 +35,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 		{
 			if (executor.hasPermission("runsafe.usercontrol.rank." + rank))
 			{
-				if (!player.getGroups().contains(rank))
+				if (!isInGroup(player, rank))
 				{
 					this.permissions.setGroup(player, rank);
 					if (this.messages.containsKey(rank) && player.isOnline())
@@ -58,6 +58,15 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 			groups.add(group.toLowerCase());
 
 		this.messages = configuration.getConfigValuesAsMap("rankMessages");
+	}
+
+	private boolean isInGroup(RunsafePlayer player, String group)
+	{
+		for (String playerGroup : player.getGroups())
+			if (playerGroup.equalsIgnoreCase(group))
+				return true;
+
+		return false;
 	}
 
 	private List<String> groups;
