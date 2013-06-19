@@ -39,3 +39,11 @@ firstJoinLocation:
   yaw: 0
   pitch: 0
 maintenance: true
+rankMessages:
+  default: You are now a guest.
+  troll: You are now a troll.
+  builder: You are now a builder. Survival is free-build, to build in creative request a plot!
+  wizard: You are now a wizard, harry.
+  superuser: You are now a superuser.
+  moderator: You are now a moderator.
+  admin: You are now an admin. Oh lawd jesus.

@@ -39,3 +39,5 @@ commands:
     description: Tells you how much time you have spent on the server
   maintenance:
     description: Toggles the servers current maintenance state.
+  rank:
+    description: Allows you to set a players rank.
