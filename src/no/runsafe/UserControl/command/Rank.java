@@ -27,6 +27,9 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	{
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 
+		if (player == null)
+			return String.format("Unable to locate a player named %s", parameters.get("player"));
+
 		if (player instanceof RunsafeAmbiguousPlayer)
 			return player.toString();
 
