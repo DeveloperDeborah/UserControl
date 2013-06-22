@@ -39,6 +39,7 @@ firstJoinLocation:
   yaw: 0
   pitch: 0
 maintenance: true
+rankProtection: [wizard,superuser,moderator,admin]
 rankMessages:
   default: You are now a guest.
   troll: You are now a troll.

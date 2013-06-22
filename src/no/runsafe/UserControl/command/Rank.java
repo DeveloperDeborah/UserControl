@@ -18,8 +18,14 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 {
 	public Rank(IPlayerPermissions permissions)
 	{
-		super("rank", "Sets a players rank", "runsafe.usercontrol.rank", "player", "rank");
+		super("rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>", "player", "rank");
 		this.permissions = permissions;
+	}
+
+	@Override
+	public List<String> getParameterOptions(String parameter)
+	{
+		return parameter.equals("rank") ? groups : null;
 	}
 
 	@Override
@@ -33,13 +39,19 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 		if (player instanceof RunsafeAmbiguousPlayer)
 			return player.toString();
 
+		if (player.equals(executor))
+			return "&cYou may not change your own rank.";
+
+		for (String group : player.getGroups())
+		{
+			String permission = String.format("runsafe.usercontrol.rank.%s", group);
+			if (!executor.hasPermission(permission))
+				return String.format("&cYou may not change the group of %s", player.getPrettyName());
+		}
+
 		String rank = parameters.get("rank").toLowerCase();
 		if (!this.groups.contains(rank))
 			return "&cThat rank does not exist.";
-
-		String permission = String.format("runsafe.usercontrol.rank.%s", rank);
-		if (!executor.hasPermission(permission))
-			return String.format("&cMissing permission: %s.", permission);
 
 		if (isInGroup(player, rank))
 			return "&cThat player is already that rank.";
