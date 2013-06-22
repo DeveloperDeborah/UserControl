@@ -39,7 +39,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 		if (player instanceof RunsafeAmbiguousPlayer)
 			return player.toString();
 
-		if (player.equals(executor))
+		if (player.getName().equals(executor.getName()))
 			return "&cYou may not change your own rank.";
 
 		for (String group : player.getGroups())
