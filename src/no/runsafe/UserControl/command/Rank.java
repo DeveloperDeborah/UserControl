@@ -34,23 +34,21 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 			return player.toString();
 
 		String rank = parameters.get("rank").toLowerCase();
-		if (this.groups.contains(rank))
-		{
-			if (executor.hasPermission("runsafe.usercontrol.rank." + rank))
-			{
-				if (!isInGroup(player, rank))
-				{
-					this.permissions.setGroup(player, rank);
-					if (this.messages.containsKey(rank) && player.isOnline())
-						player.sendColouredMessage(this.messages.get(rank));
+		if (!this.groups.contains(rank))
+			return "&cThat rank does not exist.";
 
-					return String.format("&2%s set to %s.", player.getName(), rank);
-				}
-				return "&cThat player is already that rank.";
-			}
-			return "&cYou do not have permission to do that.";
-		}
-		return "&cThat rank does not exist.";
+		String permission = String.format("runsafe.usercontrol.rank.%s", rank);
+		if (!executor.hasPermission(permission))
+			return String.format("&cMissing permission: %s.", permission);
+
+		if (isInGroup(player, rank))
+			return "&cThat player is already that rank.";
+
+		this.permissions.setGroup(player, rank);
+		if (this.messages.containsKey(rank) && player.isOnline())
+			player.sendColouredMessage(this.messages.get(rank));
+
+		return String.format("&2%s set to %s.", player.getName(), rank);
 	}
 
 	@Override
