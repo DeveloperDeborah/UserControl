@@ -26,7 +26,7 @@ public class UnBan extends ExecutableCommand
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (player instanceof RunsafeAmbiguousPlayer)
 			return player.toString();
-		if (!player.isBanned())
+		if (player.isNotBanned())
 			return String.format("Player %s is not banned.", player.getPrettyName());
 
 		// TODO Log unbanning reason

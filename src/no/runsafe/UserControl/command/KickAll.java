@@ -26,7 +26,7 @@ public class KickAll extends ExecutableCommand
 			kicker = (RunsafePlayer) executor;
 
 		for (RunsafePlayer victim : RunsafeServer.Instance.getOnlinePlayers())
-			if (kicker == null || (kicker.canSee(victim) && !victim.getName().equals(executor.getName())))
+			if (kicker == null || (!kicker.shouldNotSee(victim) && !victim.getName().equals(executor.getName())))
 			{
 				if (!victim.hasPermission("runsafe.usercontrol.kick.immune"))
 				{

@@ -41,7 +41,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 		if (executor instanceof RunsafePlayer)
 			banningPlayer = (RunsafePlayer) executor;
 
-		if (!victim.isOnline() || (banningPlayer != null && !banningPlayer.canSee(victim)))
+		if (!victim.isOnline() || (banningPlayer != null && banningPlayer.shouldNotSee(victim)))
 		{
 			victim.setBanned(true);
 			playerdb.logPlayerBan(victim, banningPlayer, reason);

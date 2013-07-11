@@ -41,8 +41,8 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	public void OnPlayerKick(RunsafePlayerKickEvent event)
 	{
 		sessiondb.logSessionClosed(event.getPlayer(), event.getLeaveMessage());
-		kicklogger.logKick(event.getKicker(), event.getPlayer(), event.getReason(), event.getPlayer().isBanned());
-		if (event.getPlayer().isBanned())
+		kicklogger.logKick(event.getKicker(), event.getPlayer(), event.getReason(), !event.getPlayer().isNotBanned());
+		if (!event.getPlayer().isNotBanned())
 			playerdb.logPlayerBan(event.getPlayer(), event.getKicker(), event.getReason());
 	}
 

@@ -49,7 +49,7 @@ public class Seen extends AsyncCommand
 				formatTime(data.getBanned())
 			);
 
-		if (player.isOnline() && (checker == null || checker.canSee(player)))
+		if (player.isOnline() && (checker == null || !checker.shouldNotSee(player)))
 			return String.format(
 				"Player %s is &aonline&r since %s",
 				player.getPrettyName(),

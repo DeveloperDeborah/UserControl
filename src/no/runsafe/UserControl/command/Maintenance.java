@@ -25,5 +25,5 @@ public class Maintenance extends ExecutableCommand
 		return "&eThe server is now open again.";
 	}
 
-	private MaintenanceHandler handler;
+	private final MaintenanceHandler handler;
 }

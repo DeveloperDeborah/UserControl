@@ -84,5 +84,5 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 
 	private List<String> groups;
 	private Map<String, String> messages;
-	private IPlayerPermissions permissions;
+	private final IPlayerPermissions permissions;
 }

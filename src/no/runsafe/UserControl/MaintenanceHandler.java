@@ -8,9 +8,9 @@ import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 public class MaintenanceHandler implements IConfigurationChanged, IPlayerPreLoginEvent
 {
-	public boolean canConnect(RunsafePlayer player)
+	public boolean blockConnection(RunsafePlayer player)
 	{
-		return player.hasPermission("runsafe.usercontrol.maintenance.override");
+		return !player.hasPermission("runsafe.usercontrol.maintenance.override");
 	}
 
 	public boolean isMaintenance()
@@ -38,7 +38,7 @@ public class MaintenanceHandler implements IConfigurationChanged, IPlayerPreLogi
 	@Override
 	public void OnBeforePlayerLogin(RunsafePlayerPreLoginEvent event)
 	{
-		if (this.isMaintenance() && !this.canConnect(event.getPlayer()))
+		if (this.isMaintenance() && this.blockConnection(event.getPlayer()))
 			event.disallow("The server is currently down for important maintenance, please check back shortly!");
 	}
 

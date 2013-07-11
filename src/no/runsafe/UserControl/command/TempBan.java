@@ -59,7 +59,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 			if (executor instanceof RunsafePlayer)
 				banner = (RunsafePlayer) executor;
 
-			if (!victim.isOnline() || (banner != null && !banner.canSee(victim)))
+			if (!victim.isOnline() || (banner != null && banner.shouldNotSee(victim)))
 			{
 				victim.setBanned(true);
 				logger.logKick(banner, victim, reason, true);
