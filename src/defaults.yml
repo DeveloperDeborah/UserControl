@@ -19,16 +19,29 @@ whois.labels.game:
   mode: Mode
   op: OP
   flying: Flying
-whois.labels.usercontrol:
-  ban.status: Ban active
-  ban.timestamp: Banned
-  ban.reason: Ban reason
-  ban.temporary: Banned until
-  ban.by: Banned by
-  joined: First login
-  login: Last login
-  logout: Last logout
-  seen: Offline for
+whois.labels:
+  game:
+    health: Health
+    experience: Power Level
+    level: Level
+    ip: IP
+    mode: Game mode
+    op: OP
+    flying: Flying
+  usercontrol:
+    ban.status: Ban active
+    ban.timestamp: Banned
+    ban.reason: Ban reason
+    ban.temporary: Banned until
+    ban.by: Banned by
+    joined: First login
+    login: Last login
+    logout: Last logout
+    seen: Offline for
+  runsafe.creative:
+    blacklisted: Is blacklisted from creative
+    owner: Owner of plots
+    member: Member of plots
 whois.formats.game:
   experience: "%s xp"
 firstJoinLocation:
