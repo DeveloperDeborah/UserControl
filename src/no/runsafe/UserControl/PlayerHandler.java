@@ -27,22 +27,22 @@ public class PlayerHandler implements IPlayerSeen
 		PlayerData data = database.getData(player);
 		if (data.getBanned() != null)
 			return String.format(
-					"Player %s has been &4banned&r since %s",
-					player.getPrettyName(),
-					formatTime(data.getBanned())
+				"Player %s has been &4banned&r since %s",
+				player.getPrettyName(),
+				formatTime(data.getBanned())
 			);
 
 		if (player.isOnline() && (checker == null || !checker.shouldNotSee(player)))
 			return String.format(
-					"Player %s is &aonline&r since %s",
-					player.getPrettyName(),
-					formatTime(data.getLogin())
+				"Player %s is &aonline&r since %s",
+				player.getPrettyName(),
+				formatTime(data.getLogin())
 			);
 
 		return String.format(
-				"Player %s is &coffline&r since %s",
-				player.getPrettyName(),
-				formatTime(player.isOnline() ? data.getLogin() : data.getLogout())
+			"Player %s is &coffline&r since %s",
+			player.getPrettyName(),
+			formatTime(player.isOnline() ? data.getLogin() : data.getLogout())
 		);
 	}
 
