@@ -46,16 +46,12 @@ public class PlayerSessionLog extends Repository
 
 	public Duration GetTimePlayed(RunsafePlayer player)
 	{
-		IRow raw = database.QueryRow(
+		Long time = database.QueryLong(
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
 				"WHERE `name`=?",
 			player.getName()
 		);
-		if (raw == null)
-			return null;
-
-		Long time = raw.Long("time");
 		return time == null ? null : Duration.standardMinutes(time);
 	}
 

@@ -4,7 +4,6 @@ import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.IDatabase;
 import no.runsafe.framework.api.database.IRow;
-import no.runsafe.framework.api.database.IValue;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.IPlayerLookupService;
@@ -118,8 +117,6 @@ public class PlayerDatabase extends Repository
 			return data;
 
 		IRow raw = database.QueryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
-		if (raw == null)
-			return null;
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
 		data.setBanner(raw.String("ban_by"));
@@ -141,16 +138,10 @@ public class PlayerDatabase extends Repository
 		List<String> result = lookupCache.Cache(lookup);
 		if (result != null)
 			return result;
-		List<IValue> hits = database.QueryColumn(
+		result = database.QueryStrings(
 			"SELECT name FROM player_db WHERE name LIKE ?",
 			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
 		);
-		if (hits == null)
-			return null;
-		result = new ArrayList<String>();
-		for (IValue hit : hits)
-			result.add(hit.String());
-
 		return lookupCache.Cache(lookup, result);
 	}
 
