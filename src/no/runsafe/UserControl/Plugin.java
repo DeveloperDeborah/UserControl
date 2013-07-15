@@ -7,7 +7,6 @@ import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.UserControl.events.KickEvent;
 import no.runsafe.UserControl.events.Login;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
-import no.runsafe.framework.api.hook.IPlayerPermissions;
 
 public class Plugin extends RunsafeConfigurablePlugin
 {
@@ -23,8 +22,6 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(OpController.class);
 		addComponent(LoginRedirectManager.class);
 		addComponent(MaintenanceHandler.class);
-
-		addComponent(getFirstPluginAPI(IPlayerPermissions.class));
 
 		// Commands
 		addComponent(Ban.class);

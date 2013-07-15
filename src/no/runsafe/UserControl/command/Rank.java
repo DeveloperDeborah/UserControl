@@ -4,7 +4,6 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
-import no.runsafe.framework.api.hook.IPlayerPermissions;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -16,10 +15,9 @@ import java.util.Map;
 
 public class Rank extends ExecutableCommand implements IConfigurationChanged
 {
-	public Rank(IPlayerPermissions permissions)
+	public Rank()
 	{
 		super("rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>", "player", "rank");
-		this.permissions = permissions;
 	}
 
 	@Override
@@ -56,7 +54,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 		if (isInGroup(player, rank))
 			return "&cThat player is already that rank.";
 
-		this.permissions.setGroup(player, rank);
+		player.setGroup(rank);
 		if (this.messages.containsKey(rank) && player.isOnline())
 			player.sendColouredMessage(this.messages.get(rank));
 
@@ -67,7 +65,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
 		this.groups = new ArrayList<String>();
-		for (String group : this.permissions.getGroups())
+		for (String group : RunsafeServer.Instance.getGroups())
 			groups.add(group.toLowerCase());
 
 		this.messages = configuration.getConfigValuesAsMap("rankMessages");
@@ -84,5 +82,4 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 
 	private List<String> groups;
 	private Map<String, String> messages;
-	private final IPlayerPermissions permissions;
 }
