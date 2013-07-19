@@ -9,7 +9,6 @@ import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Whois extends AsyncCommand implements IConfigurationChanged
@@ -20,14 +19,14 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		RunsafePlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (target == null)
 			return String.format("Could not locate a player using %s", parameters.get("player"));
 		if (target instanceof RunsafeAmbiguousPlayer)
 			return target.toString();
-		HashMap<String, String> data = target.getData();
+		Map<String, String> data = target.getData();
 		if (data == null || data.size() == 0)
 			return String.format("No data found for player %s.", target.getPrettyName());
 		StringBuilder info = new StringBuilder();

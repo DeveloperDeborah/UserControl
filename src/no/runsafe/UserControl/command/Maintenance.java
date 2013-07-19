@@ -4,7 +4,7 @@ import no.runsafe.UserControl.MaintenanceHandler;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class Maintenance extends ExecutableCommand
 {
@@ -15,7 +15,7 @@ public class Maintenance extends ExecutableCommand
 	}
 
 	@Override
-	protected String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	protected String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		this.handler.setMaintenance(!this.handler.isMaintenance());
 

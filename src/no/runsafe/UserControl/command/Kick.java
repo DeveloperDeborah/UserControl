@@ -8,7 +8,7 @@ import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class Kick extends ExecutableCommand implements IConfigurationChanged
 {
@@ -19,7 +19,7 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		RunsafePlayer victim;
 		if (executor instanceof RunsafePlayer)

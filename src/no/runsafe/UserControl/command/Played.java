@@ -10,7 +10,7 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class Played extends PlayerAsyncCommand
 {
@@ -21,7 +21,7 @@ public class Played extends PlayerAsyncCommand
 	}
 
 	@Override
-	public String OnAsyncExecute(RunsafePlayer executor, HashMap<String, String> parameters)
+	public String OnAsyncExecute(RunsafePlayer executor, Map<String, String> parameters)
 	{
 		Duration played = database.GetTimePlayed(executor);
 		return String.format("You have played &6%s", formatTime(played));

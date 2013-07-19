@@ -5,7 +5,7 @@ import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class SetFirstSpawn extends PlayerCommand
 {
@@ -16,7 +16,7 @@ public class SetFirstSpawn extends PlayerCommand
 	}
 
 	@Override
-	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
+	public String OnExecute(RunsafePlayer executor, Map<String, String> parameters)
 	{
 		RunsafeLocation location = executor.getLocation();
 		this.config.setConfigValue("firstJoinLocation.world", location.getWorld().getName());

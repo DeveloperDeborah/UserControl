@@ -13,7 +13,7 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class Seen extends AsyncCommand
 {
@@ -23,7 +23,7 @@ public class Seen extends AsyncCommand
 		playerDatabase = database;
 	}
 
-	public String OnAsyncExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		String playerName = parameters.get("player");
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(playerName);

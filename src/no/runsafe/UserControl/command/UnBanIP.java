@@ -4,7 +4,7 @@ import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.minecraft.RunsafeServer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class UnBanIP extends ExecutableCommand
 {
@@ -14,10 +14,10 @@ public class UnBanIP extends ExecutableCommand
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		String ip = parameters.get("ip-address");
-		RunsafeServer.Instance.unbanIp(ip);
+		RunsafeServer.Instance.unbanIP(ip);
 		return String.format("Unbanned IP %s from the server", ip);
 	}
 }

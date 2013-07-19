@@ -14,7 +14,7 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
@@ -35,7 +35,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		try
 		{

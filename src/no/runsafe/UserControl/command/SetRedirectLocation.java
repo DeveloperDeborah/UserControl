@@ -4,7 +4,7 @@ import no.runsafe.UserControl.LoginRedirectManager;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class SetRedirectLocation extends PlayerCommand
 {
@@ -15,7 +15,7 @@ public class SetRedirectLocation extends PlayerCommand
 	}
 
 	@Override
-	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
+	public String OnExecute(RunsafePlayer executor, Map<String, String> parameters)
 	{
 		this.loginRedirectManager.setRedirectLocation(executor.getLocation());
 		executor.sendMessage("Re-direction location set to your location.");

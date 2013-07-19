@@ -8,7 +8,7 @@ import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class UnBan extends ExecutableCommand
 {
@@ -20,7 +20,7 @@ public class UnBan extends ExecutableCommand
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		enforcer.flushCache();
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));

@@ -9,7 +9,6 @@ import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	}
 
 	@Override
-	protected String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
+	protected String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 
