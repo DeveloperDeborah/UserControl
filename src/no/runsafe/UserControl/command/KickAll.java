@@ -2,6 +2,7 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
@@ -11,8 +12,7 @@ public class KickAll extends ExecutableCommand
 {
 	public KickAll()
 	{
-		super("kickall", "Kicks all players from the server", "runsafe.usercontrol.kickall", "reason");
-		captureTail();
+		super("kickall", "Kicks all players from the server", "runsafe.usercontrol.kickall", new TrailingArgument("reason"));
 	}
 
 	@Override

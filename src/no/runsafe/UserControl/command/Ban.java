@@ -5,6 +5,8 @@ import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
@@ -16,8 +18,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 {
 	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase)
 	{
-		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", "player", "reason");
-		captureTail();
+		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new PlayerArgument(), new TrailingArgument("reason"));
 		logger = log;
 		playerdb = playerDatabase;
 	}

@@ -3,6 +3,8 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
@@ -14,8 +16,7 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 {
 	public Kick()
 	{
-		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", "player", "reason");
-		captureTail();
+		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new PlayerArgument(), new TrailingArgument("reason"));
 	}
 
 	@Override

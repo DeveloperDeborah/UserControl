@@ -2,6 +2,8 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -12,8 +14,7 @@ public class SuDo extends ExecutableCommand
 {
 	public SuDo()
 	{
-		super("sudo", "Force a player to run a command", "runsafe.usercontrol.sudo", "player", "command");
-		captureTail();
+		super("sudo", "Force a player to run a command", "runsafe.usercontrol.sudo", new PlayerArgument(), new TrailingArgument("command"));
 	}
 
 	@Override
