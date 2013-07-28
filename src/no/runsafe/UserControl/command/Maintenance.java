@@ -15,7 +15,7 @@ public class Maintenance extends ExecutableCommand
 	}
 
 	@Override
-	protected String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		this.handler.setMaintenance(!this.handler.isMaintenance());
 

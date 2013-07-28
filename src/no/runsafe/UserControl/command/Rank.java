@@ -8,6 +8,7 @@ import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +21,13 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public List<String> getParameterOptions(String parameter)
+	public List<String> getParameterOptions(@Nonnull String parameter)
 	{
 		return parameter.equals("rank") ? groups : null;
 	}
 
 	@Override
-	protected String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 
