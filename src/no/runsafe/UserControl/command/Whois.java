@@ -4,6 +4,7 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
@@ -15,7 +16,11 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 {
 	public Whois(IScheduler scheduler)
 	{
-		super("whois", "Queries the server about a player, printing available information.", "runsafe.usercontrol.whois", scheduler, "player");
+		super(
+			"whois", "Queries the server about a player, printing available information.", "runsafe.usercontrol.whois",
+			scheduler,
+			new PlayerArgument()
+		);
 	}
 
 	@Override

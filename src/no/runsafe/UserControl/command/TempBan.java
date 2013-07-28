@@ -6,6 +6,7 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeServer;
@@ -22,7 +23,10 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
 	public TempBan(PlayerDatabase playerDatabase, PlayerKickLog logger)
 	{
-		super("tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary", new PlayerArgument(), "time", new TrailingArgument("reason"));
+		super(
+			"tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary",
+			new PlayerArgument(), new RequiredArgument("time"), new TrailingArgument("reason")
+		);
 		this.logger = logger;
 		timeParser = new PeriodFormatterBuilder()
 			.printZeroRarelyFirst().appendYears().appendSuffix("y")

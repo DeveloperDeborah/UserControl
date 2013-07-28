@@ -5,6 +5,7 @@ import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -19,7 +20,7 @@ public class Seen extends AsyncCommand
 {
 	public Seen(IScheduler scheduler, PlayerDatabase database)
 	{
-		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, "player");
+		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new PlayerArgument());
 		playerDatabase = database;
 	}
 

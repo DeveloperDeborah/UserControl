@@ -3,6 +3,8 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
@@ -17,7 +19,10 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 {
 	public Rank()
 	{
-		super("rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>", "player", "rank");
+		super(
+			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
+			new PlayerArgument(), new RequiredArgument("rank")
+		);
 	}
 
 	@Override
@@ -64,7 +69,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
-		this.groups = new ArrayList<String>();
+		this.groups.clear();
 		for (String group : RunsafeServer.Instance.getGroups())
 			groups.add(group.toLowerCase());
 
@@ -80,6 +85,6 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 		return false;
 	}
 
-	private List<String> groups;
+	private List<String> groups = new ArrayList<String>();
 	private Map<String, String> messages;
 }

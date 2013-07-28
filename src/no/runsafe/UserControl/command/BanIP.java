@@ -2,6 +2,8 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -12,7 +14,10 @@ public class BanIP extends ExecutableCommand
 {
 	public BanIP()
 	{
-		super("banip", "Bans an IP from connecting to this server", "runsafe.usercontrol.ban.ip", "player", "reason");
+		super(
+			"banip", "Bans an IP from connecting to this server", "runsafe.usercontrol.ban.ip",
+			new PlayerArgument(), new RequiredArgument("reason")
+		);
 	}
 
 	@Override

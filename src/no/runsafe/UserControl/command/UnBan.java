@@ -4,6 +4,8 @@ import no.runsafe.UserControl.BanEnforcer;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -14,7 +16,10 @@ public class UnBan extends ExecutableCommand
 {
 	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer)
 	{
-		super("unban", "Unbans a player from the server", "runsafe.usercontrol.unban", "player", "reason");
+		super(
+			"unban", "Unbans a player from the server", "runsafe.usercontrol.unban",
+			new PlayerArgument(), new RequiredArgument("reason")
+		);
 		playerdb = playerDatabase;
 		this.enforcer = enforcer;
 	}
