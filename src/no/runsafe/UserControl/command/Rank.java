@@ -5,6 +5,7 @@ import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
+import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Rank extends ExecutableCommand implements IConfigurationChanged
+public class Rank extends ExecutableCommand implements IConfigurationChanged, IServerReady
 {
 	public Rank()
 	{
@@ -70,11 +71,16 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
+		OnServerReady();
+		this.messages = configuration.getConfigValuesAsMap("rankMessages");
+	}
+
+	@Override
+	public void OnServerReady()
+	{
 		this.groups.clear();
 		for (String group : RunsafeServer.Instance.getGroups())
 			groups.add(group.toLowerCase());
-
-		this.messages = configuration.getConfigValuesAsMap("rankMessages");
 	}
 
 	private boolean isInGroup(RunsafePlayer player, String group)
