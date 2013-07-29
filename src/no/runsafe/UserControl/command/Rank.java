@@ -64,7 +64,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 		if (this.messages.containsKey(rank) && player.isOnline())
 			player.sendColouredMessage(this.messages.get(rank));
 
-		return String.format("&2%s set to %s.", player.getName(), rank);
+		return String.format("&2%s set to %s.", player.getPrettyName(), rank);
 	}
 
 	@Override
