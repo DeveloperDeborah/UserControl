@@ -59,7 +59,8 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 		if (isInGroup(player, rank))
 			return "&cThat player is already that rank.";
 
-		player.setGroup(rank);
+		if (!player.setGroup(rank))
+			return "Group set failed, somehow..";
 		if (this.messages.containsKey(rank) && player.isOnline())
 			player.sendColouredMessage(this.messages.get(rank));
 
