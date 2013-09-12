@@ -24,6 +24,12 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 	@Override
 	public void OnBeforePlayerLogin(RunsafePlayerPreLoginEvent event)
 	{
+		if(event.getPlayer() == null || event.getPlayer().getName() == null)
+		{
+			event.playerBanned("Invalid username");
+			return;
+		}
+
 		if (activeBans.containsKey(event.getName()))
 		{
 			event.playerBanned(activeBans.get(event.getName()));
