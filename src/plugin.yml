@@ -41,3 +41,5 @@ commands:
     description: Toggles the servers current maintenance state.
   rank:
     description: Allows you to set a players rank.
+  list:
+    description: List online players

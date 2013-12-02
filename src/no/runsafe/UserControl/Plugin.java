@@ -43,6 +43,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(RemoveRedirectLocation.class);
 		addComponent(Maintenance.class);
 		addComponent(Rank.class);
+		addComponent(List.class);
 
 		// Events
 		addComponent(KickEvent.class);
