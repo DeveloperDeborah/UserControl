@@ -28,7 +28,7 @@ public class List extends ExecutableCommand
 		}
 
 		return String.format(
-			"There are %d/%d players connected: %s",
+			"There are %d/%d players connected:\n %s",
 			online.size(),
 			RunsafeServer.Instance.getMaxPlayers(),
 			StringUtils.join(online, ", ")
