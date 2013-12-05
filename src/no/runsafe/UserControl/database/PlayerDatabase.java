@@ -1,5 +1,6 @@
 package no.runsafe.UserControl.database;
 
+import no.runsafe.framework.api.IDebug;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.IDatabase;
@@ -67,7 +68,7 @@ public class PlayerDatabase extends Repository
 
 	public void logPlayerInfo(RunsafePlayer player)
 	{
-		console.fine("Updating player_db with login time");
+		console.debugFine("Updating player_db with login time");
 		database.Update(
 			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
@@ -193,7 +194,7 @@ public class PlayerDatabase extends Repository
 		return GetPlayerLogout(player) == null;
 	}
 
-	private final IOutput console;
+	private final IDebug console;
 	private final IDatabase database;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
