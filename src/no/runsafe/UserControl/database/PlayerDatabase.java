@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class PlayerDatabase extends Repository
 	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider
 {
-	public PlayerDatabase(IOutput console, IDatabase database, IScheduler scheduler)
+	public PlayerDatabase(IDebug console, IDatabase database, IScheduler scheduler)
 	{
 		this.console = console;
 		this.database = database;
