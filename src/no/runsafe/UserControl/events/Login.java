@@ -2,13 +2,13 @@ package no.runsafe.UserControl.events;
 
 import no.runsafe.UserControl.LoginRedirectManager;
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IWorld;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.RunsafeWorld;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
 
@@ -51,7 +51,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 		this.firstSpawnLocation = null;
 		if (initialWorld != null)
 		{
-			RunsafeWorld world = RunsafeServer.Instance.getWorld(initialWorld);
+			IWorld world = RunsafeServer.Instance.getWorld(initialWorld);
 			if (world != null)
 				this.firstSpawnLocation = new RunsafeLocation(
 					world,
