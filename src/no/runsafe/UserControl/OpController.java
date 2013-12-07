@@ -5,10 +5,10 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.player.IPlayerLoginEvent;
 import no.runsafe.framework.api.event.player.IPlayerOperatorEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.event.player.RunsafeOperatorEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerLoginEvent;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.timer.Timer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -30,7 +30,7 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 		for (String player : opExpiration.keySet())
 			if (opExpiration.get(player).isBefore(DateTime.now()))
 			{
-				RunsafePlayer operator = RunsafeServer.Instance.getPlayerExact(player);
+				IPlayer operator = RunsafeServer.Instance.getPlayerExact(player);
 				operator.deOP();
 				opExpiration.remove(player);
 			}

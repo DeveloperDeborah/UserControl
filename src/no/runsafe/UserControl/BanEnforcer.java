@@ -5,8 +5,8 @@ import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.PeriodType;
@@ -36,7 +36,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			return;
 		}
 
-		RunsafePlayer player = event.getPlayer();
+		IPlayer player = event.getPlayer();
 
 		if (player != null)
 		{

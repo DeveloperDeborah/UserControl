@@ -6,9 +6,9 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.Map;
 
@@ -22,9 +22,9 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 	@Override
 	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
-		RunsafePlayer victim;
-		if (executor instanceof RunsafePlayer)
-			victim = RunsafeServer.Instance.getOnlinePlayer((RunsafePlayer) executor, parameters.get("player"));
+		IPlayer victim;
+		if (executor instanceof IPlayer)
+			victim = RunsafeServer.Instance.getOnlinePlayer((IPlayer) executor, parameters.get("player"));
 		else
 			victim = RunsafeServer.Instance.getOnlinePlayer(null, parameters.get("player"));
 		if (victim == null)
@@ -38,9 +38,9 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 
 		String reason = parameters.get("reason");
 
-		if (executor instanceof RunsafePlayer)
+		if (executor instanceof IPlayer)
 		{
-			RunsafePlayer executorPlayer = (RunsafePlayer) executor;
+			IPlayer executorPlayer = (IPlayer) executor;
 			RunsafeServer.Instance.kickPlayer(executorPlayer, victim, reason);
 			this.sendKickMessage(victim, executorPlayer, reason);
 		}
@@ -60,7 +60,7 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 		this.onServerKickMessage = configuration.getConfigValueAsString("messages.onServerKick");
 	}
 
-	private void sendKickMessage(RunsafePlayer victim, RunsafePlayer player, String reason)
+	private void sendKickMessage(IPlayer victim, IPlayer player, String reason)
 	{
 		if (player != null)
 			RunsafeServer.Instance.broadcastMessage(String.format(this.onKickMessage, victim.getPrettyName(), reason, player.getPrettyName()));

@@ -3,8 +3,8 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.Map;
 
@@ -21,11 +21,11 @@ public class KickAll extends ExecutableCommand
 		String reason = parameters.get("reason");
 		int n = 0;
 
-		RunsafePlayer kicker = null;
-		if (executor instanceof RunsafePlayer)
-			kicker = (RunsafePlayer) executor;
+		IPlayer kicker = null;
+		if (executor instanceof IPlayer)
+			kicker = (IPlayer) executor;
 
-		for (RunsafePlayer victim : RunsafeServer.Instance.getOnlinePlayers())
+		for (IPlayer victim : RunsafeServer.Instance.getOnlinePlayers())
 			if (kicker == null || (!kicker.shouldNotSee(victim) && !victim.getName().equals(executor.getName())))
 			{
 				if (!victim.hasPermission("runsafe.usercontrol.kick.immune"))

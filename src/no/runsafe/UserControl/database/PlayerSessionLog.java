@@ -2,8 +2,10 @@ package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.database.IDatabase;
 import no.runsafe.framework.api.database.Repository;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.internal.wrapper.ObjectUnwrapper;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.entity.Player;
 import org.joda.time.Duration;
 
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class PlayerSessionLog extends Repository
 		return queries;
 	}
 
-	public Duration GetTimePlayed(RunsafePlayer player)
+	public Duration GetTimePlayed(IPlayer player)
 	{
 		Long time = database.QueryLong(
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
@@ -54,7 +56,7 @@ public class PlayerSessionLog extends Repository
 		return time == null ? null : Duration.standardMinutes(time);
 	}
 
-	public void logSessionStart(RunsafePlayer player)
+	public void logSessionStart(IPlayer player)
 	{
 		String group = null;
 		List<String> groups = player.getGroups();
@@ -63,12 +65,12 @@ public class PlayerSessionLog extends Repository
 		database.Update(
 			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)",
 			player.getName(),
-			player.getRawPlayer().getAddress().getAddress().getHostAddress(),
+			((Player) ObjectUnwrapper.convert(player)).getAddress().getAddress().getHostAddress(),
 			group
 		);
 	}
 
-	public void logSessionClosed(RunsafePlayer player, String quitMessage)
+	public void logSessionClosed(IPlayer player, String quitMessage)
 	{
 		database.Update(
 			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE name=? AND logout IS NULL",

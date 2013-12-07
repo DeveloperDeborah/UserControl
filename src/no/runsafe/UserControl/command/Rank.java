@@ -7,9 +7,9 @@ import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	@Override
 	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
-		RunsafePlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		IPlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 
 		if (player == null)
 			return String.format("Unable to locate a player named %s", parameters.get("player"));
@@ -83,7 +83,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 			groups.add(group.toLowerCase());
 	}
 
-	private boolean isInGroup(RunsafePlayer player, String group)
+	private boolean isInGroup(IPlayer player, String group)
 	{
 		for (String playerGroup : player.getGroups())
 			if (playerGroup.equalsIgnoreCase(group))

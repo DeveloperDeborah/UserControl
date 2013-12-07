@@ -8,9 +8,9 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	{
 		String reason = parameters.get("reason");
 
-		RunsafePlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		IPlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (victim == null)
 			return "Player not found";
 
@@ -38,9 +38,9 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";
 
-		RunsafePlayer banningPlayer = null;
-		if (executor instanceof RunsafePlayer)
-			banningPlayer = (RunsafePlayer) executor;
+		IPlayer banningPlayer = null;
+		if (executor instanceof IPlayer)
+			banningPlayer = (IPlayer) executor;
 
 		if (!victim.isOnline() || (banningPlayer != null && banningPlayer.shouldNotSee(victim)))
 		{
@@ -56,7 +56,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 		return null;
 	}
 
-	private void sendBanMessage(RunsafePlayer victim, RunsafePlayer player, String reason)
+	private void sendBanMessage(IPlayer victim, IPlayer player, String reason)
 	{
 		if (player != null)
 			RunsafeServer.Instance.broadcastMessage(String.format(this.onBanMessage, victim.getPrettyName(), reason, player.getPrettyName()));

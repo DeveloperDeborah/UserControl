@@ -3,12 +3,12 @@ package no.runsafe.UserControl;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 public class MaintenanceHandler implements IConfigurationChanged, IPlayerPreLoginEvent
 {
-	public boolean blockConnection(RunsafePlayer player)
+	public boolean blockConnection(IPlayer player)
 	{
 		return !player.hasPermission("runsafe.usercontrol.maintenance.override");
 	}

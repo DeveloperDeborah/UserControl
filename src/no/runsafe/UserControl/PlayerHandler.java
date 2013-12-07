@@ -3,7 +3,7 @@ package no.runsafe.UserControl;
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.hook.IPlayerSeen;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.framework.api.player.IPlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -17,12 +17,12 @@ public class PlayerHandler implements IPlayerSeen
 	}
 
 	@Override
-	public String GetLastSeen(RunsafePlayer player, RunsafePlayer checker)
+	public String GetLastSeen(IPlayer player, IPlayer checker)
 	{
 		return this.lastSeenPlayer(player, checker);
 	}
 
-	public String lastSeenPlayer(RunsafePlayer player, RunsafePlayer checker)
+	public String lastSeenPlayer(IPlayer player, IPlayer checker)
 	{
 		PlayerData data = database.getData(player);
 		if (data.getBanned() != null)

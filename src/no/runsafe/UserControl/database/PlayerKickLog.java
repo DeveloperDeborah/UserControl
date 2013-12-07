@@ -2,7 +2,7 @@ package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.database.IDatabase;
 import no.runsafe.framework.api.database.Repository;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.framework.api.player.IPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class PlayerKickLog extends Repository
 		return queries;
 	}
 
-	public void logKick(RunsafePlayer kicker, RunsafePlayer player, String reason, boolean banned)
+	public void logKick(IPlayer kicker, IPlayer player, String reason, boolean banned)
 	{
 		database.Update(
 			"INSERT INTO player_kick_log (`name`, `timestamp`, `kick_by`, `reason`, `banned`) VALUES (?, NOW(), ?, ?, ?)",

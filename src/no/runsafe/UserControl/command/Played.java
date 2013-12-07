@@ -3,7 +3,7 @@ package no.runsafe.UserControl.command;
 import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.command.player.PlayerAsyncCommand;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.framework.api.player.IPlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;
@@ -21,7 +21,7 @@ public class Played extends PlayerAsyncCommand
 	}
 
 	@Override
-	public String OnAsyncExecute(RunsafePlayer executor, Map<String, String> parameters)
+	public String OnAsyncExecute(IPlayer executor, Map<String, String> parameters)
 	{
 		Duration played = database.GetTimePlayed(executor);
 		return String.format("You have played &6%s", formatTime(played));

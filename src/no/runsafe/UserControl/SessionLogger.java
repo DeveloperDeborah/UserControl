@@ -8,11 +8,11 @@ import no.runsafe.framework.api.event.player.IPlayerKickEvent;
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
 import no.runsafe.framework.api.event.plugin.IPluginDisabled;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerKickEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {
@@ -50,7 +50,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	public void OnPluginEnabled()
 	{
 		sessiondb.closeAllSessions("Possible crash");
-		for (RunsafePlayer player : RunsafeServer.Instance.getOnlinePlayers())
+		for (IPlayer player : RunsafeServer.Instance.getOnlinePlayers())
 		{
 			playerdb.logPlayerInfo(player);
 			sessiondb.logSessionStart(player);

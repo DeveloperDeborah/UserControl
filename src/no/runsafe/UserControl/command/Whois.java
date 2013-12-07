@@ -6,9 +6,9 @@ import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.Map;
 
@@ -26,7 +26,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 	@Override
 	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
-		RunsafePlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		IPlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
 		if (target == null)
 			return String.format("Could not locate a player using %s", parameters.get("player"));
 		if (target instanceof RunsafeAmbiguousPlayer)

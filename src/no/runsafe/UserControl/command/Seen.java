@@ -6,9 +6,9 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -27,16 +27,16 @@ public class Seen extends AsyncCommand
 	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		String playerName = parameters.get("player");
-		RunsafePlayer player = RunsafeServer.Instance.getPlayer(playerName);
+		IPlayer player = RunsafeServer.Instance.getPlayer(playerName);
 		if (player == null)
 			return String.format("No players found matching %s", playerName);
 
 		if (player instanceof RunsafeAmbiguousPlayer)
 			return player.toString();
 
-		RunsafePlayer checker = null;
-		if (executor instanceof RunsafePlayer)
-			checker = (RunsafePlayer) executor;
+		IPlayer checker = null;
+		if (executor instanceof IPlayer)
+			checker = (IPlayer) executor;
 
 		PlayerData data = playerDatabase.getData(player);
 

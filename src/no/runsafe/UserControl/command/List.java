@@ -2,8 +2,8 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ public class List extends ExecutableCommand
 	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		ArrayList<String> online = new ArrayList<String>();
-		for (RunsafePlayer player : RunsafeServer.Instance.getOnlinePlayers())
+		for (IPlayer player : RunsafeServer.Instance.getOnlinePlayers())
 		{
-			if (executor instanceof RunsafePlayer && ((RunsafePlayer) executor).shouldNotSee(player))
+			if (executor instanceof IPlayer && ((IPlayer) executor).shouldNotSee(player))
 				continue;
 			online.add(player.getPrettyName());
 		}

@@ -1,7 +1,6 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.IDebug;
-import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.IDatabase;
 import no.runsafe.framework.api.database.IRow;
@@ -9,8 +8,10 @@ import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.IPlayerLookupService;
 import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.internal.wrapper.ObjectUnwrapper;
 import no.runsafe.framework.timer.TimedCache;
+import org.bukkit.entity.Player;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -66,19 +67,19 @@ public class PlayerDatabase extends Repository
 		return queries;
 	}
 
-	public void logPlayerInfo(RunsafePlayer player)
+	public void logPlayerInfo(IPlayer player)
 	{
 		console.debugFine("Updating player_db with login time");
 		database.Update(
 			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player.getName(), player.getRawPlayer().getAddress().getAddress().getHostAddress()
+			player.getName(), ((Player) ObjectUnwrapper.convert(player)).getAddress().getAddress().getHostAddress()
 		);
 		dataCache.Invalidate(player.getName());
 		lookupCache.Purge();
 	}
 
-	public void logPlayerBan(RunsafePlayer player, RunsafePlayer banner, String reason)
+	public void logPlayerBan(IPlayer player, IPlayer banner, String reason)
 	{
 		database.Update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
@@ -87,13 +88,13 @@ public class PlayerDatabase extends Repository
 		dataCache.Invalidate(player.getName());
 	}
 
-	public void setPlayerTemporaryBan(RunsafePlayer player, DateTime temporary)
+	public void setPlayerTemporaryBan(IPlayer player, DateTime temporary)
 	{
 		database.Update("UPDATE player_db SET temp_ban=? WHERE `name`=?", temporary, player.getName());
 		dataCache.Invalidate(player.getName());
 	}
 
-	public void logPlayerUnban(RunsafePlayer player)
+	public void logPlayerUnban(IPlayer player)
 	{
 		database.Update(
 			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?",
@@ -102,7 +103,7 @@ public class PlayerDatabase extends Repository
 		dataCache.Invalidate(player.getName());
 	}
 
-	public void logPlayerLogout(RunsafePlayer player)
+	public void logPlayerLogout(IPlayer player)
 	{
 		database.Update(
 			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?",
@@ -111,7 +112,7 @@ public class PlayerDatabase extends Repository
 		dataCache.Invalidate(player.getName());
 	}
 
-	public PlayerData getData(RunsafePlayer player)
+	public PlayerData getData(IPlayer player)
 	{
 		PlayerData data = dataCache.Cache(player.getName());
 		if (data != null)
@@ -147,7 +148,7 @@ public class PlayerDatabase extends Repository
 	}
 
 	@Override
-	public HashMap<String, String> GetPlayerData(RunsafePlayer player)
+	public HashMap<String, String> GetPlayerData(IPlayer player)
 	{
 		PlayerData data = getData(player);
 		HashMap<String, String> result = new LinkedHashMap<String, String>();
@@ -174,7 +175,7 @@ public class PlayerDatabase extends Repository
 	}
 
 	@Override
-	public DateTime GetPlayerLogout(RunsafePlayer player)
+	public DateTime GetPlayerLogout(IPlayer player)
 	{
 		PlayerData data = getData(player);
 		if (data == null)
@@ -183,13 +184,13 @@ public class PlayerDatabase extends Repository
 	}
 
 	@Override
-	public String GetPlayerBanReason(RunsafePlayer player)
+	public String GetPlayerBanReason(IPlayer player)
 	{
 		return getData(player).getBanReason();
 	}
 
 	@Override
-	public boolean IsFirstSession(RunsafePlayer player)
+	public boolean IsFirstSession(IPlayer player)
 	{
 		return GetPlayerLogout(player) == null;
 	}
