@@ -1,18 +1,19 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
 
 import java.util.Map;
 
 public class KickAll extends ExecutableCommand
 {
-	public KickAll()
+	public KickAll(IServer server)
 	{
 		super("kickall", "Kicks all players from the server", "runsafe.usercontrol.kickall", new TrailingArgument("reason"));
+		this.server = server;
 	}
 
 	@Override
@@ -25,15 +26,17 @@ public class KickAll extends ExecutableCommand
 		if (executor instanceof IPlayer)
 			kicker = (IPlayer) executor;
 
-		for (IPlayer victim : RunsafeServer.Instance.getOnlinePlayers())
+		for (IPlayer victim : server.getOnlinePlayers())
 			if (kicker == null || (!kicker.shouldNotSee(victim) && !victim.getName().equals(executor.getName())))
 			{
 				if (!victim.hasPermission("runsafe.usercontrol.kick.immune"))
 				{
-					RunsafeServer.Instance.kickPlayer(kicker, victim, reason);
+					server.kickPlayer(kicker, victim, reason);
 					n++;
 				}
 			}
 		return String.format("Kicked %d players from the server.", n);
 	}
+
+	private final IServer server;
 }

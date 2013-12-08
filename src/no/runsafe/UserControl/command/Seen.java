@@ -3,12 +3,12 @@ package no.runsafe.UserControl.command;
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -18,20 +18,21 @@ import java.util.Map;
 
 public class Seen extends AsyncCommand
 {
-	public Seen(IScheduler scheduler, PlayerDatabase database)
+	public Seen(IScheduler scheduler, PlayerDatabase database, IServer server)
 	{
 		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new PlayerArgument());
 		playerDatabase = database;
+		this.server = server;
 	}
 
 	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		String playerName = parameters.get("player");
-		IPlayer player = RunsafeServer.Instance.getPlayer(playerName);
+		IPlayer player = server.getPlayer(playerName);
 		if (player == null)
 			return String.format("No players found matching %s", playerName);
 
-		if (player instanceof RunsafeAmbiguousPlayer)
+		if (player instanceof IAmbiguousPlayer)
 			return player.toString();
 
 		IPlayer checker = null;
@@ -75,4 +76,5 @@ public class Seen extends AsyncCommand
 
 	private final PlayerDatabase playerDatabase;
 	private final PeriodType output_format = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
+	private final IServer server;
 }

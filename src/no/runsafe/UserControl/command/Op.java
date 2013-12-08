@@ -1,26 +1,27 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 
 import java.util.Map;
 
 public class Op extends ExecutableCommand
 {
-	public Op()
+	public Op(IServer server)
 	{
 		super("op", "Makes a player an server operator", "runsafe.op", new PlayerArgument());
+		this.server = server;
 	}
 
 	@Override
 	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
-		IPlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
-		if (player instanceof RunsafeAmbiguousPlayer)
+		IPlayer player = server.getPlayer(parameters.get("player"));
+		if (player instanceof IAmbiguousPlayer)
 			return player.toString();
 
 		if (player.isOP())
@@ -28,4 +29,6 @@ public class Op extends ExecutableCommand
 		player.OP();
 		return String.format("%s is now an operator.", player.getPrettyName());
 	}
+
+	private final IServer server;
 }

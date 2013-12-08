@@ -3,24 +3,25 @@ package no.runsafe.UserControl.command;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 
 import java.util.Map;
 
 public class Ban extends ExecutableCommand implements IConfigurationChanged
 {
-	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase)
+	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase, IServer server)
 	{
 		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new PlayerArgument(), new TrailingArgument("reason"));
 		logger = log;
 		playerdb = playerDatabase;
+		this.server = server;
 	}
 
 	@Override
@@ -28,11 +29,11 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	{
 		String reason = parameters.get("reason");
 
-		IPlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		IPlayer victim = server.getPlayer(parameters.get("player"));
 		if (victim == null)
 			return "Player not found";
 
-		if (victim instanceof RunsafeAmbiguousPlayer)
+		if (victim instanceof IAmbiguousPlayer)
 			return victim.toString();
 
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
@@ -51,7 +52,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 		}
 		if (lightning)
 			victim.strikeWithLightning(fakeLightning);
-		RunsafeServer.Instance.banPlayer(banningPlayer, victim, reason);
+		server.banPlayer(banningPlayer, victim, reason);
 		this.sendBanMessage(victim, banningPlayer, reason);
 		return null;
 	}
@@ -59,9 +60,9 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	private void sendBanMessage(IPlayer victim, IPlayer player, String reason)
 	{
 		if (player != null)
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onBanMessage, victim.getPrettyName(), reason, player.getPrettyName()));
+			server.broadcastMessage(String.format(this.onBanMessage, victim.getPrettyName(), reason, player.getPrettyName()));
 		else
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerBanMessage, victim.getPrettyName(), reason));
+			server.broadcastMessage(String.format(this.onServerBanMessage, victim.getPrettyName(), reason));
 	}
 
 	@Override
@@ -75,6 +76,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 
 	private final PlayerKickLog logger;
 	private final PlayerDatabase playerdb;
+	private final IServer server;
 	private boolean lightning;
 	private boolean fakeLightning;
 	private String onBanMessage;

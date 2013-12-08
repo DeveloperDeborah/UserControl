@@ -3,24 +3,25 @@ package no.runsafe.UserControl;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.api.event.player.IPlayerKickEvent;
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
 import no.runsafe.framework.api.event.plugin.IPluginDisabled;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerKickEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
 
 public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {
-	public SessionLogger(PlayerDatabase players, PlayerSessionLog sessions, PlayerKickLog kickLog)
+	public SessionLogger(PlayerDatabase players, PlayerSessionLog sessions, PlayerKickLog kickLog, IServer server)
 	{
 		playerdb = players;
 		sessiondb = sessions;
 		kicklogger = kickLog;
+		this.server = server;
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	public void OnPluginEnabled()
 	{
 		sessiondb.closeAllSessions("Possible crash");
-		for (IPlayer player : RunsafeServer.Instance.getOnlinePlayers())
+		for (IPlayer player : server.getOnlinePlayers())
 		{
 			playerdb.logPlayerInfo(player);
 			sessiondb.logSessionStart(player);
@@ -66,4 +67,5 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	private final PlayerDatabase playerdb;
 	private final PlayerSessionLog sessiondb;
 	private final PlayerKickLog kicklogger;
+	private final IServer server;
 }

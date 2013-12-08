@@ -1,15 +1,16 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -18,12 +19,13 @@ import java.util.Map;
 
 public class Rank extends ExecutableCommand implements IConfigurationChanged, IServerReady
 {
-	public Rank()
+	public Rank(IServer server)
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
 			new PlayerArgument(), new RequiredArgument("rank")
 		);
+		this.server = server;
 	}
 
 	@Override
@@ -35,12 +37,12 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	@Override
 	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
-		IPlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		IPlayer player = server.getPlayer(parameters.get("player"));
 
 		if (player == null)
 			return String.format("Unable to locate a player named %s", parameters.get("player"));
 
-		if (player instanceof RunsafeAmbiguousPlayer)
+		if (player instanceof IAmbiguousPlayer)
 			return player.toString();
 
 		if (player.getName().equals(executor.getName()))
@@ -79,7 +81,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	public void OnServerReady()
 	{
 		this.groups.clear();
-		for (String group : RunsafeServer.Instance.getGroups())
+		for (String group : RunsafeServer.getGroups())
 			groups.add(group.toLowerCase());
 	}
 
@@ -94,4 +96,5 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 
 	private List<String> groups = new ArrayList<String>();
 	private Map<String, String> messages;
+	private final IServer server;
 }

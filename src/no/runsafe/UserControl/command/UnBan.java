@@ -2,19 +2,19 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.BanEnforcer;
 import no.runsafe.UserControl.database.PlayerDatabase;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 
 import java.util.Map;
 
 public class UnBan extends ExecutableCommand
 {
-	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer)
+	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer, IServer server)
 	{
 		super(
 			"unban", "Unbans a player from the server", "runsafe.usercontrol.unban",
@@ -22,14 +22,15 @@ public class UnBan extends ExecutableCommand
 		);
 		playerdb = playerDatabase;
 		this.enforcer = enforcer;
+		this.server = server;
 	}
 
 	@Override
 	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
 		enforcer.flushCache();
-		IPlayer player = RunsafeServer.Instance.getPlayer(parameters.get("player"));
-		if (player instanceof RunsafeAmbiguousPlayer)
+		IPlayer player = server.getPlayer(parameters.get("player"));
+		if (player instanceof IAmbiguousPlayer)
 			return player.toString();
 		if (player == null)
 			return String.format("Unable to find any player %s.", parameters.get("player"));
@@ -44,4 +45,5 @@ public class UnBan extends ExecutableCommand
 
 	private final PlayerDatabase playerdb;
 	private final BanEnforcer enforcer;
+	private final IServer server;
 }

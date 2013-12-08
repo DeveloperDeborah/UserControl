@@ -3,15 +3,15 @@ package no.runsafe.UserControl.command;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
@@ -21,13 +21,14 @@ import java.util.Map;
 
 public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
-	public TempBan(PlayerDatabase playerDatabase, PlayerKickLog logger)
+	public TempBan(PlayerDatabase playerDatabase, PlayerKickLog logger, IServer server)
 	{
 		super(
 			"tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary",
 			new PlayerArgument(), new RequiredArgument("time"), new TrailingArgument("reason")
 		);
 		this.logger = logger;
+		this.server = server;
 		timeParser = new PeriodFormatterBuilder()
 			.printZeroRarelyFirst().appendYears().appendSuffix("y")
 			.printZeroRarelyFirst().appendWeeks().appendSuffix("w", "weeks")
@@ -48,11 +49,11 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 			DateTime expires = DateTime.now().plus(duration);
 			String reason = parameters.get("reason");
 
-			IPlayer victim = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+			IPlayer victim = server.getPlayer(parameters.get("player"));
 			if (victim == null)
 				return "Player not found";
 
-			if (victim instanceof RunsafeAmbiguousPlayer)
+			if (victim instanceof IAmbiguousPlayer)
 				return victim.toString();
 
 			if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
@@ -73,7 +74,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 			}
 			if (lightning)
 				victim.strikeWithLightning(fakeLightning);
-			RunsafeServer.Instance.banPlayer(banner, victim, reason);
+			server.banPlayer(banner, victim, reason);
 			this.sendTempBanMessage(victim, executor, reason);
 			return null;
 		}
@@ -86,9 +87,9 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	private void sendTempBanMessage(IPlayer victim, ICommandExecutor executor, String reason)
 	{
 		if (executor instanceof IPlayer)
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onTempBanMessage, victim.getPrettyName(), reason, ((IPlayer) executor).getPrettyName()));
+			server.broadcastMessage(String.format(this.onTempBanMessage, victim.getPrettyName(), reason, ((IPlayer) executor).getPrettyName()));
 		else
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerTempBanMessage, victim.getPrettyName(), reason));
+			server.broadcastMessage(String.format(this.onServerTempBanMessage, victim.getPrettyName(), reason));
 	}
 
 	@Override
@@ -103,6 +104,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	private final PeriodFormatter timeParser;
 	private final PlayerDatabase playerdb;
 	private final PlayerKickLog logger;
+	private final IServer server;
 	private boolean lightning;
 	private boolean fakeLightning;
 	private String onTempBanMessage;

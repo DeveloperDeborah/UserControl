@@ -2,34 +2,35 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 
 import java.util.Map;
 
 public class Whois extends AsyncCommand implements IConfigurationChanged
 {
-	public Whois(IScheduler scheduler)
+	public Whois(IScheduler scheduler, IServer server)
 	{
 		super(
 			"whois", "Queries the server about a player, printing available information.", "runsafe.usercontrol.whois",
 			scheduler,
 			new PlayerArgument()
 		);
+		this.server = server;
 	}
 
 	@Override
 	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
 	{
-		IPlayer target = RunsafeServer.Instance.getPlayer(parameters.get("player"));
+		IPlayer target = server.getPlayer(parameters.get("player"));
 		if (target == null)
 			return String.format("Could not locate a player using %s", parameters.get("player"));
-		if (target instanceof RunsafeAmbiguousPlayer)
+		if (target instanceof IAmbiguousPlayer)
 			return target.toString();
 		Map<String, String> data = target.getData();
 		if (data == null || data.size() == 0)
@@ -83,6 +84,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		return String.format(format, value);
 	}
 
+	private final IServer server;
 	private Map<String, String> labels;
 	private Map<String, String> outFormat;
 }

@@ -1,22 +1,23 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.player.RunsafeAmbiguousPlayer;
 
 import java.util.Map;
 
 public class Kick extends ExecutableCommand implements IConfigurationChanged
 {
-	public Kick()
+	public Kick(IServer server)
 	{
 		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new PlayerArgument(), new TrailingArgument("reason"));
+		this.server = server;
 	}
 
 	@Override
@@ -24,13 +25,13 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 	{
 		IPlayer victim;
 		if (executor instanceof IPlayer)
-			victim = RunsafeServer.Instance.getOnlinePlayer((IPlayer) executor, parameters.get("player"));
+			victim = server.getOnlinePlayer((IPlayer) executor, parameters.get("player"));
 		else
-			victim = RunsafeServer.Instance.getOnlinePlayer(null, parameters.get("player"));
+			victim = server.getOnlinePlayer(null, parameters.get("player"));
 		if (victim == null)
 			return "Player not found";
 
-		if (victim instanceof RunsafeAmbiguousPlayer)
+		if (victim instanceof IAmbiguousPlayer)
 			return victim.toString();
 
 		if (victim.hasPermission("runsafe.usercontrol.kick.immune"))
@@ -41,12 +42,12 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 		if (executor instanceof IPlayer)
 		{
 			IPlayer executorPlayer = (IPlayer) executor;
-			RunsafeServer.Instance.kickPlayer(executorPlayer, victim, reason);
+			server.kickPlayer(executorPlayer, victim, reason);
 			this.sendKickMessage(victim, executorPlayer, reason);
 		}
 		else
 		{
-			RunsafeServer.Instance.kickPlayer(null, victim, reason);
+			server.kickPlayer(null, victim, reason);
 			this.sendKickMessage(victim, null, reason);
 		}
 
@@ -63,11 +64,12 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 	private void sendKickMessage(IPlayer victim, IPlayer player, String reason)
 	{
 		if (player != null)
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onKickMessage, victim.getPrettyName(), reason, player.getPrettyName()));
+			server.broadcastMessage(String.format(this.onKickMessage, victim.getPrettyName(), reason, player.getPrettyName()));
 		else
-			RunsafeServer.Instance.broadcastMessage(String.format(this.onServerKickMessage, victim.getPrettyName(), reason));
+			server.broadcastMessage(String.format(this.onServerKickMessage, victim.getPrettyName(), reason));
 	}
 
+	private final IServer server;
 	private String onKickMessage;
 	private String onServerKickMessage;
 }

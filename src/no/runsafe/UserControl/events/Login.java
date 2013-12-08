@@ -3,13 +3,13 @@ package no.runsafe.UserControl.events;
 import no.runsafe.UserControl.LoginRedirectManager;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.ILocation;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.IWorld;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeLocation;
-import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
 
@@ -18,9 +18,10 @@ import java.util.List;
 
 public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPreLoginEvent
 {
-	public Login(LoginRedirectManager loginRedirectManager)
+	public Login(LoginRedirectManager loginRedirectManager, IServer server)
 	{
 		this.loginRedirectManager = loginRedirectManager;
+		this.server = server;
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 		this.firstSpawnLocation = null;
 		if (initialWorld != null)
 		{
-			IWorld world = RunsafeServer.Instance.getWorld(initialWorld);
+			IWorld world = server.getWorld(initialWorld);
 			if (world != null)
 				this.firstSpawnLocation = new RunsafeLocation(
 					world,
@@ -66,6 +67,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 	}
 
 	private final List<String> newPlayers = new ArrayList<String>();
-	private ILocation firstSpawnLocation;
 	private final LoginRedirectManager loginRedirectManager;
+	private final IServer server;
+	private ILocation firstSpawnLocation;
 }

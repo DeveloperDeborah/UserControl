@@ -2,11 +2,11 @@ package no.runsafe.UserControl;
 
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerLoginEvent;
 import no.runsafe.framework.api.event.player.IPlayerOperatorEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.event.player.RunsafeOperatorEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerLoginEvent;
 import no.runsafe.framework.timer.Timer;
@@ -17,9 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class OpController extends Timer implements IConfigurationChanged, IPlayerLoginEvent, IPlayerOperatorEvent
 {
-	public OpController(IScheduler scheduler)
+	public OpController(IScheduler scheduler, IServer server)
 	{
 		super(scheduler, false);
+		this.server = server;
 		delay = 100;
 		period = 100;
 	}
@@ -30,7 +31,7 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 		for (String player : opExpiration.keySet())
 			if (opExpiration.get(player).isBefore(DateTime.now()))
 			{
-				IPlayer operator = RunsafeServer.Instance.getPlayerExact(player);
+				IPlayer operator = server.getPlayerExact(player);
 				operator.deOP();
 				opExpiration.remove(player);
 			}
@@ -76,4 +77,5 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 	private boolean loginDeOp;
 	private Duration timerDeOp;
 	private final ConcurrentHashMap<String, DateTime> opExpiration = new ConcurrentHashMap<String, DateTime>();
+	private final IServer server;
 }
