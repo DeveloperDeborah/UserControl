@@ -11,7 +11,6 @@ import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.internal.wrapper.ObjectUnwrapper;
 import no.runsafe.framework.timer.TimedCache;
-import org.bukkit.entity.Player;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -73,7 +72,7 @@ public class PlayerDatabase extends Repository
 		database.Update(
 			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player.getName(), ((Player) ObjectUnwrapper.convert(player)).getAddress().getAddress().getHostAddress()
+			player.getName(), player.getIP()
 		);
 		dataCache.Invalidate(player.getName());
 		lookupCache.Purge();

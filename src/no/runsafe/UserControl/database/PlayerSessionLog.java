@@ -3,9 +3,7 @@ package no.runsafe.UserControl.database;
 import no.runsafe.framework.api.database.IDatabase;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.internal.wrapper.ObjectUnwrapper;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.entity.Player;
 import org.joda.time.Duration;
 
 import java.util.ArrayList;
@@ -65,7 +63,7 @@ public class PlayerSessionLog extends Repository
 		database.Update(
 			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)",
 			player.getName(),
-			((Player) ObjectUnwrapper.convert(player)).getAddress().getAddress().getHostAddress(),
+			player.getIP(),
 			group
 		);
 	}

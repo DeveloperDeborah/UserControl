@@ -7,8 +7,6 @@ import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.internal.wrapper.ObjectUnwrapper;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -31,7 +29,7 @@ public class SuDo extends ExecutableCommand
 			return "You cannot make that user run commands";
 
 		String command = parameters.get("command");
-		((Player) ObjectUnwrapper.convert(target)).performCommand(command);
+		target.performCommand(command);
 		return String.format("Forced %s to run /%s", target.getName(), command);
 	}
 

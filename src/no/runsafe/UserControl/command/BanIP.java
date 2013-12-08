@@ -7,8 +7,6 @@ import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.internal.wrapper.ObjectUnwrapper;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -36,7 +34,9 @@ public class BanIP extends ExecutableCommand
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";
 
-		String ip = ((Player) ObjectUnwrapper.convert(victim)).getAddress().getAddress().getHostAddress();
+		String ip = victim.getIP();
+		if (ip == null)
+			return String.format("Unable to get IP for player %s", victim.getName());
 		server.banIP(ip);
 		return String.format("Banned IP %s from the server", ip);
 	}
