@@ -1,15 +1,15 @@
 package no.runsafe.UserControl;
 
-import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.api.ILocation;
 
 public class LoginRedirectManager
 {
-	public void setRedirectLocation(RunsafeLocation location)
+	public void setRedirectLocation(ILocation location)
 	{
 		this.redirectLocation = location;
 	}
 
-	public RunsafeLocation getRedirectLocation()
+	public ILocation getRedirectLocation()
 	{
 		return this.redirectLocation;
 	}
@@ -24,5 +24,5 @@ public class LoginRedirectManager
 		this.redirectLocation = null;
 	}
 
-	private RunsafeLocation redirectLocation;
+	private ILocation redirectLocation;
 }

@@ -1,9 +1,9 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.ILocation;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeLocation;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class SetFirstSpawn extends PlayerCommand
 	@Override
 	public String OnExecute(IPlayer executor, Map<String, String> parameters)
 	{
-		RunsafeLocation location = executor.getLocation();
+		ILocation location = executor.getLocation();
 		this.config.setConfigValue("firstJoinLocation.world", location.getWorld().getName());
 		this.config.setConfigValue("firstJoinLocation.x", location.getX());
 		this.config.setConfigValue("firstJoinLocation.y", location.getY());

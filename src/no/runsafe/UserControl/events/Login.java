@@ -2,6 +2,7 @@ package no.runsafe.UserControl.events;
 
 import no.runsafe.UserControl.LoginRedirectManager;
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.ILocation;
 import no.runsafe.framework.api.IWorld;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
@@ -65,6 +66,6 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 	}
 
 	private final List<String> newPlayers = new ArrayList<String>();
-	private RunsafeLocation firstSpawnLocation;
+	private ILocation firstSpawnLocation;
 	private final LoginRedirectManager loginRedirectManager;
 }
