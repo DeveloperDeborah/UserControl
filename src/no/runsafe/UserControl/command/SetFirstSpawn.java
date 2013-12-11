@@ -3,16 +3,22 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.ILocation;
 import no.runsafe.framework.api.command.player.PlayerCommand;
+import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 
 import java.util.Map;
 
-public class SetFirstSpawn extends PlayerCommand
+public class SetFirstSpawn extends PlayerCommand implements IConfigurationChanged
 {
-	public SetFirstSpawn(IConfiguration config)
+	public SetFirstSpawn()
 	{
 		super("setfirstspawn", "Sets the first-join spawn", "runsafe.usercontrol.setfirstspawn");
-		this.config = config;
+	}
+
+	@Override
+	public void OnConfigurationChanged(IConfiguration configuration)
+	{
+		config = configuration;
 	}
 
 	@Override
@@ -29,5 +35,5 @@ public class SetFirstSpawn extends PlayerCommand
 		return "&2The location for first-join server has been set.";
 	}
 
-	private final IConfiguration config;
+	private IConfiguration config;
 }
