@@ -7,12 +7,22 @@ import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.UserControl.events.KickEvent;
 import no.runsafe.UserControl.events.Login;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
+import no.runsafe.framework.features.Commands;
+import no.runsafe.framework.features.Database;
+import no.runsafe.framework.features.Events;
+import no.runsafe.framework.features.FrameworkHooks;
 
 public class Plugin extends RunsafeConfigurablePlugin
 {
 	@Override
 	protected void PluginSetup()
 	{
+		// Framework features
+		addComponent(Commands.class);
+		addComponent(Database.class);
+		addComponent(Events.class);
+		addComponent(FrameworkHooks.class);
+
 		// Components
 		addComponent(PlayerHandler.class);
 		addComponent(PlayerDatabase.class);
