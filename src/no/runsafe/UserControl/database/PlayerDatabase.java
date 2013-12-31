@@ -68,7 +68,7 @@ public class PlayerDatabase extends Repository
 	public void logPlayerInfo(IPlayer player)
 	{
 		console.debugFine("Updating player_db with login time");
-		database.Update(
+		database.update(
 			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
 			player.getName(), player.getIP()
@@ -79,7 +79,7 @@ public class PlayerDatabase extends Repository
 
 	public void logPlayerBan(IPlayer player, IPlayer banner, String reason)
 	{
-		database.Update(
+		database.update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
 			reason, banner == null ? "console" : banner.getName(), player.getName()
 		);
@@ -88,13 +88,13 @@ public class PlayerDatabase extends Repository
 
 	public void setPlayerTemporaryBan(IPlayer player, DateTime temporary)
 	{
-		database.Update("UPDATE player_db SET temp_ban=? WHERE `name`=?", temporary, player.getName());
+		database.update("UPDATE player_db SET temp_ban=? WHERE `name`=?", temporary, player.getName());
 		dataCache.Invalidate(player.getName());
 	}
 
 	public void logPlayerUnban(IPlayer player)
 	{
-		database.Update(
+		database.update(
 			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?",
 			player.getName()
 		);
@@ -103,7 +103,7 @@ public class PlayerDatabase extends Repository
 
 	public void logPlayerLogout(IPlayer player)
 	{
-		database.Update(
+		database.update(
 			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?",
 			player.getName()
 		);
@@ -116,7 +116,7 @@ public class PlayerDatabase extends Repository
 		if (data != null)
 			return data;
 
-		IRow raw = database.QueryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
+		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
 		data.setBanner(raw.String("ban_by"));
@@ -138,7 +138,7 @@ public class PlayerDatabase extends Repository
 		List<String> result = lookupCache.Cache(lookup);
 		if (result != null)
 			return result;
-		result = database.QueryStrings(
+		result = database.queryStrings(
 			"SELECT name FROM player_db WHERE name LIKE ?",
 			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
 		);

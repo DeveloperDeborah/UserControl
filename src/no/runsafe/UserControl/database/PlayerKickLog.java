@@ -42,7 +42,7 @@ public class PlayerKickLog extends Repository
 
 	public void logKick(IPlayer kicker, IPlayer player, String reason, boolean banned)
 	{
-		database.Update(
+		database.update(
 			"INSERT INTO player_kick_log (`name`, `timestamp`, `kick_by`, `reason`, `banned`) VALUES (?, NOW(), ?, ?, ?)",
 			player.getName(), kicker == null ? "console" : kicker.getName(), reason, banned
 		);

@@ -45,7 +45,7 @@ public class PlayerSessionLog extends Repository
 
 	public Duration GetTimePlayed(IPlayer player)
 	{
-		Long time = database.QueryLong(
+		Long time = database.queryLong(
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
 				"WHERE `name`=?",
@@ -60,7 +60,7 @@ public class PlayerSessionLog extends Repository
 		List<String> groups = player.getGroups();
 		if (groups.size() > 0)
 			group = StringUtils.join(groups, ",");
-		database.Update(
+		database.update(
 			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)",
 			player.getName(),
 			player.getIP(),
@@ -70,7 +70,7 @@ public class PlayerSessionLog extends Repository
 
 	public void logSessionClosed(IPlayer player, String quitMessage)
 	{
-		database.Update(
+		database.update(
 			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE name=? AND logout IS NULL",
 			quitMessage, player.getName()
 		);
@@ -78,7 +78,7 @@ public class PlayerSessionLog extends Repository
 
 	public void closeAllSessions(String quitMessage)
 	{
-		database.Update(
+		database.update(
 			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE logout IS NULL",
 			quitMessage
 		);
