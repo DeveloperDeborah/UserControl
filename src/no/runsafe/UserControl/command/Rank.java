@@ -8,9 +8,9 @@ import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.hook.IPlayerExtensions;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -19,13 +19,14 @@ import java.util.Map;
 
 public class Rank extends ExecutableCommand implements IConfigurationChanged, IServerReady
 {
-	public Rank(IServer server)
+	public Rank(IServer server, IPlayerExtensions extensions)
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
 			new PlayerArgument(), new RequiredArgument("rank")
 		);
 		this.server = server;
+		this.extensions = extensions;
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	public void OnServerReady()
 	{
 		this.groups.clear();
-		for (String group : RunsafeServer.getGroups())
+		for (String group : extensions.getGroups())
 			groups.add(group.toLowerCase());
 	}
 
@@ -97,4 +98,5 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	private List<String> groups = new ArrayList<String>();
 	private Map<String, String> messages;
 	private final IServer server;
+	private final IPlayerExtensions extensions;
 }
