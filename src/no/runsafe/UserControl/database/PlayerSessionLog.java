@@ -1,7 +1,9 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.database.IDatabase;
+import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
+import no.runsafe.framework.api.database.SchemaUpdate;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
@@ -25,11 +27,11 @@ public class PlayerSessionLog extends Repository
 	}
 
 	@Override
-	public HashMap<Integer, List<String>> getSchemaUpdateQueries()
+	public ISchemaUpdate getSchemaUpdateQueries()
 	{
-		HashMap<Integer, List<String>> queries = new LinkedHashMap<Integer, List<String>>(1);
-		ArrayList<String> sql = new ArrayList<String>();
-		sql.add(
+		ISchemaUpdate update = new SchemaUpdate();
+
+		update.addQueries(
 			"CREATE TABLE player_session (" +
 				"`name` varchar(255) NOT NULL," +
 				"`ip` int unsigned NOT NULL," +
@@ -38,10 +40,10 @@ public class PlayerSessionLog extends Repository
 				"`quit_message` varchar(255) NULL," +
 				"`group` varchar(255) NULL," +
 				"PRIMARY KEY(`name`,`login`)" +
-				")"
+			")"
 		);
-		queries.put(1, sql);
-		return queries;
+
+		return update;
 	}
 
 	public Duration GetTimePlayed(IPlayer player)

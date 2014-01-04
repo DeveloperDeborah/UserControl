@@ -1,9 +1,7 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.IScheduler;
-import no.runsafe.framework.api.database.IDatabase;
-import no.runsafe.framework.api.database.IRow;
-import no.runsafe.framework.api.database.Repository;
+import no.runsafe.framework.api.database.*;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.IPlayerLookupService;
 import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
@@ -41,11 +39,11 @@ public class PlayerDatabase extends Repository
 	}
 
 	@Override
-	public HashMap<Integer, List<String>> getSchemaUpdateQueries()
+	public ISchemaUpdate getSchemaUpdateQueries()
 	{
-		HashMap<Integer, List<String>> queries = new LinkedHashMap<Integer, List<String>>(2);
-		ArrayList<String> sql = new ArrayList<String>();
-		sql.add(
+		ISchemaUpdate update = new SchemaUpdate();
+
+		update.addQueries(
 			"CREATE TABLE player_db (" +
 				"`name` varchar(255) NOT NULL," +
 				"`joined` datetime NOT NULL," +
@@ -56,13 +54,12 @@ public class PlayerDatabase extends Repository
 				"`ban_by` varchar(255) NULL," +
 				"`ip` int unsigned NULL," +
 				"PRIMARY KEY(`name`)" +
-				")"
+			")"
 		);
-		queries.put(1, sql);
-		sql = new ArrayList<String>();
-		sql.add("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
-		queries.put(2, sql);
-		return queries;
+
+		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
+
+		return update;
 	}
 
 	public void logPlayerInfo(IPlayer player)

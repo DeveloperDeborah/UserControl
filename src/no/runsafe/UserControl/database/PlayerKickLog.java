@@ -1,7 +1,9 @@
 package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.database.IDatabase;
+import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
+import no.runsafe.framework.api.database.SchemaUpdate;
 import no.runsafe.framework.api.player.IPlayer;
 
 import java.util.ArrayList;
@@ -23,11 +25,11 @@ public class PlayerKickLog extends Repository
 	}
 
 	@Override
-	public HashMap<Integer, List<String>> getSchemaUpdateQueries()
+	public ISchemaUpdate getSchemaUpdateQueries()
 	{
-		HashMap<Integer, List<String>> queries = new LinkedHashMap<Integer, List<String>>(1);
-		ArrayList<String> sql = new ArrayList<String>();
-		sql.add(
+		ISchemaUpdate update = new SchemaUpdate();
+
+		update.addQueries(
 			"CREATE TABLE player_kick_log (" +
 				"`name` varchar(255) NOT NULL," +
 				"`timestamp` datetime NULL," +
@@ -35,10 +37,10 @@ public class PlayerKickLog extends Repository
 				"`reason` varchar(255) NULL," +
 				"`banned` bool NULL," +
 				"PRIMARY KEY(`name`,`timestamp`)" +
-				")"
+			")"
 		);
-		queries.put(1, sql);
-		return queries;
+
+		return update;
 	}
 
 	public void logKick(IPlayer kicker, IPlayer player, String reason, boolean banned)
