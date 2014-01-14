@@ -3,9 +3,8 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
-
-import java.util.Map;
 
 public class UnBanIP extends ExecutableCommand
 {
@@ -19,7 +18,7 @@ public class UnBanIP extends ExecutableCommand
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		String ip = parameters.get("ip-address");
 		server.unbanIP(ip);

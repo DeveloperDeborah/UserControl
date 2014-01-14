@@ -2,11 +2,10 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.ILocation;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
-
-import java.util.Map;
 
 public class SetFirstSpawn extends PlayerCommand implements IConfigurationChanged
 {
@@ -22,7 +21,7 @@ public class SetFirstSpawn extends PlayerCommand implements IConfigurationChange
 	}
 
 	@Override
-	public String OnExecute(IPlayer executor, Map<String, String> parameters)
+	public String OnExecute(IPlayer executor, IArgumentList parameters)
 	{
 		ILocation location = executor.getLocation();
 		this.config.setConfigValue("firstJoinLocation.world", location.getWorld().getName());

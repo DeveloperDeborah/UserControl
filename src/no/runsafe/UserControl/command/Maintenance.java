@@ -3,8 +3,7 @@ package no.runsafe.UserControl.command;
 import no.runsafe.UserControl.MaintenanceHandler;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-
-import java.util.Map;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 
 public class Maintenance extends ExecutableCommand
 {
@@ -15,7 +14,7 @@ public class Maintenance extends ExecutableCommand
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		this.handler.setMaintenance(!this.handler.isMaintenance());
 

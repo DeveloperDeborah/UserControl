@@ -3,11 +3,11 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class List extends ExecutableCommand
 {
@@ -18,7 +18,7 @@ public class List extends ExecutableCommand
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		ArrayList<String> online = new ArrayList<String>();
 		for (IPlayer player : server.getOnlinePlayers())

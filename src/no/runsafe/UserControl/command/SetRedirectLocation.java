@@ -1,10 +1,9 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.LoginRedirectManager;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.api.player.IPlayer;
-
-import java.util.Map;
 
 public class SetRedirectLocation extends PlayerCommand
 {
@@ -15,7 +14,7 @@ public class SetRedirectLocation extends PlayerCommand
 	}
 
 	@Override
-	public String OnExecute(IPlayer executor, Map<String, String> parameters)
+	public String OnExecute(IPlayer executor, IArgumentList parameters)
 	{
 		this.loginRedirectManager.setRedirectLocation(executor.getLocation());
 		executor.sendMessage("Re-direction location set to your location.");

@@ -3,12 +3,11 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
-
-import java.util.Map;
 
 public class SuDo extends ExecutableCommand
 {
@@ -19,7 +18,7 @@ public class SuDo extends ExecutableCommand
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		IPlayer target = server.getPlayer(parameters.get("player"));
 		if (target instanceof IAmbiguousPlayer)

@@ -6,6 +6,7 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
@@ -16,8 +17,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-
-import java.util.Map;
 
 public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
@@ -41,7 +40,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		try
 		{

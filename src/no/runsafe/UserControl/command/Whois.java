@@ -5,6 +5,7 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
@@ -25,7 +26,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 	}
 
 	@Override
-	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnAsyncExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		IPlayer target = server.getPlayer(parameters.get("player"));
 		if (target == null)

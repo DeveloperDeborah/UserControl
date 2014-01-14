@@ -6,6 +6,7 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
@@ -13,8 +14,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
-
-import java.util.Map;
 
 public class Seen extends AsyncCommand
 {
@@ -25,7 +24,7 @@ public class Seen extends AsyncCommand
 		this.server = server;
 	}
 
-	public String OnAsyncExecute(ICommandExecutor executor, Map<String, String> parameters)
+	public String OnAsyncExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		String playerName = parameters.get("player");
 		IPlayer player = server.getPlayer(playerName);
