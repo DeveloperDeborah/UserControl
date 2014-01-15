@@ -5,10 +5,9 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
-import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		super(
 			"whois", "Queries the server about a player, printing available information.", "runsafe.usercontrol.whois",
 			scheduler,
-			new PlayerArgument()
+			new AnyPlayerRequired()
 		);
 		this.server = server;
 	}
@@ -31,8 +30,6 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		IPlayer target = server.getPlayer(parameters.get("player"));
 		if (target == null)
 			return String.format("Could not locate a player using %s", parameters.get("player"));
-		if (target instanceof IAmbiguousPlayer)
-			return target.toString();
 		Map<String, String> data = target.getData();
 		if (data == null || data.size() == 0)
 			return String.format("No data found for player %s.", target.getPrettyName());

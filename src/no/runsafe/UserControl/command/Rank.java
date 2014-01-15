@@ -5,7 +5,7 @@ import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.OnlinePlayerRequired;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
@@ -24,7 +24,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
-			new PlayerArgument(), new RequiredArgument("rank")
+			new OnlinePlayerRequired(), new RequiredArgument("rank")
 		);
 		this.server = server;
 		this.extensions = extensions;
@@ -43,9 +43,6 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 
 		if (player == null)
 			return String.format("Unable to locate a player named %s", parameters.get("player"));
-
-		if (player instanceof IAmbiguousPlayer)
-			return player.toString();
 
 		if (player.getName().equals(executor.getName()))
 			return "&cYou may not change your own rank.";

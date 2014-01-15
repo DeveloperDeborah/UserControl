@@ -5,7 +5,7 @@ import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.OnlinePlayerRequired;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
@@ -15,7 +15,7 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 {
 	public Kick(IServer server)
 	{
-		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new PlayerArgument(), new TrailingArgument("reason"));
+		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new OnlinePlayerRequired(), new TrailingArgument("reason"));
 		this.server = server;
 	}
 

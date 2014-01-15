@@ -6,8 +6,8 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
@@ -17,7 +17,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 {
 	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase, IServer server)
 	{
-		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new PlayerArgument(), new TrailingArgument("reason"));
+		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new AnyPlayerRequired(), new TrailingArgument("reason"));
 		logger = log;
 		playerdb = playerDatabase;
 		this.server = server;

@@ -4,7 +4,7 @@ import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.PlayerArgument;
+import no.runsafe.framework.api.command.argument.SelfOrOnlinePlayer;
 import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
 
@@ -12,7 +12,7 @@ public class DeOp extends ExecutableCommand
 {
 	public DeOp(IServer server)
 	{
-		super("deop", "Revokes server operator status from a player", "runsafe.op", new PlayerArgument());
+		super("deop", "Revokes server operator status from a player", "runsafe.op", new SelfOrOnlinePlayer());
 		this.server = server;
 	}
 

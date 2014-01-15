@@ -6,9 +6,8 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.PlayerArgument;
-import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -19,7 +18,7 @@ public class Seen extends AsyncCommand
 {
 	public Seen(IScheduler scheduler, PlayerDatabase database, IServer server)
 	{
-		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new PlayerArgument());
+		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new AnyPlayerRequired());
 		playerDatabase = database;
 		this.server = server;
 	}
@@ -30,9 +29,6 @@ public class Seen extends AsyncCommand
 		IPlayer player = server.getPlayer(playerName);
 		if (player == null)
 			return String.format("No players found matching %s", playerName);
-
-		if (player instanceof IAmbiguousPlayer)
-			return player.toString();
 
 		IPlayer checker = null;
 		if (executor instanceof IPlayer)

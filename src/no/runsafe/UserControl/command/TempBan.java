@@ -6,8 +6,8 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.PlayerArgument;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
@@ -24,7 +24,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	{
 		super(
 			"tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary",
-			new PlayerArgument(), new RequiredArgument("time"), new TrailingArgument("reason")
+			new AnyPlayerRequired(), new RequiredArgument("time"), new TrailingArgument("reason")
 		);
 		this.logger = logger;
 		this.server = server;
@@ -51,9 +51,6 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 			IPlayer victim = server.getPlayer(parameters.get("player"));
 			if (victim == null)
 				return "Player not found";
-
-			if (victim instanceof IAmbiguousPlayer)
-				return victim.toString();
 
 			if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 				return "You cannot ban that player";
