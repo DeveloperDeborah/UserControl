@@ -23,10 +23,9 @@ import java.util.regex.Pattern;
 public class PlayerDatabase extends Repository
 	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider
 {
-	public PlayerDatabase(IDebug console, IDatabase database, IScheduler scheduler)
+	public PlayerDatabase(IDebug console, IScheduler scheduler)
 	{
 		this.console = console;
-		this.database = database;
 		this.lookupCache = new TimedCache<String, List<String>>(scheduler);
 		this.dataCache = new TimedCache<String, PlayerData>(scheduler);
 	}
@@ -190,7 +189,6 @@ public class PlayerDatabase extends Repository
 	}
 
 	private final IDebug console;
-	private final IDatabase database;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");

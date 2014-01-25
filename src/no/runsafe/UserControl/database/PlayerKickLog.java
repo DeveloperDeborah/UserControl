@@ -8,11 +8,6 @@ import no.runsafe.framework.api.player.IPlayer;
 
 public class PlayerKickLog extends Repository
 {
-	public PlayerKickLog(IDatabase db)
-	{
-		database = db;
-	}
-
 	@Override
 	public String getTableName()
 	{
@@ -45,6 +40,4 @@ public class PlayerKickLog extends Repository
 			player.getName(), kicker == null ? "console" : kicker.getName(), reason, banned
 		);
 	}
-
-	private final IDatabase database;
 }

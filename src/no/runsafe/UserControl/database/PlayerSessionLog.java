@@ -12,11 +12,6 @@ import java.util.List;
 
 public class PlayerSessionLog extends Repository
 {
-	public PlayerSessionLog(IDatabase db)
-	{
-		database = db;
-	}
-
 	@Override
 	public String getTableName()
 	{
@@ -83,6 +78,4 @@ public class PlayerSessionLog extends Repository
 			quitMessage
 		);
 	}
-
-	private final IDatabase database;
 }
