@@ -7,6 +7,7 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.OnlinePlayerRequired;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
+import no.runsafe.framework.api.command.argument.UserGroupArgument;
 import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.hook.IPlayerExtensions;
@@ -24,16 +25,10 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
-			new OnlinePlayerRequired(), new RequiredArgument("rank")
+			new OnlinePlayerRequired(), new UserGroupArgument("rank", true)
 		);
 		this.server = server;
 		this.extensions = extensions;
-	}
-
-	@Override
-	public List<String> getParameterOptions(@Nonnull String parameter)
-	{
-		return parameter.equals("rank") ? groups : null;
 	}
 
 	@Override
