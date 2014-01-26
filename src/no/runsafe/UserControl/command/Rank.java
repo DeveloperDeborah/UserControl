@@ -1,40 +1,30 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.IConfiguration;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.OnlinePlayerRequired;
-import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.command.argument.UserGroupArgument;
-import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
-import no.runsafe.framework.api.hook.IPlayerExtensions;
-import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-public class Rank extends ExecutableCommand implements IConfigurationChanged, IServerReady
+public class Rank extends ExecutableCommand implements IConfigurationChanged
 {
-	public Rank(IServer server, IPlayerExtensions extensions)
+	public Rank()
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
 			new OnlinePlayerRequired(), new UserGroupArgument("rank", true)
 		);
-		this.server = server;
-		this.extensions = extensions;
 	}
 
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		IPlayer player = server.getPlayer(parameters.get("player"));
+		IPlayer player = parameters.getPlayer("player");
 
 		if (player == null)
 			return String.format("Unable to locate a player named %s", parameters.get("player"));
@@ -49,9 +39,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 				return String.format("&cYou may not change the group of %s", player.getPrettyName());
 		}
 
-		String rank = parameters.get("rank").toLowerCase();
-		if (!this.groups.contains(rank))
-			return "&cThat rank does not exist.";
+		String rank = parameters.get("rank");
 
 		if (isInGroup(player, rank))
 			return "&cThat player is already that rank.";
@@ -67,16 +55,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
-		OnServerReady();
 		this.messages = configuration.getConfigValuesAsMap("rankMessages");
-	}
-
-	@Override
-	public void OnServerReady()
-	{
-		this.groups.clear();
-		for (String group : extensions.getGroups())
-			groups.add(group.toLowerCase());
 	}
 
 	private boolean isInGroup(IPlayer player, String group)
@@ -88,8 +67,5 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged, IS
 		return false;
 	}
 
-	private List<String> groups = new ArrayList<String>();
 	private Map<String, String> messages;
-	private final IServer server;
-	private final IPlayerExtensions extensions;
 }
