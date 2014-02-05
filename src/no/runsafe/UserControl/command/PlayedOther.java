@@ -24,8 +24,12 @@ public class PlayedOther extends PlayerAsyncCommand implements IBranchingExecuti
 	@Override
 	public String OnAsyncExecute(IPlayer executor, IArgumentList parameters)
 	{
-		Duration played = database.GetTimePlayed(parameters.getPlayer("player"));
-		return String.format("You have played &6%s", formatTime(played));
+		IPlayer player = parameters.getPlayer("player");
+		if (player == null)
+			return "&cPlayer not found!";
+
+		Duration played = database.GetTimePlayed(player);
+		return String.format("%s has played for &6%s", player.getPrettyName(), formatTime(played));
 	}
 
 	private String formatTime(Duration time)
