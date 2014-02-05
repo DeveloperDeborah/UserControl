@@ -48,6 +48,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(Op.class);
 		addComponent(DeOp.class);
 		addComponent(Played.class);
+		addComponent(PlayedOther.class);
 		addComponent(SetFirstSpawn.class);
 		addComponent(SetRedirectLocation.class);
 		addComponent(RemoveRedirectLocation.class);

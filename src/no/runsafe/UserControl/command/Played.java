@@ -2,6 +2,7 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.command.IBranchingExecution;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.player.PlayerAsyncCommand;
 import no.runsafe.framework.api.player.IPlayer;
@@ -11,7 +12,7 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 
-public class Played extends PlayerAsyncCommand
+public class Played extends PlayerAsyncCommand implements IBranchingExecution
 {
 	public Played(IScheduler scheduler, PlayerSessionLog database)
 	{
