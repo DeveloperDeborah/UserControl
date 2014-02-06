@@ -42,6 +42,8 @@ whois.labels:
     blacklisted: Is blacklisted from creative
     owner: Owner of plots
     member: Member of plots
+  runsafe.clans:
+    clan: Clan
 whois.formats.game:
   experience: "%s xp"
 firstJoinLocation:
