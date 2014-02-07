@@ -44,6 +44,7 @@ whois.labels:
     member: Member of plots
   runsafe.clans:
     clan: Clan
+    joined: Joined Clan
 whois.formats.game:
   experience: "%s xp"
 firstJoinLocation:
