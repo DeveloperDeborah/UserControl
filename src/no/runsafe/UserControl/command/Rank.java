@@ -3,8 +3,8 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
+import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.OnlinePlayerRequired;
 import no.runsafe.framework.api.command.argument.UserGroupArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
@@ -17,7 +17,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
-			new OnlinePlayerRequired(), new UserGroupArgument("rank", true)
+			new AnyPlayerRequired(), new UserGroupArgument("rank", true)
 		);
 	}
 
