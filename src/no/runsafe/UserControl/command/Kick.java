@@ -5,33 +5,25 @@ import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.OnlinePlayerRequired;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
-import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
 
 public class Kick extends ExecutableCommand implements IConfigurationChanged
 {
 	public Kick(IServer server)
 	{
-		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new OnlinePlayerRequired(), new TrailingArgument("reason"));
+		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new Player.Online().require(), new TrailingArgument("reason"));
 		this.server = server;
 	}
 
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		IPlayer victim;
-		if (executor instanceof IPlayer)
-			victim = server.getOnlinePlayer((IPlayer) executor, parameters.get("player"));
-		else
-			victim = server.getOnlinePlayer(null, parameters.get("player"));
+		IPlayer victim = parameters.getValue("player");
 		if (victim == null)
-			return "Player not found";
-
-		if (victim instanceof IAmbiguousPlayer)
-			return victim.toString();
+			return null;
 
 		if (victim.hasPermission("runsafe.usercontrol.kick.immune"))
 			return "You cannot kick that player";

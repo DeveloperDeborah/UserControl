@@ -3,11 +3,10 @@ package no.runsafe.UserControl.command;
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IScheduler;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.player.IPlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -16,19 +15,17 @@ import org.joda.time.format.PeriodFormat;
 
 public class Seen extends AsyncCommand
 {
-	public Seen(IScheduler scheduler, PlayerDatabase database, IServer server)
+	public Seen(IScheduler scheduler, PlayerDatabase database)
 	{
-		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new AnyPlayerRequired());
+		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new Player.Any().require());
 		playerDatabase = database;
-		this.server = server;
 	}
 
 	public String OnAsyncExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		String playerName = parameters.get("player");
-		IPlayer player = server.getPlayer(playerName);
+		IPlayer player = parameters.getValue("player");
 		if (player == null)
-			return String.format("No players found matching %s", playerName);
+			return null;
 
 		IPlayer checker = null;
 		if (executor instanceof IPlayer)
@@ -71,5 +68,4 @@ public class Seen extends AsyncCommand
 
 	private final PlayerDatabase playerDatabase;
 	private final PeriodType output_format = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
-	private final IServer server;
 }

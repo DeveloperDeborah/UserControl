@@ -6,18 +6,17 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
-import no.runsafe.framework.api.player.IAmbiguousPlayer;
 import no.runsafe.framework.api.player.IPlayer;
 
 public class Ban extends ExecutableCommand implements IConfigurationChanged
 {
 	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase, IServer server)
 	{
-		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new AnyPlayerRequired(), new TrailingArgument("reason"));
+		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new Player.Any().require(), new TrailingArgument("reason"));
 		logger = log;
 		playerdb = playerDatabase;
 		this.server = server;
@@ -28,12 +27,9 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	{
 		String reason = parameters.get("reason");
 
-		IPlayer victim = server.getPlayer(parameters.get("player"));
+		IPlayer victim = parameters.getValue("player");
 		if (victim == null)
-			return "Player not found";
-
-		if (victim instanceof IAmbiguousPlayer)
-			return victim.toString();
+			return null;
 
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";

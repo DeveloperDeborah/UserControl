@@ -3,7 +3,7 @@ package no.runsafe.UserControl.command;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.UserGroupArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
@@ -17,17 +17,16 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
-			new AnyPlayerRequired(), new UserGroupArgument("rank", true)
+			new Player.Any().require(), new UserGroupArgument("rank").require()
 		);
 	}
 
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		IPlayer player = parameters.getPlayer("player");
-
+		IPlayer player = parameters.getValue("player");
 		if (player == null)
-			return String.format("Unable to locate a player named %s", parameters.get("player"));
+			return null;
 
 		if (player.getName().equals(executor.getName()))
 			return "&cYou may not change your own rank.";

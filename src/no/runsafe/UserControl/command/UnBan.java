@@ -5,29 +5,28 @@ import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.player.IPlayer;
 
 public class UnBan extends ExecutableCommand
 {
-	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer, IServer server)
+	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer)
 	{
 		super(
 			"unban", "Unbans a player from the server", "runsafe.usercontrol.unban",
-			new AnyPlayerRequired(), new RequiredArgument("reason")
+			new Player.Any().require(), new RequiredArgument("reason")
 		);
 		playerdb = playerDatabase;
 		this.enforcer = enforcer;
-		this.server = server;
 	}
 
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		enforcer.flushCache();
-		IPlayer player = server.getPlayer(parameters.get("player"));
+		IPlayer player = parameters.getValue("player");
 		if (player == null)
 			return String.format("Unable to find any player %s.", parameters.get("player"));
 		if (player.isNotBanned())
@@ -41,5 +40,4 @@ public class UnBan extends ExecutableCommand
 
 	private final PlayerDatabase playerdb;
 	private final BanEnforcer enforcer;
-	private final IServer server;
 }

@@ -4,7 +4,7 @@ import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.OnlinePlayerRequired;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.player.IPlayer;
 
@@ -14,7 +14,7 @@ public class BanIP extends ExecutableCommand
 	{
 		super(
 			"banip", "Bans an IP from connecting to this server", "runsafe.usercontrol.ban.ip",
-			new OnlinePlayerRequired(), new RequiredArgument("reason")
+			new Player.Online().require(), new RequiredArgument("reason")
 		);
 		this.server = server;
 	}
@@ -22,9 +22,9 @@ public class BanIP extends ExecutableCommand
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		IPlayer victim = server.getPlayer(parameters.get("player"));
+		IPlayer victim = parameters.getValue("player");
 		if (victim == null)
-			return "Player not found";
+			return null;
 
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";

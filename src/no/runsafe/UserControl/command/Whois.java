@@ -2,11 +2,10 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-import no.runsafe.framework.api.command.argument.AnyPlayerRequired;
 import no.runsafe.framework.api.command.argument.IArgumentList;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 
@@ -14,22 +13,21 @@ import java.util.Map;
 
 public class Whois extends AsyncCommand implements IConfigurationChanged
 {
-	public Whois(IScheduler scheduler, IServer server)
+	public Whois(IScheduler scheduler)
 	{
 		super(
 			"whois", "Queries the server about a player, printing available information.", "runsafe.usercontrol.whois",
 			scheduler,
-			new AnyPlayerRequired()
+			new Player.Any().require()
 		);
-		this.server = server;
 	}
 
 	@Override
 	public String OnAsyncExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		IPlayer target = server.getPlayer(parameters.get("player"));
+		IPlayer target = parameters.getValue("player");
 		if (target == null)
-			return String.format("Could not locate a player using %s", parameters.get("player"));
+			return null;
 		Map<String, String> data = target.getData();
 		if (data == null || data.size() == 0)
 			return String.format("No data found for player %s.", target.getPrettyName());
@@ -82,7 +80,6 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		return String.format(format, value);
 	}
 
-	private final IServer server;
 	private Map<String, String> labels;
 	private Map<String, String> outFormat;
 }
