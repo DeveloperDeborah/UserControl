@@ -17,7 +17,7 @@ public class Seen extends AsyncCommand
 {
 	public Seen(IScheduler scheduler, PlayerDatabase database)
 	{
-		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new Player.Any.Required());
+		super("seen", "Check when a player was last on the server", "runsafe.usercontrol.seen", scheduler, new Player.Any().require());
 		playerDatabase = database;
 	}
 

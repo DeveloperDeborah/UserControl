@@ -17,7 +17,7 @@ public class PlayedOther extends PlayerAsyncCommand implements IBranchingExecuti
 {
 	public PlayedOther(IScheduler scheduler, PlayerSessionLog database)
 	{
-		super("played", "Tells you how much time someone has spent on the server", "runsafe.usercontrol.played", scheduler, new Player.Any.Required());
+		super("played", "Tells you how much time someone has spent on the server", "runsafe.usercontrol.played", scheduler, new Player.Any().require());
 		this.database = database;
 	}
 

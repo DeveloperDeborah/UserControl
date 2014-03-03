@@ -14,7 +14,7 @@ public class BanIP extends ExecutableCommand
 	{
 		super(
 			"banip", "Bans an IP from connecting to this server", "runsafe.usercontrol.ban.ip",
-			new Player.Online.Required(), new RequiredArgument("reason")
+			new Player.Online().require(), new RequiredArgument("reason")
 		);
 		this.server = server;
 	}
