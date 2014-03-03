@@ -10,7 +10,7 @@ public class Op extends ExecutableCommand
 {
 	public Op()
 	{
-		super("op", "Makes a player an server operator", "runsafe.op", new Player.Online("player", false, true));
+		super("op", "Makes a player an server operator", "runsafe.op", new Player.Online("player", true));
 	}
 
 	@Override
