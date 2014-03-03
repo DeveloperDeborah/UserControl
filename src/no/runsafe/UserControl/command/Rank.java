@@ -17,7 +17,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 	{
 		super(
 			"rank", "Sets a players rank", "runsafe.usercontrol.rank.<rank>",
-			new Player.Any().require(), new UserGroupArgument("rank").require()
+			new Player.Any.Required(), new UserGroupArgument("rank").require()
 		);
 	}
 

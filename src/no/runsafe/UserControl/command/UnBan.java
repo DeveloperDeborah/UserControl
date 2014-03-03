@@ -16,7 +16,7 @@ public class UnBan extends ExecutableCommand
 	{
 		super(
 			"unban", "Unbans a player from the server", "runsafe.usercontrol.unban",
-			new Player.Any().require(), new RequiredArgument("reason")
+			new Player.Any.Required(), new RequiredArgument("reason")
 		);
 		playerdb = playerDatabase;
 		this.enforcer = enforcer;

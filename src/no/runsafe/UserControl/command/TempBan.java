@@ -21,7 +21,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	{
 		super(
 			"tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary",
-			new Player.Any().require(), new Period("time").require(), new TrailingArgument("reason")
+			new Player.Any.Required(), new Period("time").require(), new TrailingArgument("reason")
 		);
 		this.logger = logger;
 		this.server = server;

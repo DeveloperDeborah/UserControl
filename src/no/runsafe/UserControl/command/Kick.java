@@ -14,7 +14,7 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 {
 	public Kick(IServer server)
 	{
-		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new Player.Online().require(), new TrailingArgument("reason"));
+		super("kick", "Kicks a player from the server", "runsafe.usercontrol.kick", new Player.Online.Required(), new TrailingArgument("reason"));
 		this.server = server;
 	}
 

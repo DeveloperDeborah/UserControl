@@ -18,7 +18,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		super(
 			"whois", "Queries the server about a player, printing available information.", "runsafe.usercontrol.whois",
 			scheduler,
-			new Player.Any().require()
+			new Player.Any.Required()
 		);
 	}
 

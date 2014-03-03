@@ -16,7 +16,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 {
 	public Ban(PlayerKickLog log, PlayerDatabase playerDatabase, IServer server)
 	{
-		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new Player.Any().require(), new TrailingArgument("reason"));
+		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new Player.Any.Required(), new TrailingArgument("reason"));
 		logger = log;
 		playerdb = playerDatabase;
 		this.server = server;

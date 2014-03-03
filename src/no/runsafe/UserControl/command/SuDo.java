@@ -11,7 +11,7 @@ public class SuDo extends ExecutableCommand
 {
 	public SuDo()
 	{
-		super("sudo", "Force a player to run a command", "runsafe.usercontrol.sudo", new Player.Online().require(), new TrailingArgument("command"));
+		super("sudo", "Force a player to run a command", "runsafe.usercontrol.sudo", new Player.Online.Required(), new TrailingArgument("command"));
 	}
 
 	@Override
