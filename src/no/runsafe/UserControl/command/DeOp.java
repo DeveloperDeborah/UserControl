@@ -10,7 +10,7 @@ public class DeOp extends ExecutableCommand
 {
 	public DeOp()
 	{
-		super("deop", "Revokes server operator status from a player", "runsafe.op", new Player.Online("player", true));
+		super("deop", "Revokes server operator status from a player", "runsafe.op", new Player().onlineOnly().defaultToExecutor());
 	}
 
 	@Override

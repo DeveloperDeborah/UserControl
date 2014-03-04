@@ -13,7 +13,6 @@ import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
 public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
@@ -21,7 +20,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	{
 		super(
 			"tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary",
-			new Player.Any().require(), new Period("time").require(), new TrailingArgument("reason")
+			new Player().require(), new Period("time").require(), new TrailingArgument("reason")
 		);
 		this.logger = logger;
 		this.server = server;
@@ -31,7 +30,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		Duration duration = parameters.getValue("time");
+		org.joda.time.Period duration = parameters.getValue("time");
 		if (duration == null)
 			return null;
 		DateTime expires = DateTime.now().plus(duration);
