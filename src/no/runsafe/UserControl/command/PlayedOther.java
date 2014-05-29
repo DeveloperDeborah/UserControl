@@ -1,11 +1,11 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerSessionLog;
-import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.IBranchingExecution;
+import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.player.PlayerAsyncCommand;
 import no.runsafe.framework.api.player.IPlayer;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -13,16 +13,16 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 
-public class PlayedOther extends PlayerAsyncCommand implements IBranchingExecution
+public class PlayedOther extends ExecutableCommand implements IBranchingExecution
 {
-	public PlayedOther(IScheduler scheduler, PlayerSessionLog database)
+	public PlayedOther(PlayerSessionLog database)
 	{
-		super("played", "Tells you how much time someone has spent on the server", "runsafe.usercontrol.played", scheduler, new Player().require());
+		super("played", "Tells you how much time someone has spent on the server", "runsafe.usercontrol.played", new Player().require());
 		this.database = database;
 	}
 
 	@Override
-	public String OnAsyncExecute(IPlayer executor, IArgumentList parameters)
+	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		IPlayer player = parameters.getValue("player");
 		if (player == null)
