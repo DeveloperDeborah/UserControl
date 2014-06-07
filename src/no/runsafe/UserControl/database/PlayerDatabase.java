@@ -2,6 +2,7 @@ package no.runsafe.UserControl.database;
 
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.*;
+import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.IPlayerLookupService;
 import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
-	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider
+	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady
 {
 	public PlayerDatabase(IDebug console, IScheduler scheduler)
 	{
@@ -58,6 +59,13 @@ public class PlayerDatabase extends Repository
 		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
 
 		return update;
+	}
+
+	@Override
+	public void OnServerReady()
+	{
+		// Clean up invalid state after a server failure
+		database.update("UPDATE player_db SET `logout`=NOW() WHERE logout < login");
 	}
 
 	public void logPlayerInfo(IPlayer player)
