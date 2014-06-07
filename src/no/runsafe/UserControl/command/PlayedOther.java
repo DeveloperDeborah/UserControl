@@ -1,6 +1,8 @@
 package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.database.PlayerSessionLog;
+import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.command.AsyncCommand;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.IBranchingExecution;
 import no.runsafe.framework.api.command.ICommandExecutor;
@@ -13,16 +15,16 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 
-public class PlayedOther extends ExecutableCommand implements IBranchingExecution
+public class PlayedOther extends AsyncCommand implements IBranchingExecution
 {
-	public PlayedOther(PlayerSessionLog database)
+	public PlayedOther(PlayerSessionLog database, IScheduler scheduler)
 	{
-		super("played", "Tells you how much time someone has spent on the server", "runsafe.usercontrol.played", new Player().require());
+		super("played", "Tells you how much time someone has spent on the server", "runsafe.usercontrol.played", scheduler, new Player().require());
 		this.database = database;
 	}
 
 	@Override
-	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
+	public String OnAsyncExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
 		IPlayer player = parameters.getValue("player");
 		if (player == null)
