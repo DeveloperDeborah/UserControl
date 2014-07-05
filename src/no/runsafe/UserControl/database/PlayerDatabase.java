@@ -1,13 +1,19 @@
 package no.runsafe.UserControl.database;
 
+import no.runsafe.framework.api.IPluginUpdate;
 import no.runsafe.framework.api.IScheduler;
-import no.runsafe.framework.api.database.*;
+import no.runsafe.framework.api.database.IRow;
+import no.runsafe.framework.api.database.ISchemaUpdate;
+import no.runsafe.framework.api.database.Repository;
+import no.runsafe.framework.api.database.SchemaUpdate;
 import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.IPlayerLookupService;
 import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
+import no.runsafe.framework.api.log.IConsole;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.internal.extension.player.RunsafePlayer;
 import no.runsafe.framework.timer.TimedCache;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -19,14 +25,16 @@ import org.joda.time.format.PeriodFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
-	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady
+	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady, IPluginUpdate
 {
-	public PlayerDatabase(IDebug console, IScheduler scheduler)
+	public PlayerDatabase(IDebug console, IScheduler scheduler, IConsole output)
 	{
 		this.console = console;
+		this.output = output;
 		this.lookupCache = new TimedCache<String, List<String>>(scheduler);
 		this.dataCache = new TimedCache<String, PlayerData>(scheduler);
 	}
@@ -53,11 +61,11 @@ public class PlayerDatabase extends Repository
 				"`ban_by` varchar(255) NULL," +
 				"`ip` int unsigned NULL," +
 				"PRIMARY KEY(`name`)" +
-			")"
+				")"
 		);
 
 		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
-
+		update.addQueries("ALTER TABLE player_db ADD COLUMN uuid VARCHAR(255) NULL");
 		return update;
 	}
 
@@ -196,6 +204,31 @@ public class PlayerDatabase extends Repository
 		return GetPlayerLogout(player) == null;
 	}
 
+
+	@Override
+	public boolean updateFrom(String version)
+	{
+		if (version.startsWith("1.0."))
+			updateUUIDs();
+		return true;
+	}
+
+	public void updateUUIDs()
+	{
+		for (IPlayer player : database.queryPlayers("SELECT `name` FROM player_db WHERE uuid IS NULL"))
+		{
+			UUID uuid = ((RunsafePlayer) player).getBasePlayer().getUniqueId();
+			if (uuid != null)
+			{
+				output.logInformation("Updating player %s with UUID %s", player.getName(), uuid.toString());
+				database.update("UPDATE player_db SET `uuid`=? WHERE `name`=?", uuid.toString());
+			}
+			else
+				output.logWarning("Could not find UUID for player %s", player.getName());
+		}
+	}
+
+	private final IConsole output;
 	private final IDebug console;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");

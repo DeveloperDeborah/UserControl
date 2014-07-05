@@ -1,16 +1,16 @@
 package no.runsafe.UserControl.database;
 
-import no.runsafe.framework.api.database.IDatabase;
 import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
+import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
 
 import java.util.List;
 
-public class PlayerSessionLog extends Repository
+public class PlayerSessionLog extends Repository implements IServerReady
 {
 	@Override
 	public String getTableName()
@@ -34,8 +34,18 @@ public class PlayerSessionLog extends Repository
 				"PRIMARY KEY(`name`,`login`)" +
 			")"
 		);
-
+		update.addQueries("ALTER TABLE player_session ADD COLUMN `uuid` VARCHAR(255) NULL");
 		return update;
+	}
+
+	@Override
+	public void OnServerReady()
+	{
+		database.execute(
+			"UPDATE player_session " +
+				"SET `uuid`=(SELECT `uuid` FROM player_db WHERE `name`=`player_session`.`name`) " +
+				"WHERE uuid IS NULL"
+		);
 	}
 
 	public Duration GetTimePlayed(IPlayer player)

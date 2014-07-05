@@ -55,6 +55,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(Maintenance.class);
 		addComponent(Rank.class);
 		addComponent(List.class);
+		addComponent(UUIDScan.class);
 
 		// Events
 		addComponent(KickEvent.class);

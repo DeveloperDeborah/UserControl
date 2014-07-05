@@ -1,6 +1,6 @@
 name: UserControl
 main: no.runsafe.UserControl.Plugin
-version: 1.0.@BUILD@
+version: 1.1.@BUILD@
 authors: [mortenn]
 depend: []
 description: Tools for handling users
@@ -43,3 +43,5 @@ commands:
     description: Allows you to set a players rank.
   list:
     description: List online players
+  uuidscan:
+    description: Try to update players with UUIDs in the database.
