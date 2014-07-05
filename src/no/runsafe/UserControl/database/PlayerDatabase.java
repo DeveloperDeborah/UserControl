@@ -29,7 +29,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
-	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady, IPluginUpdate
+	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady
 {
 	public PlayerDatabase(IDebug console, IScheduler scheduler, IConsole output)
 	{
@@ -202,15 +202,6 @@ public class PlayerDatabase extends Repository
 	public boolean IsFirstSession(IPlayer player)
 	{
 		return GetPlayerLogout(player) == null;
-	}
-
-
-	@Override
-	public boolean updateFrom(String version)
-	{
-		if (version.startsWith("1.0."))
-			updateUUIDs();
-		return true;
 	}
 
 	public void updateUUIDs()
