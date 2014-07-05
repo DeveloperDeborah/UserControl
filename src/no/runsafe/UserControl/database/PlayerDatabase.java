@@ -221,7 +221,7 @@ public class PlayerDatabase extends Repository
 			if (uuid != null)
 			{
 				output.logInformation("Updating player %s with UUID %s", player.getName(), uuid.toString());
-				database.update("UPDATE player_db SET `uuid`=? WHERE `name`=?", uuid.toString());
+				database.update("UPDATE player_db SET `uuid`=? WHERE `name`=?", uuid.toString(), player.getName());
 			}
 			else
 				output.logWarning("Could not find UUID for player %s", player.getName());
