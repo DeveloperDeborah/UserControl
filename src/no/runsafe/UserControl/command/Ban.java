@@ -25,7 +25,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		String reason = parameters.get("reason");
+		String reason = parameters.getValue("reason");
 
 		IPlayer victim = parameters.getValue("player");
 		if (victim == null)

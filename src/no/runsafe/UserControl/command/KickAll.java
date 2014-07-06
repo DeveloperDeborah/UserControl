@@ -18,7 +18,7 @@ public class KickAll extends ExecutableCommand
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		String reason = parameters.get("reason");
+		String reason = parameters.getValue("reason");
 		int n = 0;
 
 		IPlayer kicker = null;

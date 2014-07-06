@@ -34,7 +34,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 		if (duration == null)
 			return null;
 		DateTime expires = DateTime.now().plus(duration);
-		String reason = parameters.get("reason");
+		String reason = parameters.getValue("reason");
 
 		IPlayer victim = parameters.getValue("player");
 		if (victim == null)

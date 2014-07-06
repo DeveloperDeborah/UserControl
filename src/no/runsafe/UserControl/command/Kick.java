@@ -28,7 +28,7 @@ public class Kick extends ExecutableCommand implements IConfigurationChanged
 		if (victim.hasPermission("runsafe.usercontrol.kick.immune"))
 			return "You cannot kick that player";
 
-		String reason = parameters.get("reason");
+		String reason = parameters.getValue("reason");
 
 		if (executor instanceof IPlayer)
 		{

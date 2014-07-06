@@ -2,11 +2,10 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.BanEnforcer;
 import no.runsafe.UserControl.database.PlayerDatabase;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.IArgumentList;
+import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.player.IPlayer;
 
@@ -28,7 +27,8 @@ public class UnBan extends ExecutableCommand
 		enforcer.flushCache();
 		IPlayer player = parameters.getValue("player");
 		if (player == null)
-			return String.format("Unable to find any player %s.", parameters.get("player"));
+			return null;
+
 		if (player.isNotBanned())
 			return String.format("Player %s is not banned.", player.getPrettyName());
 

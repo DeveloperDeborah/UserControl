@@ -38,7 +38,7 @@ public class Rank extends ExecutableCommand implements IConfigurationChanged
 				return String.format("&cYou may not change the group of %s", player.getPrettyName());
 		}
 
-		String rank = parameters.get("rank");
+		String rank = parameters.getValue("rank");
 
 		if (isInGroup(player, rank))
 			return "&cThat player is already that rank.";

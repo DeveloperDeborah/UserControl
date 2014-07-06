@@ -23,7 +23,7 @@ public class SuDo extends ExecutableCommand
 		if (target.hasPermission("runsafe.usercontrol.sudo.immune"))
 			return "You cannot make that user run commands";
 
-		String command = parameters.get("command");
+		String command = parameters.getValue("command");
 		target.performCommand(command);
 		return String.format("Forced %s to run /%s", target.getName(), command);
 	}

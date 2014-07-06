@@ -20,7 +20,7 @@ public class UnBanIP extends ExecutableCommand
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		String ip = parameters.get("ip-address");
+		String ip = parameters.getValue("ip-address");
 		server.unbanIP(ip);
 		return String.format("Unbanned IP %s from the server", ip);
 	}
