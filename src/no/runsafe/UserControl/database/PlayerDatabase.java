@@ -1,6 +1,5 @@
 package no.runsafe.UserControl.database;
 
-import no.runsafe.framework.api.IPluginUpdate;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.IRow;
 import no.runsafe.framework.api.database.ISchemaUpdate;
@@ -208,14 +207,21 @@ public class PlayerDatabase extends Repository
 	{
 		for (IPlayer player : database.queryPlayers("SELECT `name` FROM player_db WHERE uuid IS NULL"))
 		{
-			UUID uuid = ((RunsafePlayer) player).getBasePlayer().getUniqueId();
-			if (uuid != null)
-			{
-				output.logInformation("Updating player %s with UUID %s", player.getName(), uuid.toString());
-				database.update("UPDATE player_db SET `uuid`=? WHERE `name`=?", uuid.toString(), player.getName());
-			}
+			if (player == null)
+				output.logError("Null player detected");
+			else if (((RunsafePlayer) player).getBasePlayer() == null)
+				output.logError("Null base player detected: %s", player.getName());
 			else
-				output.logWarning("Could not find UUID for player %s", player.getName());
+			{
+				UUID uuid = ((RunsafePlayer) player).getBasePlayer().getUniqueId();
+				if (uuid != null)
+				{
+					output.logInformation("Updating player %s with UUID %s", player.getName(), uuid.toString());
+					database.update("UPDATE player_db SET `uuid`=? WHERE `name`=?", uuid.toString(), player.getName());
+				}
+				else
+					output.logWarning("Could not find UUID for player %s", player.getName());
+			}
 		}
 	}
 
