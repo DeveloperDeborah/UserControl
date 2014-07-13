@@ -79,9 +79,9 @@ public class PlayerDatabase extends Repository
 	{
 		console.debugFine("Updating player_db with login time");
 		database.update(
-			"INSERT INTO player_db (`name`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
-				"ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player.getName(), player.getIP()
+			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
+				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
+			((RunsafePlayer)player).getBasePlayer().getUniqueId().toString(), player.getName(), player.getIP()
 		);
 		dataCache.Invalidate(player.getName());
 		lookupCache.Purge();
