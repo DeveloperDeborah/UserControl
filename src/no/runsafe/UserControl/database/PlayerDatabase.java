@@ -127,7 +127,9 @@ public class PlayerDatabase extends Repository
 			return data;
 
 		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
-		if (!((RunsafePlayer)player).getBasePlayer().getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
+		if (raw.isEmpty())
+			output.logInformation("New player %s with UUID %s discovered!", player.getName(), ((RunsafePlayer)player).getBasePlayer().getUniqueId().toString());
+		else if (!((RunsafePlayer)player).getBasePlayer().getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
 			output.logError("Player %s UUID mismatch detected! %s <> %s", player.getName(), ((RunsafePlayer)player).getBasePlayer().getUniqueId().toString(), raw.String("uuid"));
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
