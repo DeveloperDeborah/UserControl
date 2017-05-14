@@ -24,7 +24,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 	public void OnBeforePlayerLogin(RunsafePlayerPreLoginEvent event)
 	{
 		if (event.getPlayer().isNew())
-			this.newPlayers.add(event.getPlayer().getName());
+			this.newPlayers.add(event.getPlayer());
 	}
 
 	@Override
@@ -35,10 +35,10 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 		{
 			player.teleport(this.loginRedirectManager.getRedirectLocation());
 		}
-		else if (this.newPlayers.contains(player.getName()) && firstSpawnLocation != null)
+		else if (this.newPlayers.contains(player) && firstSpawnLocation != null)
 		{
 			player.teleport(firstSpawnLocation);
-			this.newPlayers.remove(player.getName());
+			this.newPlayers.remove(player);
 		}
 	}
 
@@ -48,7 +48,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 		this.firstSpawnLocation = config.getConfigValueAsLocation("firstJoinLocation");
 	}
 
-	private final List<String> newPlayers = new ArrayList<String>();
+	private final List<IPlayer> newPlayers = new ArrayList<IPlayer>();
 	private final LoginRedirectManager loginRedirectManager;
 	private ILocation firstSpawnLocation;
 }
