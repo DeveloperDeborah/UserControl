@@ -22,7 +22,7 @@ public class PlayerKickLog extends Repository
 		update.addQueries(
 			"CREATE TABLE player_kick_log (" +
 				"`name` varchar(255) NOT NULL," +
-				"`timestamp` datetime NULL," +
+				"`timestamp` datetime NOT NULL," +
 				"`kick_by` varchar(255) NOT NULL," +
 				"`reason` varchar(255) NULL," +
 				"`banned` bool NULL," +
