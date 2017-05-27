@@ -40,7 +40,6 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 
 		if (!victim.isOnline() || (banningPlayer != null && banningPlayer.shouldNotSee(victim)))
 		{
-			victim.setBanned(true);
 			playerdb.logPlayerBan(victim, banningPlayer, reason);
 			logger.logKick(banningPlayer, victim, reason, true);
 			return String.format("Banned offline player %s.", victim.getPrettyName());

@@ -2,6 +2,7 @@ package no.runsafe.UserControl.command;
 
 import no.runsafe.UserControl.BanEnforcer;
 import no.runsafe.UserControl.database.PlayerDatabase;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
@@ -11,7 +12,7 @@ import no.runsafe.framework.api.player.IPlayer;
 
 public class UnBan extends ExecutableCommand
 {
-	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer)
+	public UnBan(PlayerDatabase playerDatabase, BanEnforcer enforcer, IServer server)
 	{
 		super(
 			"unban", "Unbans a player from the server", "runsafe.usercontrol.unban",
@@ -19,6 +20,7 @@ public class UnBan extends ExecutableCommand
 		);
 		playerdb = playerDatabase;
 		this.enforcer = enforcer;
+		this.server = server;
 	}
 
 	@Override
@@ -34,10 +36,11 @@ public class UnBan extends ExecutableCommand
 
 		// TODO Log unbanning reason
 		playerdb.logPlayerUnban(player);
-		player.setBanned(false);
+		server.unbanPlayer(player);
 		return String.format("Player %s was unbanned.", player.getPrettyName());
 	}
 
 	private final PlayerDatabase playerdb;
 	private final BanEnforcer enforcer;
+	private final IServer server;
 }

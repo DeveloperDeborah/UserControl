@@ -51,7 +51,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 
 		if (!victim.isOnline() || (banner != null && banner.shouldNotSee(victim)))
 		{
-			victim.setBanned(true);
+			server.banPlayer(banner, victim, reason);
 			logger.logKick(banner, victim, reason, true);
 			playerdb.logPlayerBan(victim, banner, reason);
 			return String.format("Temporarily banned offline player %s.", victim.getPrettyName());

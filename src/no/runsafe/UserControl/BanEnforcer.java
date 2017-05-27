@@ -3,6 +3,7 @@ package no.runsafe.UserControl;
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
@@ -16,9 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 {
-	public BanEnforcer(PlayerDatabase playerDatabase)
+	public BanEnforcer(PlayerDatabase playerDatabase, IServer server)
 	{
 		playerdb = playerDatabase;
+		this.server = server;
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			else
 			{
 				playerdb.logPlayerUnban(event.getPlayer());
-				event.getPlayer().setBanned(false);
+				server.unbanPlayer(player);
 			}
 		}
 		else
@@ -88,6 +90,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 	}
 
 	private final PlayerDatabase playerdb;
+	private final IServer server;
 	private String banMessageFormat = "Banned: %s";
 	private String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";
 	private final ConcurrentHashMap<String, String> activeBans = new ConcurrentHashMap<String, String>();
