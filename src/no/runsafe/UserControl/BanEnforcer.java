@@ -3,10 +3,10 @@ package no.runsafe.UserControl;
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IConfiguration;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.api.server.IPlayerManager;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -17,10 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 {
-	public BanEnforcer(PlayerDatabase playerDatabase, IServer server)
+	public BanEnforcer(PlayerDatabase playerDatabase, IPlayerManager playerManager)
 	{
 		playerdb = playerDatabase;
-		this.server = server;
+		this.playerManager = playerManager;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			else
 			{
 				playerdb.logPlayerUnban(event.getPlayer());
-				server.unbanPlayer(player);
+				playerManager.unbanPlayer(player);
 			}
 		}
 		else
@@ -90,7 +90,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 	}
 
 	private final PlayerDatabase playerdb;
-	private final IServer server;
+	private final IPlayerManager playerManager;
 	private String banMessageFormat = "Banned: %s";
 	private String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";
 	private final ConcurrentHashMap<IPlayer, String> activeBans = new ConcurrentHashMap<>();

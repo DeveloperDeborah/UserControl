@@ -3,7 +3,6 @@ package no.runsafe.UserControl.command;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.api.IConfiguration;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
@@ -12,18 +11,26 @@ import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.TrailingArgument;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.api.server.IBroadcast;
+import no.runsafe.framework.api.server.IPlayerManager;
 import org.joda.time.DateTime;
 
 public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
-	public TempBan(PlayerDatabase playerDatabase, PlayerKickLog logger, IServer server)
+	public TempBan(
+		PlayerDatabase playerDatabase,
+		PlayerKickLog logger,
+		IBroadcast broadcaster,
+		IPlayerManager playerManager
+	)
 	{
 		super(
 			"tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary",
 			new Player().require(), new Period("time").require(), new TrailingArgument("reason")
 		);
 		this.logger = logger;
-		this.server = server;
+		this.broadcaster = broadcaster;
+		this.playerManager = playerManager;
 		playerdb = playerDatabase;
 	}
 
@@ -51,14 +58,14 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 
 		if (!victim.isOnline() || (banner != null && banner.shouldNotSee(victim)))
 		{
-			server.banPlayer(banner, victim, reason);
+			playerManager.banPlayer(banner, victim, reason);
 			logger.logKick(banner, victim, reason, true);
 			playerdb.logPlayerBan(victim, banner, reason);
 			return String.format("Temporarily banned offline player %s.", victim.getPrettyName());
 		}
 		if (lightning)
 			victim.strikeWithLightning(fakeLightning);
-		server.banPlayer(banner, victim, reason);
+		playerManager.banPlayer(banner, victim, reason);
 		this.sendTempBanMessage(victim, executor, reason);
 		return null;
 	}
@@ -66,9 +73,9 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	private void sendTempBanMessage(IPlayer victim, ICommandExecutor executor, String reason)
 	{
 		if (executor instanceof IPlayer)
-			server.broadcastMessage(String.format(this.onTempBanMessage, victim.getPrettyName(), reason, ((IPlayer) executor).getPrettyName()));
+			broadcaster.broadcastMessage(String.format(this.onTempBanMessage, victim.getPrettyName(), reason, ((IPlayer) executor).getPrettyName()));
 		else
-			server.broadcastMessage(String.format(this.onServerTempBanMessage, victim.getPrettyName(), reason));
+			broadcaster.broadcastMessage(String.format(this.onServerTempBanMessage, victim.getPrettyName(), reason));
 	}
 
 	@Override
@@ -82,7 +89,8 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 
 	private final PlayerDatabase playerdb;
 	private final PlayerKickLog logger;
-	private final IServer server;
+	private final IBroadcast broadcaster;
+	private final IPlayerManager playerManager;
 	private boolean lightning;
 	private boolean fakeLightning;
 	private String onTempBanMessage;
