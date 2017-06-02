@@ -8,16 +8,19 @@ import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PlayerSessionLog extends Repository implements IServerReady
 {
+	@Nonnull
 	@Override
 	public String getTableName()
 	{
 		return "player_session";
 	}
 
+	@Nonnull
 	@Override
 	public ISchemaUpdate getSchemaUpdateQueries()
 	{

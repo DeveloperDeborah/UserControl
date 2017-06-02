@@ -21,6 +21,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,12 +39,14 @@ public class PlayerDatabase extends Repository
 		this.dataCache = new TimedCache<>(scheduler);
 	}
 
+	@Nonnull
 	@Override
 	public String getTableName()
 	{
 		return "player_db";
 	}
 
+	@Nonnull
 	@Override
 	public ISchemaUpdate getSchemaUpdateQueries()
 	{

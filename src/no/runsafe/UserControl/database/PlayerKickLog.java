@@ -6,14 +6,18 @@ import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
 import no.runsafe.framework.api.player.IPlayer;
 
+import javax.annotation.Nonnull;
+
 public class PlayerKickLog extends Repository
 {
+	@Nonnull
 	@Override
 	public String getTableName()
 	{
 		return "player_kick_log";
 	}
 
+	@Nonnull
 	@Override
 	public ISchemaUpdate getSchemaUpdateQueries()
 	{
