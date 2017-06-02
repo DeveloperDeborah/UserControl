@@ -35,7 +35,7 @@ public class PlayerDatabase extends Repository
 		this.console = console;
 		this.output = output;
 		this.lookupCache = new TimedCache<String, List<String>>(scheduler);
-		this.dataCache = new TimedCache<String, PlayerData>(scheduler);
+		this.dataCache = new TimedCache<>(scheduler);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class PlayerDatabase extends Repository
 				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
 			((RunsafePlayer)player).getBasePlayer().getUniqueId().toString(), player.getName(), player.getIP()
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 		lookupCache.Purge();
 	}
 
@@ -93,13 +93,13 @@ public class PlayerDatabase extends Repository
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
 			reason, banner == null ? "console" : banner.getName(), player.getName()
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public void setPlayerTemporaryBan(IPlayer player, DateTime temporary)
 	{
 		database.update("UPDATE player_db SET temp_ban=? WHERE `name`=?", temporary, player.getName());
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public void logPlayerUnban(IPlayer player)
@@ -108,7 +108,7 @@ public class PlayerDatabase extends Repository
 			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?",
 			player.getName()
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public void logPlayerLogout(IPlayer player)
@@ -117,12 +117,12 @@ public class PlayerDatabase extends Repository
 			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?",
 			player.getName()
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public PlayerData getData(IPlayer player)
 	{
-		PlayerData data = dataCache.Cache(player.getName());
+		PlayerData data = dataCache.Cache(player);
 		if (data != null)
 			return data;
 
@@ -140,7 +140,7 @@ public class PlayerDatabase extends Repository
 		data.setLogout(raw.DateTime("logout"));
 		data.setUnban(raw.DateTime("temp_ban"));
 
-		return dataCache.Cache(player.getName(), data);
+		return dataCache.Cache(player, data);
 	}
 
 	@Override
@@ -235,5 +235,5 @@ public class PlayerDatabase extends Repository
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");
 	private final TimedCache<String, List<String>> lookupCache;
-	private final TimedCache<String, PlayerData> dataCache;
+	private final TimedCache<IPlayer, PlayerData> dataCache;
 }

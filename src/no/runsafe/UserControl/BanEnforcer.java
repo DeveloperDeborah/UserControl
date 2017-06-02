@@ -32,9 +32,9 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			return;
 		}
 
-		if (activeBans.containsKey(event.getName()))
+		if (activeBans.containsKey(event.getPlayer()))
 		{
-			event.playerBanned(activeBans.get(event.getName()));
+			event.playerBanned(activeBans.get(event.getPlayer()));
 			return;
 		}
 
@@ -73,7 +73,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 		{
 			String banReason = String.format(banMessageFormat, data.getBanReason());
 			event.playerBanned(banReason);
-			activeBans.put(event.getName(), banReason);
+			activeBans.put(event.getPlayer(), banReason);
 		}
 	}
 
@@ -93,7 +93,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 	private final IServer server;
 	private String banMessageFormat = "Banned: %s";
 	private String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";
-	private final ConcurrentHashMap<String, String> activeBans = new ConcurrentHashMap<String, String>();
+	private final ConcurrentHashMap<IPlayer, String> activeBans = new ConcurrentHashMap<>();
 	private static final PeriodType LONG_TIME_LEFT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private static final PeriodType SHORT_TIME_LEFT = PeriodType.standard().withMillisRemoved();
 	private static final Duration ONE_MINUTE = Duration.standardMinutes(1);
