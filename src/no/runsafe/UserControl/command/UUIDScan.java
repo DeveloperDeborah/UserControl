@@ -21,5 +21,4 @@ public class UUIDScan extends ConsoleAsyncCommand
 	}
 
 	private final PlayerDatabase players;
-
 }
