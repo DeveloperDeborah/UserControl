@@ -56,8 +56,8 @@ public class PlayerSessionLog extends Repository implements IServerReady
 		Long time = database.queryLong(
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
-				"WHERE `name`=?",
-			player.getName()
+				"WHERE `uuid`=?",
+			player.getUniqueId().toString()
 		);
 		return time == null ? null : Duration.standardMinutes(time);
 	}
@@ -69,18 +69,19 @@ public class PlayerSessionLog extends Repository implements IServerReady
 		if (groups.size() > 0)
 			group = StringUtils.join(groups, ",");
 		database.update(
-			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)",
+			"INSERT INTO player_session (`name`, `ip`, `login`, `group`, `uuid`) VALUES (?, INET_ATON(?), NOW(), ?, ?)",
 			player.getName(),
 			player.getIP(),
-			group
+			group,
+			player.getUniqueId().toString()
 		);
 	}
 
 	public void logSessionClosed(IPlayer player, String quitMessage)
 	{
 		database.update(
-			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE name=? AND logout IS NULL",
-			quitMessage, player.getName()
+			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE uuid=? AND logout IS NULL",
+			quitMessage, player.getUniqueId()
 		);
 	}
 
