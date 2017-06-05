@@ -3,7 +3,6 @@ package no.runsafe.UserControl.database;
 import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
-import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
@@ -11,7 +10,7 @@ import org.joda.time.Duration;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class PlayerSessionLog extends Repository implements IServerReady
+public class PlayerSessionLog extends Repository
 {
 	@Nonnull
 	@Override
@@ -38,17 +37,18 @@ public class PlayerSessionLog extends Repository implements IServerReady
 			")"
 		);
 		update.addQueries("ALTER TABLE player_session ADD COLUMN `uuid` VARCHAR(255) NULL");
-		return update;
-	}
 
-	@Override
-	public void OnServerReady()
-	{
-		database.execute(
-			"UPDATE player_session " +
-				"SET `uuid`=(SELECT `uuid` FROM player_db WHERE `name`=`player_session`.`name`) " +
-				"WHERE uuid IS NULL"
+		update.addQueries(
+			String.format( // Update null UUIDs.
+				"UPDATE `%s` SET `uuid` = " +
+					"COALESCE((SELECT `uuid` FROM player_db WHERE `name`=`%s`.`name`), 'default') " +
+					"WHERE uuid IS NULL",
+				getTableName(), getTableName()
+			),
+			String.format("ALTER TABLE `%s` MODIFY COLUMN `uuid` VARCHAR(36) NOT NULL", getTableName())
 		);
+
+		return update;
 	}
 
 	public Duration GetTimePlayed(IPlayer player)
