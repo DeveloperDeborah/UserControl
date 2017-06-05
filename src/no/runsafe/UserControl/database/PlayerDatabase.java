@@ -84,7 +84,7 @@ public class PlayerDatabase extends Repository
 		database.update(
 			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			((RunsafePlayer)player).getBasePlayer().getUniqueId().toString(), player.getName(), player.getIP()
+			player.getUniqueId().toString(), player.getName(), player.getIP()
 		);
 		dataCache.Invalidate(player);
 		lookupCache.Purge();
@@ -131,9 +131,9 @@ public class PlayerDatabase extends Repository
 
 		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
 		if (raw.isEmpty())
-			output.logInformation("New player %s with UUID %s discovered!", player.getName(), ((RunsafePlayer)player).getBasePlayer().getUniqueId().toString());
-		else if (!((RunsafePlayer)player).getBasePlayer().getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
-			output.logError("Player %s UUID mismatch detected! %s <> %s", player.getName(), ((RunsafePlayer)player).getBasePlayer().getUniqueId().toString(), raw.String("uuid"));
+			output.logInformation("New player %s with UUID %s discovered!", player.getName(), player.getUniqueId().toString());
+		else if (!player.getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
+			output.logError("Player %s UUID mismatch detected! %s <> %s", player.getName(), player.getUniqueId().toString(), raw.String("uuid"));
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
 		data.setBanner(raw.String("ban_by"));
@@ -220,7 +220,7 @@ public class PlayerDatabase extends Repository
 				output.logError("Null base player detected: %s", player.getName());
 			else
 			{
-				UUID uuid = ((RunsafePlayer) player).getBasePlayer().getUniqueId();
+				UUID uuid = player.getUniqueId();
 				if (uuid != null)
 				{
 					output.logInformation("Updating player %s with UUID %s", player.getName(), uuid.toString());
