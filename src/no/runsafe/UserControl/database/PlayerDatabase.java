@@ -35,7 +35,7 @@ public class PlayerDatabase extends Repository
 	{
 		this.console = console;
 		this.output = output;
-		this.lookupCache = new TimedCache<String, List<String>>(scheduler);
+		this.lookupCache = new TimedCache<>(scheduler);
 		this.dataCache = new TimedCache<>(scheduler);
 	}
 
@@ -166,7 +166,7 @@ public class PlayerDatabase extends Repository
 	public HashMap<String, String> GetPlayerData(IPlayer player)
 	{
 		PlayerData data = getData(player);
-		HashMap<String, String> result = new LinkedHashMap<String, String>();
+		HashMap<String, String> result = new LinkedHashMap<>();
 		if (data.getBanned() != null)
 		{
 			result.put("usercontrol.ban.status", "true");

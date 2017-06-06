@@ -48,7 +48,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 		this.firstSpawnLocation = config.getConfigValueAsLocation("firstJoinLocation");
 	}
 
-	private final List<IPlayer> newPlayers = new ArrayList<IPlayer>();
+	private final List<IPlayer> newPlayers = new ArrayList<>();
 	private final LoginRedirectManager loginRedirectManager;
 	private ILocation firstSpawnLocation;
 }
