@@ -20,7 +20,7 @@ public class List extends ExecutableCommand
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		ArrayList<String> online = new ArrayList<String>();
+		ArrayList<String> online = new ArrayList<>();
 		for (IPlayer player : server.getOnlinePlayers())
 		{
 			if (executor instanceof IPlayer && ((IPlayer) executor).shouldNotSee(player))

@@ -2,7 +2,6 @@ package no.runsafe.UserControl;
 
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerLoginEvent;
 import no.runsafe.framework.api.event.player.IPlayerOperatorEvent;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
@@ -17,10 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class OpController extends Timer implements IConfigurationChanged, IPlayerLoginEvent, IPlayerOperatorEvent
 {
-	public OpController(IScheduler scheduler, IServer server)
+	public OpController(IScheduler scheduler)
 	{
 		super(scheduler, false);
-		this.server = server;
 		delay = 100;
 		period = 100;
 	}
@@ -28,11 +26,10 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 	@Override
 	public void OnElapsed()
 	{
-		for (String player : opExpiration.keySet())
+		for (IPlayer player : opExpiration.keySet())
 			if (opExpiration.get(player).isBefore(DateTime.now()))
 			{
-				IPlayer operator = server.getPlayerExact(player);
-				operator.deOP();
+				player.deOP();
 				opExpiration.remove(player);
 			}
 
@@ -63,19 +60,18 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 			operatorEvent.getPlayer().sendMessage(String.format("You are now an operator."));
 			if (timerDeOp != null)
 			{
-				opExpiration.put(operatorEvent.getPlayer().getName(), DateTime.now().plus(timerDeOp));
+				opExpiration.put(operatorEvent.getPlayer(), DateTime.now().plus(timerDeOp));
 				start();
 			}
 		}
 		else if (timerDeOp != null)
 		{
 			operatorEvent.getPlayer().sendMessage(String.format("You are no longer an operator."));
-			opExpiration.remove(operatorEvent.getPlayer().getName());
+			opExpiration.remove(operatorEvent.getPlayer());
 		}
 	}
 
 	private boolean loginDeOp;
 	private Duration timerDeOp;
-	private final ConcurrentHashMap<String, DateTime> opExpiration = new ConcurrentHashMap<String, DateTime>();
-	private final IServer server;
+	private final ConcurrentHashMap<IPlayer, DateTime> opExpiration = new ConcurrentHashMap<>();
 }

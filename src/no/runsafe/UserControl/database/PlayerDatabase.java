@@ -12,7 +12,6 @@ import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
 import no.runsafe.framework.api.log.IConsole;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.internal.extension.player.RunsafePlayer;
 import no.runsafe.framework.timer.TimedCache;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -21,10 +20,10 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
@@ -34,16 +33,18 @@ public class PlayerDatabase extends Repository
 	{
 		this.console = console;
 		this.output = output;
-		this.lookupCache = new TimedCache<String, List<String>>(scheduler);
-		this.dataCache = new TimedCache<String, PlayerData>(scheduler);
+		this.lookupCache = new TimedCache<>(scheduler);
+		this.dataCache = new TimedCache<>(scheduler);
 	}
 
+	@Nonnull
 	@Override
 	public String getTableName()
 	{
 		return "player_db";
 	}
 
+	@Nonnull
 	@Override
 	public ISchemaUpdate getSchemaUpdateQueries()
 	{
@@ -81,56 +82,56 @@ public class PlayerDatabase extends Repository
 		database.update(
 			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			((RunsafePlayer)player).getBasePlayer().getUniqueId().toString(), player.getName(), player.getIP()
+			player, player.getName(), player.getIP()
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 		lookupCache.Purge();
 	}
 
 	public void logPlayerBan(IPlayer player, IPlayer banner, String reason)
 	{
 		database.update(
-			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
-			reason, banner == null ? "console" : banner.getName(), player.getName()
+			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `uuid`=?",
+			reason, banner == null ? "console" : banner.getName(), player
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public void setPlayerTemporaryBan(IPlayer player, DateTime temporary)
 	{
 		database.update("UPDATE player_db SET temp_ban=? WHERE `name`=?", temporary, player.getName());
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public void logPlayerUnban(IPlayer player)
 	{
 		database.update(
-			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?",
-			player.getName()
+			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `uuid`=?",
+			player
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public void logPlayerLogout(IPlayer player)
 	{
 		database.update(
-			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?",
-			player.getName()
+			"UPDATE player_db SET `logout`=NOW() WHERE `uuid`=?",
+			player
 		);
-		dataCache.Invalidate(player.getName());
+		dataCache.Invalidate(player);
 	}
 
 	public PlayerData getData(IPlayer player)
 	{
-		PlayerData data = dataCache.Cache(player.getName());
+		PlayerData data = dataCache.Cache(player);
 		if (data != null)
 			return data;
 
 		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
 		if (raw.isEmpty())
-			output.logInformation("New player %s with UUID %s discovered!", player.getName(), ((RunsafePlayer)player).getBasePlayer().getUniqueId().toString());
-		else if (!((RunsafePlayer)player).getBasePlayer().getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
-			output.logError("Player %s UUID mismatch detected! %s <> %s", player.getName(), ((RunsafePlayer)player).getBasePlayer().getUniqueId().toString(), raw.String("uuid"));
+			output.logInformation("New player %s with UUID %s discovered!", player.getName(), player.getUniqueId().toString());
+		else if (!player.getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
+			output.logInformation("Player %s with UUID %s changed their username!", player.getName(), raw.String("uuid"));
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
 		data.setBanner(raw.String("ban_by"));
@@ -140,7 +141,7 @@ public class PlayerDatabase extends Repository
 		data.setLogout(raw.DateTime("logout"));
 		data.setUnban(raw.DateTime("temp_ban"));
 
-		return dataCache.Cache(player.getName(), data);
+		return dataCache.Cache(player, data);
 	}
 
 	@Override
@@ -163,7 +164,7 @@ public class PlayerDatabase extends Repository
 	public HashMap<String, String> GetPlayerData(IPlayer player)
 	{
 		PlayerData data = getData(player);
-		HashMap<String, String> result = new LinkedHashMap<String, String>();
+		HashMap<String, String> result = new LinkedHashMap<>();
 		if (data.getBanned() != null)
 		{
 			result.put("usercontrol.ban.status", "true");
@@ -207,33 +208,11 @@ public class PlayerDatabase extends Repository
 		return GetPlayerLogout(player) == null;
 	}
 
-	public void updateUUIDs()
-	{
-		for (IPlayer player : database.queryPlayers("SELECT `name` FROM player_db WHERE uuid IS NULL"))
-		{
-			if (player == null)
-				output.logError("Null player detected");
-			else if (((RunsafePlayer) player).getBasePlayer() == null)
-				output.logError("Null base player detected: %s", player.getName());
-			else
-			{
-				UUID uuid = ((RunsafePlayer) player).getBasePlayer().getUniqueId();
-				if (uuid != null)
-				{
-					output.logInformation("Updating player %s with UUID %s", player.getName(), uuid.toString());
-					database.update("UPDATE player_db SET `uuid`=? WHERE `name`=?", uuid.toString(), player.getName());
-				}
-				else
-					output.logWarning("Could not find UUID for player %s", player.getName());
-			}
-		}
-	}
-
 	private final IConsole output;
 	private final IDebug console;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");
 	private final TimedCache<String, List<String>> lookupCache;
-	private final TimedCache<String, PlayerData> dataCache;
+	private final TimedCache<IPlayer, PlayerData> dataCache;
 }

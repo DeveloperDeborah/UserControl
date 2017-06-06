@@ -3,21 +3,23 @@ package no.runsafe.UserControl.database;
 import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
-import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
-public class PlayerSessionLog extends Repository implements IServerReady
+public class PlayerSessionLog extends Repository
 {
+	@Nonnull
 	@Override
 	public String getTableName()
 	{
 		return "player_session";
 	}
 
+	@Nonnull
 	@Override
 	public ISchemaUpdate getSchemaUpdateQueries()
 	{
@@ -35,17 +37,18 @@ public class PlayerSessionLog extends Repository implements IServerReady
 			")"
 		);
 		update.addQueries("ALTER TABLE player_session ADD COLUMN `uuid` VARCHAR(255) NULL");
-		return update;
-	}
 
-	@Override
-	public void OnServerReady()
-	{
-		database.execute(
-			"UPDATE player_session " +
-				"SET `uuid`=(SELECT `uuid` FROM player_db WHERE `name`=`player_session`.`name`) " +
-				"WHERE uuid IS NULL"
+		update.addQueries(
+			String.format( // Update null UUIDs.
+				"UPDATE `%s` SET `uuid` = " +
+					"COALESCE((SELECT `uuid` FROM player_db WHERE `name`=`%s`.`name`), 'default') " +
+					"WHERE uuid IS NULL",
+				getTableName(), getTableName()
+			),
+			String.format("ALTER TABLE `%s` MODIFY COLUMN `uuid` VARCHAR(36) NOT NULL", getTableName())
 		);
+
+		return update;
 	}
 
 	public Duration GetTimePlayed(IPlayer player)
@@ -53,8 +56,8 @@ public class PlayerSessionLog extends Repository implements IServerReady
 		Long time = database.queryLong(
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
-				"WHERE `name`=?",
-			player.getName()
+				"WHERE `uuid`=?",
+			player
 		);
 		return time == null ? null : Duration.standardMinutes(time);
 	}
@@ -66,18 +69,19 @@ public class PlayerSessionLog extends Repository implements IServerReady
 		if (groups.size() > 0)
 			group = StringUtils.join(groups, ",");
 		database.update(
-			"INSERT INTO player_session (`name`, `ip`, `login`, `group`) VALUES (?, INET_ATON(?), NOW(), ?)",
+			"INSERT INTO player_session (`name`, `ip`, `login`, `group`, `uuid`) VALUES (?, INET_ATON(?), NOW(), ?, ?)",
 			player.getName(),
 			player.getIP(),
-			group
+			group,
+			player
 		);
 	}
 
 	public void logSessionClosed(IPlayer player, String quitMessage)
 	{
 		database.update(
-			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE name=? AND logout IS NULL",
-			quitMessage, player.getName()
+			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE uuid=? AND logout IS NULL",
+			quitMessage, player
 		);
 	}
 

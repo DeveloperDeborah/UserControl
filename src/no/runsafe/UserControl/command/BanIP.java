@@ -1,22 +1,22 @@
 package no.runsafe.UserControl.command;
 
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
 import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.api.server.IPlayerManager;
 
 public class BanIP extends ExecutableCommand
 {
-	public BanIP(IServer server)
+	public BanIP(IPlayerManager playerManager)
 	{
 		super(
 			"banip", "Bans an IP from connecting to this server", "runsafe.usercontrol.ban.ip",
 			new Player().onlineOnly().require(), new RequiredArgument("reason")
 		);
-		this.server = server;
+		this.playerManager = playerManager;
 	}
 
 	@Override
@@ -32,9 +32,9 @@ public class BanIP extends ExecutableCommand
 		String ip = victim.getIP();
 		if (ip == null)
 			return String.format("Unable to get IP for player %s", victim.getName());
-		server.banIP(ip);
+		playerManager.banIP(ip);
 		return String.format("Banned IP %s from the server", ip);
 	}
 
-	private final IServer server;
+	private final IPlayerManager playerManager;
 }
