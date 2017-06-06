@@ -93,8 +93,8 @@ public class PlayerDatabase extends Repository
 	public void logPlayerBan(IPlayer player, IPlayer banner, String reason)
 	{
 		database.update(
-			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `name`=?",
-			reason, banner == null ? "console" : banner.getName(), player.getName()
+			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `uuid`=?",
+			reason, banner == null ? "console" : banner.getName(), player.getUniqueId()
 		);
 		dataCache.Invalidate(player);
 	}
@@ -108,8 +108,8 @@ public class PlayerDatabase extends Repository
 	public void logPlayerUnban(IPlayer player)
 	{
 		database.update(
-			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `name`=?",
-			player.getName()
+			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `uuid`=?",
+			player.getUniqueId().toString()
 		);
 		dataCache.Invalidate(player);
 	}
@@ -117,8 +117,8 @@ public class PlayerDatabase extends Repository
 	public void logPlayerLogout(IPlayer player)
 	{
 		database.update(
-			"UPDATE player_db SET `logout`=NOW() WHERE `name`=?",
-			player.getName()
+			"UPDATE player_db SET `logout`=NOW() WHERE `uuid`=?",
+			player.getUniqueId().toString()
 		);
 		dataCache.Invalidate(player);
 	}
