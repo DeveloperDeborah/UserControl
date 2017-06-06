@@ -210,28 +210,6 @@ public class PlayerDatabase extends Repository
 		return GetPlayerLogout(player) == null;
 	}
 
-	public void updateUUIDs()
-	{
-		for (IPlayer player : database.queryPlayers("SELECT `name` FROM player_db WHERE uuid IS NULL"))
-		{
-			if (player == null)
-				output.logError("Null player detected");
-			else if (((RunsafePlayer) player).getBasePlayer() == null)
-				output.logError("Null base player detected: %s", player.getName());
-			else
-			{
-				UUID uuid = player.getUniqueId();
-				if (uuid != null)
-				{
-					output.logInformation("Updating player %s with UUID %s", player.getName(), uuid.toString());
-					database.update("UPDATE player_db SET `uuid`=? WHERE `name`=?", uuid.toString(), player.getName());
-				}
-				else
-					output.logWarning("Could not find UUID for player %s", player.getName());
-			}
-		}
-	}
-
 	private final IConsole output;
 	private final IDebug console;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
