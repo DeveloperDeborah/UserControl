@@ -57,7 +57,7 @@ public class PlayerSessionLog extends Repository
 			"SELECT SUM(TIMESTAMPDIFF(MINUTE,login,IFNULL(logout,NOW()))) AS time " +
 				"FROM player_session " +
 				"WHERE `uuid`=?",
-			player.getUniqueId().toString()
+			player
 		);
 		return time == null ? null : Duration.standardMinutes(time);
 	}
@@ -73,7 +73,7 @@ public class PlayerSessionLog extends Repository
 			player.getName(),
 			player.getIP(),
 			group,
-			player.getUniqueId().toString()
+			player
 		);
 	}
 
@@ -81,7 +81,7 @@ public class PlayerSessionLog extends Repository
 	{
 		database.update(
 			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE uuid=? AND logout IS NULL",
-			quitMessage, player.getUniqueId().toString()
+			quitMessage, player
 		);
 	}
 

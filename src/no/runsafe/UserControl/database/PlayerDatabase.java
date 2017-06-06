@@ -82,7 +82,7 @@ public class PlayerDatabase extends Repository
 		database.update(
 			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player.getUniqueId().toString(), player.getName(), player.getIP()
+			player, player.getName(), player.getIP()
 		);
 		dataCache.Invalidate(player);
 		lookupCache.Purge();
@@ -92,7 +92,7 @@ public class PlayerDatabase extends Repository
 	{
 		database.update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `uuid`=?",
-			reason, banner == null ? "console" : banner.getName(), player.getUniqueId().toString()
+			reason, banner == null ? "console" : banner.getName(), player
 		);
 		dataCache.Invalidate(player);
 	}
@@ -107,7 +107,7 @@ public class PlayerDatabase extends Repository
 	{
 		database.update(
 			"UPDATE player_db SET `banned`=NULL, ban_reason=NULL, ban_by=NULL, temp_ban=NULL WHERE `uuid`=?",
-			player.getUniqueId().toString()
+			player
 		);
 		dataCache.Invalidate(player);
 	}
@@ -116,7 +116,7 @@ public class PlayerDatabase extends Repository
 	{
 		database.update(
 			"UPDATE player_db SET `logout`=NOW() WHERE `uuid`=?",
-			player.getUniqueId().toString()
+			player
 		);
 		dataCache.Invalidate(player);
 	}

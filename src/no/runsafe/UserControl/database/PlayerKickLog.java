@@ -57,7 +57,7 @@ public class PlayerKickLog extends Repository
 	{
 		database.update(
 			"INSERT INTO player_kick_log (`player`, `timestamp`, `kick_by`, `reason`, `banned`) VALUES (?, NOW(), ?, ?, ?)",
-			player.getUniqueId().toString(), kicker == null ? "console" : kicker.getUniqueId().toString(), reason, banned
+			player, kicker == null ? "console" : kicker, reason, banned
 		);
 	}
 }
