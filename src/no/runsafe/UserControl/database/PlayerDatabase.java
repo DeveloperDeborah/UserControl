@@ -12,7 +12,6 @@ import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
 import no.runsafe.framework.api.log.IConsole;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.internal.extension.player.RunsafePlayer;
 import no.runsafe.framework.timer.TimedCache;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -25,7 +24,6 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
