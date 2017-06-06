@@ -81,7 +81,7 @@ public class PlayerSessionLog extends Repository
 	{
 		database.update(
 			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE uuid=? AND logout IS NULL",
-			quitMessage, player.getUniqueId()
+			quitMessage, player.getUniqueId().toString()
 		);
 	}
 
