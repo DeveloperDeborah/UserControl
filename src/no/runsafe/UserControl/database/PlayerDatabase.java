@@ -133,7 +133,7 @@ public class PlayerDatabase extends Repository
 		if (raw.isEmpty())
 			output.logInformation("New player %s with UUID %s discovered!", player.getName(), player.getUniqueId().toString());
 		else if (!player.getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
-			output.logError("Player %s UUID mismatch detected! %s <> %s", player.getName(), player.getUniqueId().toString(), raw.String("uuid"));
+			output.logInformation("Player %s with UUID %s changed their username!", player.getName(), raw.String("uuid"));
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
 		data.setBanner(raw.String("ban_by"));
