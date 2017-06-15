@@ -21,9 +21,11 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
@@ -35,6 +37,7 @@ public class PlayerDatabase extends Repository
 		this.output = output;
 		this.lookupCache = new TimedCache<>(scheduler);
 		this.dataCache = new TimedCache<>(scheduler);
+		this.uniqueIdCache = new TimedCache<>(scheduler);
 	}
 
 	@Nonnull
@@ -160,6 +163,33 @@ public class PlayerDatabase extends Repository
 		return lookupCache.Cache(lookup, result);
 	}
 
+	@Nullable
+	@Override
+	public UUID findPlayerUniqueId(String playerName)
+	{
+		// Check for an invalid player name
+		if (playerName == null || playerName.isEmpty() || playerName.length() > 16)
+			return null;
+
+		// Check if ID has been cached
+		UUID playerId = uniqueIdCache.Cache(playerName);
+		if (playerId != null)
+			return playerId;
+
+		// Get the player's ID from mysql
+		String result = database.queryString(
+			"SELECT `uuid` FROM `player_db` WHERE `name` = ? ORDER BY `login` LIMIT 1",
+			playerName
+		);
+
+		if (result == null)
+			return null;
+
+		playerId = UUID.fromString(result);
+		uniqueIdCache.Cache(playerName, playerId);
+		return playerId;
+	}
+
 	@Override
 	public HashMap<String, String> GetPlayerData(IPlayer player)
 	{
@@ -215,4 +245,5 @@ public class PlayerDatabase extends Repository
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");
 	private final TimedCache<String, List<String>> lookupCache;
 	private final TimedCache<IPlayer, PlayerData> dataCache;
+	private final TimedCache<String, UUID> uniqueIdCache;
 }
