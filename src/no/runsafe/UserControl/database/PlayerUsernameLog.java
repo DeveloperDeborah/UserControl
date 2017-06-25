@@ -4,6 +4,7 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
+import no.runsafe.framework.api.hook.IPlayerLookupService;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.timer.TimedCache;
 
@@ -12,11 +13,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
-public class PlayerUsernameLog extends Repository
+public class PlayerUsernameLog extends Repository implements IPlayerLookupService
 {
 	public PlayerUsernameLog(IScheduler scheduler)
 	{
+		this.lookupCache = new TimedCache<>(scheduler);
 		this.uniqueIdCache = new TimedCache<>(scheduler);
 		this.usernameCache = new TimedCache<>(scheduler);
 	}
@@ -47,6 +50,23 @@ public class PlayerUsernameLog extends Repository
 		);
 
 		return update;
+	}
+
+	@Nullable
+	@Override
+	public List<String> findPlayer(String lookup)
+	{
+		if (lookup == null)
+			return null;
+
+		List<String> result = lookupCache.Cache(lookup);
+		if (result != null)
+			return result;
+		result = database.queryStrings(
+			String.format("SELECT name FROM `%s` WHERE name LIKE ?", getTableName()),
+			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
+		);
+		return lookupCache.Cache(lookup, result);
 	}
 
 	/**
@@ -147,6 +167,7 @@ public class PlayerUsernameLog extends Repository
 	 *         Null if no one has logged in with that username.
 	 */
 	@Nullable
+	@Override
 	public UUID findPlayerUniqueId(String playerName)
 	{
 		List<UUID> playerIds = getUniqueIdsFromUsername(playerName);
@@ -176,6 +197,13 @@ public class PlayerUsernameLog extends Repository
 		);
 	}
 
+	void purgeLookupCache()
+	{
+		lookupCache.Purge();
+	}
+
+	private final Pattern SQLWildcard = Pattern.compile("([%_])");
+	private final TimedCache<String, List<String>> lookupCache;
 	private final TimedCache<String, List<UUID>> uniqueIdCache;
 	private final TimedCache<UUID, List<String>> usernameCache;
 }
