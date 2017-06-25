@@ -46,6 +46,11 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 					"PRIMARY KEY(`uuid`, `name`)" +
 				")",
 				getTableName()
+			),
+			String.format(
+				"INSERT INTO `%s` (`uuid`, `name`, `last_login`) " +
+					"SELECT `uuid`, `name`, `login` from `player_db`",
+				getTableName()
 			)
 		);
 
