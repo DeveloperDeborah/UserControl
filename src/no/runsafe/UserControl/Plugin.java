@@ -4,6 +4,7 @@ import no.runsafe.UserControl.command.*;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
+import no.runsafe.UserControl.database.PlayerUsernameLog;
 import no.runsafe.UserControl.events.KickEvent;
 import no.runsafe.UserControl.events.Login;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
@@ -28,6 +29,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(PlayerDatabase.class);
 		addComponent(PlayerSessionLog.class);
 		addComponent(PlayerKickLog.class);
+		addComponent(PlayerUsernameLog.class);
 		addComponent(SessionLogger.class);
 		addComponent(OpController.class);
 		addComponent(LoginRedirectManager.class);
