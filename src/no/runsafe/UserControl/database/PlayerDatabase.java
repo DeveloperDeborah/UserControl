@@ -58,7 +58,7 @@ public class PlayerDatabase extends Repository
 				"`ban_by` varchar(255) NULL," +
 				"`ip` int unsigned NULL," +
 				"PRIMARY KEY(`name`)" +
-				")"
+			")"
 		);
 
 		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
