@@ -194,7 +194,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 		database.update(
 			String.format(
 				"INSERT INTO `%s`(`uuid`,`name`,`last_login`) VALUES (?,?,NOW())" +
-					"ON DUPLICATE KEY UPDATE `last_login`=VALUES(`login`)",
+					"ON DUPLICATE KEY UPDATE `last_login`=NOW()",
 				getTableName()
 			),
 			player,
