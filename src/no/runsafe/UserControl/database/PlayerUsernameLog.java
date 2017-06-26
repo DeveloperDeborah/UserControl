@@ -107,7 +107,6 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 
 	/**
 	 * Gets the latest username a player has logged in with.
-	 * Ordered from most recent to least recent.
 	 *
 	 * @param playerId Identifying number for the player to look up.
 	 * @return The latest username a player has logged in with.
