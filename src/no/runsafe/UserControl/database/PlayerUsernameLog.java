@@ -95,7 +95,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 			String.format(
 				"SELECT `name` FROM `%s` WHERE `uuid` = ? ORDER BY `last_login`", getTableName()
 			),
-			playerId
+			playerId.toString()
 		);
 
 		if (result.isEmpty())
