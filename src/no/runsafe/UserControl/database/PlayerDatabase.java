@@ -12,6 +12,7 @@ import no.runsafe.framework.api.log.IConsole;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.timer.TimedCache;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -160,6 +161,7 @@ public class PlayerDatabase extends Repository
 		result.put("usercontrol.joined", DATE_FORMAT.print(data.getJoined()));
 		result.put("usercontrol.login", DATE_FORMAT.print(data.getLogin()));
 		result.put("usercontrol.logout", DATE_FORMAT.print(data.getLogout()));
+		result.put("usercontrol.pastNames", StringUtils.join(playerUsernameLog.getUsedUsernames(player.getUniqueId()), ", "));
 		if (data.getLogout() != null && data.getLogout().isAfter(data.getLogin()))
 		{
 			Period period = new Period(data.getLogout(), DateTime.now(), SEEN_FORMAT);

@@ -31,6 +31,7 @@ whois.labels:
     op: OP
     flying: Flying
   usercontrol:
+    pastNames: Past names
     ban.status: Ban active
     ban.timestamp: Banned
     ban.reason: Ban reason
