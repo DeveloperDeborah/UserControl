@@ -3,6 +3,7 @@ package no.runsafe.UserControl;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
+import no.runsafe.UserControl.database.PlayerUsernameLog;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.api.event.player.IPlayerKickEvent;
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
@@ -20,20 +21,24 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		PlayerDatabase players,
 		PlayerSessionLog sessions,
 		PlayerKickLog kickLog,
+		PlayerUsernameLog playerUsernameLog,
 		IPlayerProvider playerProvider
 	)
 	{
 		playerdb = players;
 		sessiondb = sessions;
 		kicklogger = kickLog;
+		this.playerUsernameLog = playerUsernameLog;
 		this.playerProvider = playerProvider;
 	}
 
 	@Override
 	public void OnPlayerJoinEvent(RunsafePlayerJoinEvent event)
 	{
-		playerdb.logPlayerInfo(event.getPlayer());
-		sessiondb.logSessionStart(event.getPlayer());
+		IPlayer player = event.getPlayer();
+		playerdb.logPlayerInfo(player);
+		sessiondb.logSessionStart(player);
+		playerUsernameLog.logPlayerLogin(player);
 	}
 
 	@Override
@@ -72,5 +77,6 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	private final PlayerDatabase playerdb;
 	private final PlayerSessionLog sessiondb;
 	private final PlayerKickLog kicklogger;
+	private final PlayerUsernameLog playerUsernameLog;
 	private final IPlayerProvider playerProvider;
 }

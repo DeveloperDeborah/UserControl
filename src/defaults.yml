@@ -12,6 +12,7 @@ ban.lightning.real: false
 control.op.login: true
 control.op.timer: 30
 whois.labels.game:
+  uniqueId: Unique ID
   health: Health
   experience: Power level
   level: Level
@@ -21,6 +22,7 @@ whois.labels.game:
   flying: Flying
 whois.labels:
   game:
+    uniqueId: Unique ID
     health: Health
     experience: Power Level
     level: Level
@@ -29,6 +31,7 @@ whois.labels:
     op: OP
     flying: Flying
   usercontrol:
+    pastNames: Past names
     ban.status: Ban active
     ban.timestamp: Banned
     ban.reason: Ban reason

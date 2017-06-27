@@ -7,12 +7,12 @@ import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
 import no.runsafe.framework.api.event.IServerReady;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
-import no.runsafe.framework.api.hook.IPlayerLookupService;
 import no.runsafe.framework.api.hook.IPlayerSessionDataProvider;
 import no.runsafe.framework.api.log.IConsole;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.timer.TimedCache;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -21,23 +21,18 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormat;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class PlayerDatabase extends Repository
-	implements IPlayerLookupService, IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady
+	implements IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady
 {
-	public PlayerDatabase(IDebug console, IScheduler scheduler, IConsole output)
+	public PlayerDatabase(IDebug console, IScheduler scheduler, IConsole output, PlayerUsernameLog playerUsernameLog)
 	{
 		this.console = console;
 		this.output = output;
-		this.lookupCache = new TimedCache<>(scheduler);
 		this.dataCache = new TimedCache<>(scheduler);
-		this.uniqueIdCache = new TimedCache<>(scheduler);
+		this.playerUsernameLog = playerUsernameLog;
 	}
 
 	@Nonnull
@@ -64,7 +59,7 @@ public class PlayerDatabase extends Repository
 				"`ban_by` varchar(255) NULL," +
 				"`ip` int unsigned NULL," +
 				"PRIMARY KEY(`name`)" +
-				")"
+			")"
 		);
 
 		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
@@ -88,7 +83,7 @@ public class PlayerDatabase extends Repository
 			player, player.getName(), player.getIP()
 		);
 		dataCache.Invalidate(player);
-		lookupCache.Purge();
+		playerUsernameLog.purgeLookupCache();
 	}
 
 	public void logPlayerBan(IPlayer player, IPlayer banner, String reason)
@@ -148,49 +143,6 @@ public class PlayerDatabase extends Repository
 	}
 
 	@Override
-	public List<String> findPlayer(String lookup)
-	{
-		if (lookup == null)
-			return null;
-
-		List<String> result = lookupCache.Cache(lookup);
-		if (result != null)
-			return result;
-		result = database.queryStrings(
-			"SELECT name FROM player_db WHERE name LIKE ?",
-			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
-		);
-		return lookupCache.Cache(lookup, result);
-	}
-
-	@Nullable
-	@Override
-	public UUID findPlayerUniqueId(String playerName)
-	{
-		// Check for an invalid player name
-		if (playerName == null || playerName.isEmpty() || playerName.length() > 16)
-			return null;
-
-		// Check if ID has been cached
-		UUID playerId = uniqueIdCache.Cache(playerName);
-		if (playerId != null)
-			return playerId;
-
-		// Get the player's ID from mysql
-		String result = database.queryString(
-			"SELECT `uuid` FROM `player_db` WHERE `name` = ? ORDER BY `login` LIMIT 1",
-			playerName
-		);
-
-		if (result == null)
-			return null;
-
-		playerId = UUID.fromString(result);
-		uniqueIdCache.Cache(playerName, playerId);
-		return playerId;
-	}
-
-	@Override
 	public HashMap<String, String> GetPlayerData(IPlayer player)
 	{
 		PlayerData data = getData(player);
@@ -209,6 +161,7 @@ public class PlayerDatabase extends Repository
 		result.put("usercontrol.joined", DATE_FORMAT.print(data.getJoined()));
 		result.put("usercontrol.login", DATE_FORMAT.print(data.getLogin()));
 		result.put("usercontrol.logout", DATE_FORMAT.print(data.getLogout()));
+		result.put("usercontrol.pastNames", StringUtils.join(playerUsernameLog.getUsedUsernames(player.getUniqueId()), ", "));
 		if (data.getLogout() != null && data.getLogout().isAfter(data.getLogin()))
 		{
 			Period period = new Period(data.getLogout(), DateTime.now(), SEEN_FORMAT);
@@ -240,10 +193,8 @@ public class PlayerDatabase extends Repository
 
 	private final IConsole output;
 	private final IDebug console;
+	private final PlayerUsernameLog playerUsernameLog;
 	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-	private final Pattern SQLWildcard = Pattern.compile("([%_])");
-	private final TimedCache<String, List<String>> lookupCache;
 	private final TimedCache<IPlayer, PlayerData> dataCache;
-	private final TimedCache<String, UUID> uniqueIdCache;
 }
