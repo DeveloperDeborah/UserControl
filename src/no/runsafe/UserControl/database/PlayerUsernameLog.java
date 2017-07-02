@@ -38,20 +38,14 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 		ISchemaUpdate update = new SchemaUpdate();
 
 		update.addQueries(
-			String.format(
-				"CREATE TABLE `%s` (" +
-					"`uuid` varchar(36) NOT NULL," +
-					"`name` varchar(16) NOT NULL," +
-					"`last_login` datetime NOT NULL," +
-					"PRIMARY KEY(`uuid`, `name`)" +
-				")",
-				getTableName()
-			),
-			String.format(
-				"INSERT INTO `%s` (`uuid`, `name`, `last_login`) " +
-					"SELECT `uuid`, `name`, `login` from `player_db`",
-				getTableName()
-			)
+			"CREATE TABLE `" + getTableName() + "` (" +
+				"`uuid` varchar(36) NOT NULL," +
+				"`name` varchar(16) NOT NULL," +
+				"`last_login` datetime NOT NULL," +
+				"PRIMARY KEY(`uuid`, `name`)" +
+			")",
+			"INSERT INTO `" + getTableName() + "` (`uuid`, `name`, `last_login`) " +
+				"SELECT `uuid`, `name`, `login` from `player_db`"
 		);
 
 		return update;
@@ -68,7 +62,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 		if (result != null)
 			return result;
 		result = database.queryStrings(
-			String.format("SELECT name FROM `%s` WHERE name LIKE ?", getTableName()),
+			"SELECT name FROM `" + getTableName() + "` WHERE name LIKE ?",
 			String.format("%s%%", SQLWildcard.matcher(lookup).replaceAll("\\\\$1"))
 		);
 		return lookupCache.Cache(lookup, result);
@@ -92,9 +86,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 			return playerNames;
 
 		List<String> result = database.queryStrings(
-			String.format(
-				"SELECT `name` FROM `%s` WHERE `uuid` = ? ORDER BY `last_login`", getTableName()
-			),
+			"SELECT `name` FROM `" + getTableName() + "` WHERE `uuid` = ? ORDER BY `last_login`",
 			playerId.toString()
 		);
 
@@ -143,9 +135,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 			return playerIds;
 
 		List<String> result = database.queryStrings(
-			String.format(
-				"SELECT `uuid` FROM `%s` WHERE `name` = ? ORDER BY `last_login`", getTableName()
-			),
+			"SELECT `uuid` FROM `" + getTableName() + "` WHERE `name` = ? ORDER BY `last_login`",
 			playerName
 		);
 
@@ -191,11 +181,8 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 	public void logPlayerLogin(IPlayer player)
 	{
 		database.update(
-			String.format(
-				"INSERT INTO `%s`(`uuid`,`name`,`last_login`) VALUES (?,?,NOW())" +
-					"ON DUPLICATE KEY UPDATE `last_login`=NOW()",
-				getTableName()
-			),
+			"INSERT INTO `" + getTableName() + "`(`uuid`,`name`,`last_login`) VALUES (?,?,NOW())" +
+				"ON DUPLICATE KEY UPDATE `last_login`=NOW()",
 			player,
 			player.getName()
 		);
