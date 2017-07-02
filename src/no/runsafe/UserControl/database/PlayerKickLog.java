@@ -34,20 +34,16 @@ public class PlayerKickLog extends Repository
 		);
 
 		update.addQueries(
-			String.format("ALTER TABLE `%s` CHANGE `name` `player` varchar(36) NOT NULL", getTableName()),
-			String.format( // Kicked player names -> Unique IDs
-				"UPDATE IGNORE `%s` SET `player` = " +
-					"COALESCE((SELECT `uuid` FROM player_db WHERE `name`=`%s`.`player`), `player`) " +
-					"WHERE length(`player`) != 36",
-				getTableName(), getTableName()
-			),
-			String.format("ALTER TABLE `%s` MODIFY COLUMN `kick_by` VARCHAR(36)", getTableName()),
-			String.format( // Kicker names -> Unique IDs
-				"UPDATE IGNORE `%s` SET `kick_by` = " +
-					"COALESCE((SELECT `uuid` FROM player_db WHERE `name`=`%s`.`kick_by`), `kick_by`) " +
-					"WHERE length(`kick_by`) != 36 AND `kick_by` != 'console'",
-				getTableName(), getTableName()
-			)
+			"ALTER TABLE `" + getTableName() + "` CHANGE `name` `player` varchar(36) NOT NULL",
+			// Kicked player names -> Unique IDs
+			"UPDATE IGNORE `" + getTableName() + "` SET `player` = " +
+				"COALESCE((SELECT `uuid` FROM player_db WHERE `name`=`" + getTableName() + "`.`player`), `player`) " +
+				"WHERE length(`player`) != 36",
+			"ALTER TABLE `" + getTableName() + "` MODIFY COLUMN `kick_by` VARCHAR(36)",
+			// Kicker names -> Unique IDs
+			"UPDATE IGNORE `" + getTableName() + "` SET `kick_by` = " +
+				"COALESCE((SELECT `uuid` FROM player_db WHERE `name`=`" + getTableName() + "`.`kick_by`), `kick_by`) " +
+				"WHERE length(`kick_by`) != 36 AND `kick_by` != 'console'"
 		);
 
 		return update;

@@ -38,14 +38,14 @@ public class PlayerSessionLog extends Repository
 		);
 		update.addQueries("ALTER TABLE player_session ADD COLUMN `uuid` VARCHAR(255) NULL");
 
-		update.addQueries(
-			String.format( // Update null UUIDs.
-				"UPDATE `%s` SET `uuid` = " +
+		update.addQueries( // Update null UUIDs.
+			String.format(
+				"UPDATE `" + getTableName() + "` SET `uuid` = " +
 					"COALESCE((SELECT `uuid` FROM player_db WHERE `name`=`%s`.`name`), 'default') " +
 					"WHERE uuid IS NULL",
 				getTableName(), getTableName()
 			),
-			String.format("ALTER TABLE `%s` MODIFY COLUMN `uuid` VARCHAR(36) NOT NULL", getTableName())
+			"ALTER TABLE `" + getTableName() + "` MODIFY COLUMN `uuid` VARCHAR(36) NOT NULL"
 		);
 
 		return update;
