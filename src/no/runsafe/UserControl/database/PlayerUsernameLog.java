@@ -86,7 +86,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 			return playerNames;
 
 		List<String> result = database.queryStrings(
-			"SELECT `name` FROM `" + getTableName() + "` WHERE `uuid` = ? ORDER BY `last_login`",
+			"SELECT `name` FROM `" + getTableName() + "` WHERE `uuid` = ? ORDER BY `last_login` DESC",
 			playerId.toString()
 		);
 
@@ -135,7 +135,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 			return playerIds;
 
 		List<String> result = database.queryStrings(
-			"SELECT `uuid` FROM `" + getTableName() + "` WHERE `name` = ? ORDER BY `last_login`",
+			"SELECT `uuid` FROM `" + getTableName() + "` WHERE `name` = ? ORDER BY `last_login` DESC",
 			playerName
 		);
 
