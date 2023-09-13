@@ -122,7 +122,7 @@ public class PlayerDatabase extends Repository
 
 	public void setPlayerTemporaryBan(IPlayer player, DateTime temporary)
 	{
-		database.update("UPDATE player_db SET temp_ban=? WHERE `uuid`=?", temporary, player.getName());
+		database.update("UPDATE player_db SET temp_ban=? WHERE `uuid`=?", temporary, player);
 		dataCache.Invalidate(player);
 	}
 
