@@ -86,7 +86,7 @@ public class PlayerDatabase extends Repository
 			"INSERT IGNORE INTO `" + getTableName() + "` " +
 				"(`uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
 				"SELECT `uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip` " +
-				"FROM `player_db_old`"
+				"FROM `player_db_old` WHERE `uuid` IS NOT NULL"
 		);
 
 		return update;
