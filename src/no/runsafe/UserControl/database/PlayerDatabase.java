@@ -74,7 +74,7 @@ public class PlayerDatabase extends Repository
 				"`login` datetime NOT NULL," +
 				"`logout` datetime NULL," +
 				"`banned` datetime NULL," +
-				"`temp_ban` VARCHAR(255) NULL" +
+				"`temp_ban` VARCHAR(255) NULL," +
 				"`ban_reason` varchar(255) NULL," +
 				"`ban_by` varchar(255) NULL," +
 				"`ip` int unsigned NULL," +
@@ -84,7 +84,7 @@ public class PlayerDatabase extends Repository
 
 		update.addQueries( // Migrate to new table ignoring duplicates.
 			"INSERT IGNORE INTO `" + getTableName() + "` " +
-				" (`uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
+				"(`uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
 				"SELECT `uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip` " +
 				"FROM `player_db_old`"
 		);
