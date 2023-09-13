@@ -64,6 +64,31 @@ public class PlayerDatabase extends Repository
 
 		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
 		update.addQueries("ALTER TABLE player_db ADD COLUMN uuid VARCHAR(255) NULL");
+
+		update.addQueries("ALTER TABLE player_db RENAME TO player_db_old");
+
+		update.addQueries( // Create new table based on player uuids instead of usernames.
+			"CREATE TABLE `" + getTableName() + "` (" +
+				"`uuid` varchar(255) NOT NULL," +
+				"`joined` datetime NOT NULL," +
+				"`login` datetime NOT NULL," +
+				"`logout` datetime NULL," +
+				"`banned` datetime NULL," +
+				"`temp_ban` VARCHAR(255) NULL" +
+				"`ban_reason` varchar(255) NULL," +
+				"`ban_by` varchar(255) NULL," +
+				"`ip` int unsigned NULL," +
+				"PRIMARY KEY(`uuid`)" +
+			")"
+		);
+
+		update.addQueries( // Migrate to new table ignoring duplicates.
+			"INSERT IGNORE INTO `" + getTableName() + "` " +
+				" (`uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
+				"SELECT `uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip` " +
+				"FROM `player_db_old`"
+		);
+
 		return update;
 	}
 
@@ -78,9 +103,9 @@ public class PlayerDatabase extends Repository
 	{
 		console.debugFine("Updating player_db with login time");
 		database.update(
-			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
-				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player, player.getName(), player.getIP()
+			"INSERT INTO player_db (`uuid`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
+				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
+			player, player.getIP()
 		);
 		dataCache.Invalidate(player);
 		playerUsernameLog.purgeLookupCache();
@@ -125,7 +150,7 @@ public class PlayerDatabase extends Repository
 		if (data != null)
 			return data;
 
-		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
+		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `uuid`=?", player.getUniqueId().toString());
 		if (raw.isEmpty())
 			output.logInformation("New player %s with UUID %s discovered!", player.getName(), player.getUniqueId().toString());
 		else if (!player.getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
