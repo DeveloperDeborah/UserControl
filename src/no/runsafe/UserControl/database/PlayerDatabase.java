@@ -70,6 +70,7 @@ public class PlayerDatabase extends Repository
 		update.addQueries( // Create new table based on player uuids instead of usernames.
 			"CREATE TABLE `" + getTableName() + "` (" +
 				"`uuid` varchar(255) NOT NULL," +
+				"`name` varchar(255) NOT NULL," +
 				"`joined` datetime NOT NULL," +
 				"`login` datetime NOT NULL," +
 				"`logout` datetime NULL," +
@@ -84,8 +85,8 @@ public class PlayerDatabase extends Repository
 
 		update.addQueries( // Migrate to new table ignoring duplicates.
 			"INSERT IGNORE INTO `" + getTableName() + "` " +
-				"(`uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
-				"SELECT `uuid`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip` " +
+				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
+				"SELECT `uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip` " +
 				"FROM `player_db_old` WHERE `uuid` IS NOT NULL"
 		);
 
@@ -103,9 +104,9 @@ public class PlayerDatabase extends Repository
 	{
 		console.debugFine("Updating player_db with login time");
 		database.update(
-			"INSERT INTO player_db (`uuid`,`joined`,`login`,`ip`) VALUES (?,NOW(),NOW(),INET_ATON(?))" +
-				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player, player.getIP()
+			"INSERT INTO player_db (`uuid`, `name`, `joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
+				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
+			player, player.getName(), player.getIP()
 		);
 		dataCache.Invalidate(player);
 		playerUsernameLog.purgeLookupCache();
