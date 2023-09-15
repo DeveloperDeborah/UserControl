@@ -65,9 +65,9 @@ public class PlayerDatabase extends Repository
 		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
 		update.addQueries("ALTER TABLE player_db ADD COLUMN uuid VARCHAR(255) NULL");
 
-		update.addQueries("ALTER TABLE player_db RENAME TO player_db_old");
-
-		update.addQueries( // Create new table based on player uuids instead of usernames.
+		update.addQueries(
+			"ALTER TABLE player_db RENAME TO player_db_old;",
+			// Create new table based on player uuids instead of usernames.
 			"CREATE TABLE `" + getTableName() + "` (" +
 				"`uuid` varchar(255) NOT NULL," +
 				"`name` varchar(255) NOT NULL," +
@@ -80,14 +80,12 @@ public class PlayerDatabase extends Repository
 				"`ban_by` varchar(255) NULL," +
 				"`ip` int unsigned NULL," +
 				"PRIMARY KEY(`uuid`)" +
-			")"
-		);
-
-		update.addQueries( // Migrate to new table ignoring duplicates.
+			");",
+			// Migrate to new table ignoring duplicates.
 			"INSERT IGNORE INTO `" + getTableName() + "` " +
 				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
 				"SELECT `uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip` " +
-				"FROM `player_db_old` WHERE `uuid` IS NOT NULL"
+				"FROM `player_db_old` WHERE `uuid` IS NOT NULL;"
 		);
 
 		return update;
