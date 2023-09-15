@@ -69,15 +69,15 @@ public class PlayerDatabase extends Repository
 			"ALTER TABLE player_db RENAME TO player_db_old;",
 			// Create new table based on player uuids instead of usernames.
 			"CREATE TABLE `" + getTableName() + "` (" +
-				"`uuid` varchar(255) NOT NULL," +
-				"`name` varchar(255) NOT NULL," +
+				"`uuid` varchar(36) NOT NULL," +
+				"`name` varchar(36) NOT NULL," +
 				"`joined` datetime NOT NULL," +
 				"`login` datetime NOT NULL," +
 				"`logout` datetime NULL," +
 				"`banned` datetime NULL," +
 				"`temp_ban` VARCHAR(255) NULL," +
 				"`ban_reason` varchar(255) NULL," +
-				"`ban_by` varchar(255) NULL," +
+				"`ban_by` varchar(36) NULL," +
 				"`ip` int unsigned NULL," +
 				"PRIMARY KEY(`uuid`)" +
 			");",
