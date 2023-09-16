@@ -72,7 +72,7 @@ public class PlayerDatabase extends Repository
 			// Convert banner usernames to UUIDs
 			"UPDATE IGNORE player_db SET `ban_by_uuid` = " +
 				"(SELECT `uuid` FROM player_db WHERE `name`=`player_db`.`ban_by`) " +
-				"WHERE `ban_by` != 'console';",
+				"WHERE `ban_by` != 'console' OR `ban_by` IS NOT NULL`;",
 			// Convert console bans to UUIDs.
 			"UPDATE IGNORE player_db SET `ban_by_uuid` = '00000000-0000-0000-0000-000000000000'" +
 				"WHERE `ban_by` == 'console';",
