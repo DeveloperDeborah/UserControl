@@ -23,6 +23,7 @@ import org.joda.time.format.PeriodFormat;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.UUID;
 
 public class PlayerDatabase extends Repository
 	implements IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady
@@ -66,6 +67,16 @@ public class PlayerDatabase extends Repository
 		update.addQueries("ALTER TABLE player_db ADD COLUMN uuid VARCHAR(255) NULL");
 
 		update.addQueries(
+			// Add column for banner UUID
+			"ALTER TABLE player_db ADD COLUMN ban_by_uuid VARCHAR(36) NULL;",
+			// Convert banner usernames to UUIDs
+			"UPDATE IGNORE player_db SET `ban_by_uuid` = " +
+				"(SELECT `uuid` FROM player_db WHERE `name`=`player_db`.`ban_by`) " +
+				"WHERE `ban_by` != 'console';",
+			// Convert console bans to UUIDs.
+			"UPDATE IGNORE player_db SET `ban_by_uuid` = '00000000-0000-0000-0000-000000000000'" +
+				"WHERE `ban_by` == 'console';",
+
 			"ALTER TABLE player_db RENAME TO player_db_old;",
 			// Create new table based on player uuids instead of usernames.
 			"CREATE TABLE `" + getTableName() + "` (" +
@@ -84,7 +95,7 @@ public class PlayerDatabase extends Repository
 			// Migrate to new table ignoring duplicates.
 			"INSERT IGNORE INTO `" + getTableName() + "` " +
 				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
-				"SELECT `uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip` " +
+				"SELECT `uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by_uuid`, `ip` " +
 				"FROM `player_db_old` WHERE `uuid` IS NOT NULL;"
 		);
 
@@ -114,7 +125,7 @@ public class PlayerDatabase extends Repository
 	{
 		database.update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `uuid`=?",
-			reason, banner == null ? "console" : banner.getName(), player
+			reason, banner == null ? "00000000-0000-0000-0000-000000000000" : banner, player
 		);
 		dataCache.Invalidate(player);
 	}
@@ -156,7 +167,7 @@ public class PlayerDatabase extends Repository
 			output.logInformation("Player %s with UUID %s changed their username!", player.getName(), raw.String("uuid"));
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
-		data.setBanner(raw.String("ban_by"));
+		data.setBanner(UUID.fromString(raw.String("ban_by")));
 		data.setBanReason(raw.String("ban_reason"));
 		data.setJoined(raw.DateTime("joined"));
 		data.setLogin(raw.DateTime("login"));
@@ -178,7 +189,7 @@ public class PlayerDatabase extends Repository
 			result.put("usercontrol.ban.reason", data.getBanReason());
 			if (data.getUnban() != null)
 				result.put("usercontrol.ban.temporary", DATE_FORMAT.print(data.getUnban()));
-			result.put("usercontrol.ban.by", data.getBanner());
+			result.put("usercontrol.ban.by", playerUsernameLog.getLatestUsername(data.getBannerUUID()));
 		}
 		else
 			result.put("usercontrol.ban.status", "false");

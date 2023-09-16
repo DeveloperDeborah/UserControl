@@ -2,6 +2,8 @@ package no.runsafe.UserControl.database;
 
 import org.joda.time.DateTime;
 
+import java.util.UUID;
+
 public class PlayerData
 {
 	public DateTime getJoined()
@@ -64,21 +66,21 @@ public class PlayerData
 		banReason = reason;
 	}
 
-	public String getBanner()
+	public UUID getBannerUUID()
 	{
-		return banner;
+		return banner_uuid;
 	}
 
-	public void setBanner(String name)
+	public void setBanner(UUID uuid)
 	{
-		banner = name;
+		banner_uuid = uuid;
 	}
 
 	private DateTime joined;
 	private DateTime login;
 	private DateTime logout;
 	private DateTime banned;
-	private String banner;
+	private UUID banner_uuid;
 	private DateTime unban;
 	private String banReason;
 }

@@ -108,6 +108,9 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 	@Nullable
 	public String getLatestUsername(UUID playerId)
 	{
+		if(playerId.toString().equals("00000000-0000-0000-0000-000000000000"))
+			return "Console";
+
 		List<String> playerNames = getUsedUsernames(playerId);
 
 		if (playerNames == null)
