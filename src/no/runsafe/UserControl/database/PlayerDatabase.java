@@ -67,15 +67,16 @@ public class PlayerDatabase extends Repository
 		update.addQueries("ALTER TABLE player_db ADD COLUMN uuid VARCHAR(255) NULL");
 
 		update.addQueries(
+			// Add console
+			"INSERT INTO `" + getTableName() + "` " +
+				"(`name`, `joined`, `login`, `logout`, `banned`, `ban_reason`, `ban_by`, `ip`, `temp_ban`, `uuid`, ) " +
+				"VALUES ('console', '1970-01-01', '1970-01-01', '1970-01-01', NULL, NULL, NULL, NULL, NULL, '00000000-0000-0000-0000-000000000000');",
 			// Add column for banner UUID
 			"ALTER TABLE player_db ADD COLUMN ban_by_uuid VARCHAR(36) NULL;",
 			// Convert banner usernames to UUIDs
 			"UPDATE IGNORE player_db SET `ban_by_uuid` = " +
 				"(SELECT `uuid` FROM player_db WHERE `name`=`player_db`.`ban_by`) " +
-				"WHERE `ban_by` != 'console' OR `ban_by` IS NOT NULL`;",
-			// Convert console bans to UUIDs.
-			"UPDATE IGNORE player_db SET `ban_by_uuid` = '00000000-0000-0000-0000-000000000000'" +
-				"WHERE `ban_by` == 'console';",
+				"WHERE `ban_by` IS NOT NULL`;",
 
 			"ALTER TABLE player_db RENAME TO player_db_old;",
 			// Create new table based on player uuids instead of usernames.
@@ -96,11 +97,7 @@ public class PlayerDatabase extends Repository
 			"INSERT IGNORE INTO `" + getTableName() + "` " +
 				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
 				"SELECT `uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by_uuid`, `ip` " +
-				"FROM `player_db_old` WHERE `uuid` IS NOT NULL;",
-			// Add console
-			"INSERT INTO `" + getTableName() + "` " +
-				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
-				"VALUES ('00000000-0000-0000-0000-000000000000', console, '1970-01-01', '1970-01-01', NULL, NULL, NULL, NULL, NULL);"
+				"FROM `player_db_old` WHERE `uuid` IS NOT NULL;"
 		);
 
 		return update;
