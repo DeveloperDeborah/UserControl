@@ -96,7 +96,11 @@ public class PlayerDatabase extends Repository
 			"INSERT IGNORE INTO `" + getTableName() + "` " +
 				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
 				"SELECT `uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by_uuid`, `ip` " +
-				"FROM `player_db_old` WHERE `uuid` IS NOT NULL;"
+				"FROM `player_db_old` WHERE `uuid` IS NOT NULL;",
+			// Add console
+			"INSERT INTO `" + getTableName() + "` " +
+				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
+				"VALUES ('00000000-0000-0000-0000-000000000000', console, '1970-01-01', '1970-01-01', NULL, NULL, NULL, NULL, NULL);"
 		);
 
 		return update;

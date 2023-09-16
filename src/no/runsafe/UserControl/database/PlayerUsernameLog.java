@@ -47,6 +47,10 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 			"INSERT INTO `" + getTableName() + "` (`uuid`, `name`, `last_login`) " +
 				"SELECT `uuid`, `name`, `login` from `player_db`"
 		);
+		update.addQueries(
+			"INSERT INTO `" + getTableName() + "` (`uuid`, `name`, `last_login`) " +
+				"VALUES ('00000000-0000-0000-0000-000000000000', console, '1970-01-01');"
+		);
 
 		return update;
 	}
@@ -108,9 +112,6 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 	@Nullable
 	public String getLatestUsername(UUID playerId)
 	{
-		if(playerId.toString().equals("00000000-0000-0000-0000-000000000000"))
-			return "Console";
-
 		List<String> playerNames = getUsedUsernames(playerId);
 
 		if (playerNames == null)
