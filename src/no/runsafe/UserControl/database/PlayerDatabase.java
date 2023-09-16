@@ -23,6 +23,7 @@ import org.joda.time.format.PeriodFormat;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.UUID;
 
 public class PlayerDatabase extends Repository
 	implements IPlayerDataProvider, IPlayerSessionDataProvider, IServerReady
@@ -64,6 +65,41 @@ public class PlayerDatabase extends Repository
 
 		update.addQueries("ALTER TABLE player_db ADD COLUMN temp_ban datetime NULL");
 		update.addQueries("ALTER TABLE player_db ADD COLUMN uuid VARCHAR(255) NULL");
+
+		update.addQueries(
+			// Add console
+			"INSERT INTO `" + getTableName() + "` " +
+				"(`name`, `joined`, `login`, `logout`, `banned`, `ban_reason`, `ban_by`, `ip`, `temp_ban`, `uuid`, ) " +
+				"VALUES ('console', '1970-01-01', '1970-01-01', '1970-01-01', NULL, NULL, NULL, NULL, NULL, '" + playerUsernameLog.consoleUUID +"');",
+			// Add column for banningPlayer UUID
+			"ALTER TABLE player_db ADD COLUMN ban_by_uuid VARCHAR(36) NULL;",
+			// Convert banningPlayer usernames to UUIDs
+			"UPDATE IGNORE player_db SET `ban_by_uuid` = " +
+				"(SELECT `uuid` FROM player_db WHERE `name`=`player_db`.`ban_by`) " +
+				"WHERE `ban_by` IS NOT NULL`;",
+
+			"ALTER TABLE player_db RENAME TO player_db_old;",
+			// Create new table based on player uuids instead of usernames.
+			"CREATE TABLE `" + getTableName() + "` (" +
+				"`uuid` varchar(36) NOT NULL," +
+				"`name` varchar(36) NOT NULL," +
+				"`joined` datetime NOT NULL," +
+				"`login` datetime NOT NULL," +
+				"`logout` datetime NULL," +
+				"`banned` datetime NULL," +
+				"`temp_ban` VARCHAR(255) NULL," +
+				"`ban_reason` varchar(255) NULL," +
+				"`ban_by` varchar(36) NULL," +
+				"`ip` int unsigned NULL," +
+				"PRIMARY KEY(`uuid`)" +
+			");",
+			// Migrate to new table ignoring duplicates.
+			"INSERT IGNORE INTO `" + getTableName() + "` " +
+				"(`uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by`, `ip`) " +
+				"SELECT `uuid`, `name`, `joined`, `login`, `logout`, `banned`, `temp_ban`, `ban_reason`, `ban_by_uuid`, `ip` " +
+				"FROM `player_db_old` WHERE `uuid` IS NOT NULL;"
+		);
+
 		return update;
 	}
 
@@ -86,18 +122,18 @@ public class PlayerDatabase extends Repository
 		playerUsernameLog.purgeLookupCache();
 	}
 
-	public void logPlayerBan(IPlayer player, IPlayer banner, String reason)
+	public void logPlayerBan(IPlayer player, IPlayer banningPlayer, String reason)
 	{
 		database.update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `uuid`=?",
-			reason, banner == null ? "console" : banner.getName(), player
+			reason, banningPlayer == null ? playerUsernameLog.consoleUUID : banningPlayer, player
 		);
 		dataCache.Invalidate(player);
 	}
 
 	public void setPlayerTemporaryBan(IPlayer player, DateTime temporary)
 	{
-		database.update("UPDATE player_db SET temp_ban=? WHERE `name`=?", temporary, player.getName());
+		database.update("UPDATE player_db SET temp_ban=? WHERE `uuid`=?", temporary, player);
 		dataCache.Invalidate(player);
 	}
 
@@ -125,14 +161,14 @@ public class PlayerDatabase extends Repository
 		if (data != null)
 			return data;
 
-		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `name`=?", player.getName());
+		IRow raw = database.queryRow("SELECT * FROM player_db WHERE `uuid`=?", player.getUniqueId().toString());
 		if (raw.isEmpty())
 			output.logInformation("New player %s with UUID %s discovered!", player.getName(), player.getUniqueId().toString());
 		else if (!player.getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
 			output.logInformation("Player %s with UUID %s changed their username!", player.getName(), raw.String("uuid"));
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
-		data.setBanner(raw.String("ban_by"));
+		data.setBanningPlayer(UUID.fromString(raw.String("ban_by")));
 		data.setBanReason(raw.String("ban_reason"));
 		data.setJoined(raw.DateTime("joined"));
 		data.setLogin(raw.DateTime("login"));
@@ -154,7 +190,7 @@ public class PlayerDatabase extends Repository
 			result.put("usercontrol.ban.reason", data.getBanReason());
 			if (data.getUnban() != null)
 				result.put("usercontrol.ban.temporary", DATE_FORMAT.print(data.getUnban()));
-			result.put("usercontrol.ban.by", data.getBanner());
+			result.put("usercontrol.ban.by", playerUsernameLog.getLatestUsername(data.getBanningPlayerUUID()));
 		}
 		else
 			result.put("usercontrol.ban.status", "false");

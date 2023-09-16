@@ -47,6 +47,10 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 			"INSERT INTO `" + getTableName() + "` (`uuid`, `name`, `last_login`) " +
 				"SELECT `uuid`, `name`, `login` from `player_db`"
 		);
+		update.addQueries(
+			"INSERT INTO `" + getTableName() + "` (`uuid`, `name`, `last_login`) " +
+				"VALUES ('" + consoleUUID + "', console, '1970-01-01');"
+		);
 
 		return update;
 	}
@@ -193,6 +197,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 		lookupCache.Purge();
 	}
 
+	public final UUID consoleUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	private final Pattern SQLWildcard = Pattern.compile("([%_])");
 	private final TimedCache<String, List<String>> lookupCache;
 	private final TimedCache<String, List<UUID>> uniqueIdCache;
