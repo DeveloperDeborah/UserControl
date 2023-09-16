@@ -70,7 +70,7 @@ public class PlayerDatabase extends Repository
 			// Add console
 			"INSERT INTO `" + getTableName() + "` " +
 				"(`name`, `joined`, `login`, `logout`, `banned`, `ban_reason`, `ban_by`, `ip`, `temp_ban`, `uuid`, ) " +
-				"VALUES ('console', '1970-01-01', '1970-01-01', '1970-01-01', NULL, NULL, NULL, NULL, NULL, '" + consoleUUID +"');",
+				"VALUES ('console', '1970-01-01', '1970-01-01', '1970-01-01', NULL, NULL, NULL, NULL, NULL, '" + playerUsernameLog.consoleUUID +"');",
 			// Add column for banningPlayer UUID
 			"ALTER TABLE player_db ADD COLUMN ban_by_uuid VARCHAR(36) NULL;",
 			// Convert banningPlayer usernames to UUIDs
@@ -126,7 +126,7 @@ public class PlayerDatabase extends Repository
 	{
 		database.update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `uuid`=?",
-			reason, banningPlayer == null ? consoleUUID : banningPlayer, player
+			reason, banningPlayer == null ? playerUsernameLog.consoleUUID : banningPlayer, player
 		);
 		dataCache.Invalidate(player);
 	}
@@ -227,7 +227,6 @@ public class PlayerDatabase extends Repository
 		return GetPlayerLogout(player) == null;
 	}
 
-	private final UUID consoleUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	private final IConsole output;
 	private final IDebug console;
 	private final PlayerUsernameLog playerUsernameLog;
