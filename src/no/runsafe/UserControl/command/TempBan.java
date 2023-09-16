@@ -52,20 +52,20 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 
 		playerdb.setPlayerTemporaryBan(victim, expires);
 
-		IPlayer banner = null;
+		IPlayer banningPlayer = null;
 		if (executor instanceof IPlayer)
-			banner = (IPlayer) executor;
+			banningPlayer = (IPlayer) executor;
 
-		if (!victim.isOnline() || (banner != null && banner.shouldNotSee(victim)))
+		if (!victim.isOnline() || (banningPlayer != null && banningPlayer.shouldNotSee(victim)))
 		{
-			playerManager.banPlayer(banner, victim, reason);
-			logger.logKick(banner, victim, reason, true);
-			playerdb.logPlayerBan(victim, banner, reason);
+			playerManager.banPlayer(banningPlayer, victim, reason);
+			logger.logKick(banningPlayer, victim, reason, true);
+			playerdb.logPlayerBan(victim, banningPlayer, reason);
 			return String.format("Temporarily banned offline player %s.", victim.getPrettyName());
 		}
 		if (lightning)
 			victim.strikeWithLightning(fakeLightning);
-		playerManager.banPlayer(banner, victim, reason);
+		playerManager.banPlayer(banningPlayer, victim, reason);
 		this.sendTempBanMessage(victim, executor, reason);
 		return null;
 	}

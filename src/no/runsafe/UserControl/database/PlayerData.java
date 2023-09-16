@@ -66,21 +66,21 @@ public class PlayerData
 		banReason = reason;
 	}
 
-	public UUID getBannerUUID()
+	public UUID getBanningPlayerUUID()
 	{
-		return banner_uuid;
+		return banningPlayerUUID;
 	}
 
-	public void setBanner(UUID uuid)
+	public void setBanningPlayer(UUID uuid)
 	{
-		banner_uuid = uuid;
+		banningPlayerUUID = uuid;
 	}
 
 	private DateTime joined;
 	private DateTime login;
 	private DateTime logout;
 	private DateTime banned;
-	private UUID banner_uuid;
+	private UUID banningPlayerUUID;
 	private DateTime unban;
 	private String banReason;
 }
