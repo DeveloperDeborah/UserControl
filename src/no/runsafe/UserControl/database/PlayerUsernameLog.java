@@ -49,7 +49,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 		);
 		update.addQueries(
 			"INSERT INTO `" + getTableName() + "` (`uuid`, `name`, `last_login`) " +
-				"VALUES ('" + consoleUUID + "', console, '1970-01-01');"
+				"VALUES ('" + consoleUUID + "', 'console', '1970-01-01');"
 		);
 
 		return update;
