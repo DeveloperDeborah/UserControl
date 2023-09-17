@@ -76,7 +76,7 @@ public class PlayerDatabase extends Repository
 			// Convert banningPlayer usernames to UUIDs
 			"UPDATE IGNORE `player_db` SET `ban_by_uuid` = " +
 				"(SELECT `uuid` FROM `player_db` WHERE `name`=`player_db`.`ban_by`) " +
-				"WHERE `ban_by` IS NOT NULL`;",
+				"WHERE `ban_by` IS NOT NULL;",
 
 			"ALTER TABLE player_db RENAME TO player_db_old;",
 			// Create new table based on player uuids instead of usernames.
