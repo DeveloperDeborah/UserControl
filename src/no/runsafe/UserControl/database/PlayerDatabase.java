@@ -129,7 +129,7 @@ public class PlayerDatabase extends Repository
 	{
 		database.update(
 			"UPDATE player_db SET `banned`=NOW(), ban_reason=?, ban_by=? WHERE `uuid`=?",
-			reason, banningPlayer == null ? playerUsernameLog.consoleUUID : banningPlayer, player
+			reason, banningPlayer == null ? playerUsernameLog.consoleUUID.toString() : banningPlayer.getUniqueId().toString(), player
 		);
 		dataCache.Invalidate(player);
 	}
