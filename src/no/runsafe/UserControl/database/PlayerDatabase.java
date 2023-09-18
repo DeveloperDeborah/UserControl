@@ -75,7 +75,7 @@ public class PlayerDatabase extends Repository
 			"ALTER TABLE player_db ADD COLUMN ban_by_uuid VARCHAR(36) NULL;",
 			// Convert banning console to UUID
 			"UPDATE IGNORE `player_db` SET `ban_by_uuid` = '" + playerUsernameLog.consoleUUID + "' " +
-				"WHERE `ban_by` == 'console';",
+				"WHERE `ban_by` = 'console' OR (`banned` IS NOT NULL AND `ban_by` IS NULL);",
 			// Convert banningPlayer usernames to UUIDs
 			"UPDATE IGNORE `player_db` SET `ban_by_uuid` = " +
 				"(SELECT `uuid` FROM `player_username_log` WHERE `name`=`player_db`.`ban_by` LIMIT 1) " +
