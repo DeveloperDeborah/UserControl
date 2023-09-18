@@ -171,7 +171,8 @@ public class PlayerDatabase extends Repository
 			output.logInformation("Player %s with UUID %s changed their username!", player.getName(), raw.String("uuid"));
 		data = new PlayerData();
 		data.setBanned(raw.DateTime("banned"));
-		data.setBanningPlayer(UUID.fromString(raw.String("ban_by")));
+		if (raw.String("ban_by") != null)
+			data.setBanningPlayer(UUID.fromString(raw.String("ban_by")));
 		data.setBanReason(raw.String("ban_reason"));
 		data.setJoined(raw.DateTime("joined"));
 		data.setLogin(raw.DateTime("login"));
