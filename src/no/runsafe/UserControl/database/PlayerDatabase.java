@@ -173,6 +173,8 @@ public class PlayerDatabase extends Repository
 		data.setBanned(raw.DateTime("banned"));
 		if (raw.String("ban_by") != null)
 			data.setBanningPlayer(UUID.fromString(raw.String("ban_by")));
+		else
+			data.setBanningPlayer(null);
 		data.setBanReason(raw.String("ban_reason"));
 		data.setJoined(raw.DateTime("joined"));
 		data.setLogin(raw.DateTime("login"));
