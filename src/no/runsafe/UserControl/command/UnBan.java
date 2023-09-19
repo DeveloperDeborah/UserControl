@@ -31,7 +31,7 @@ public class UnBan extends ExecutableCommand
 		if (player == null)
 			return null;
 
-		if (playerdb.getData(player).getBanned() == null)
+		if (player.isNotBanned() && playerdb.getData(player).getBanned() == null)
 			return String.format("Player %s is not banned.", player.getPrettyName());
 
 		// TODO Log unbanning reason
