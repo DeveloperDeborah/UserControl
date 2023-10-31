@@ -36,6 +36,16 @@ public class Seen extends AsyncCommand
 		if (data == null)
 			return String.format("No data for %s found..", player.getPrettyName());
 
+
+		if (player.hasPermission("runsafe.secret.offline"))
+		{
+			return String.format(
+				"Player %s has been &coffline&r since &k%s&r ago",
+				player.getPrettyName(),
+				formatTime(data.getLogin())
+			);
+		}
+
 		if (data.getBanned() != null)
 			return String.format(
 				"Player %s has been &4banned&r since %s",
