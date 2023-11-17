@@ -68,9 +68,10 @@ public class PlayerDatabase extends Repository
 
 		update.addQueries(
 			// Add console
-			"INSERT INTO `" + getTableName() + "` " +
+			"INSERT IGNORE INTO `" + getTableName() + "` " +
 				"(`name`, `joined`, `login`, `logout`, `banned`, `ban_reason`, `ban_by`, `ip`, `temp_ban`, `uuid`) " +
 				"VALUES ('console', '1970-01-01', '1970-01-01', '1970-01-01', NULL, NULL, NULL, NULL, NULL, '" + playerUsernameLog.consoleUUID +"');",
+
 			// Add column for banningPlayer UUID
 			"ALTER TABLE player_db ADD COLUMN ban_by_uuid VARCHAR(36) NULL;",
 			// Convert banning console to UUID
