@@ -115,7 +115,13 @@ public class PlayerDatabase extends Repository
 
 	public void logPlayerInfo(IPlayer player)
 	{
+		if (player == null)
+		{
+			output.logError("Attempted to log player info for NULL player");
+			return;
+		}
 		console.debugFine("Updating player_db with login time");
+		console.debugFine("Player %s is named %s and has ip %s", player, player.getName(), player.getIP());
 		database.update(
 			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
