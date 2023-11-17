@@ -121,7 +121,12 @@ public class PlayerDatabase extends Repository
 			return;
 		}
 		console.debugFine("Updating player_db with login time");
-		console.debugFine("Player %s is named %s and has ip %s", player, player.getName(), player.getIP());
+		console.debugFine("Player %s is named %s and has ip %s", player.getUniqueId(), player.getName(), player.getIP());
+		if (database == null)
+		{
+			output.logError("No database, time for panic!");
+			return;
+		}
 		database.update(
 			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
