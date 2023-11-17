@@ -131,7 +131,7 @@ public class PlayerDatabase extends Repository
 		database.update(
 			"INSERT INTO player_db (`uuid`,`name`,`joined`,`login`,`ip`) VALUES (?,?,NOW(),NOW(),INET_ATON(?))" +
 				"ON DUPLICATE KEY UPDATE `uuid`=VALUES(`uuid`), `name`=VALUES(`name`), `login`=VALUES(`login`), `ip`=VALUES(`ip`)",
-			player.getUniqueId(), player.getName(), player.getIP()
+			player, player.getName(), player.getIP()
 		);
 		dataCache.Invalidate(player);
 		playerUsernameLog.purgeLookupCache();
