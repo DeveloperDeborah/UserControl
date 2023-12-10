@@ -24,6 +24,9 @@ public class SetFirstSpawn extends PlayerCommand implements IConfigurationChange
 	public String OnExecute(IPlayer executor, IArgumentList parameters)
 	{
 		ILocation location = executor.getLocation();
+		if (location == null)
+			return "&cInvalid location.";
+
 		this.config.setConfigValue("firstJoinLocation.world", location.getWorld().getName());
 		this.config.setConfigValue("firstJoinLocation.x", location.getX());
 		this.config.setConfigValue("firstJoinLocation.y", location.getY());

@@ -48,33 +48,28 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			return;
 
 		DateTime unban = data.getUnban();
-		if (unban != null)
-		{
-			if (unban.isAfter(DateTime.now()))
-			{
-				Duration left = new Duration(DateTime.now(), unban);
-				event.playerBanned(
-					String.format(
-						tempBanMessageFormat,
-						data.getBanReason(),
-						PeriodFormat.getDefault().print(
-							left.toPeriod(ONE_MINUTE.isLongerThan(left) ? SHORT_TIME_LEFT : LONG_TIME_LEFT)
-						)
-					)
-				);
-			}
-			else
-			{
-				playerdb.logPlayerUnban(event.getPlayer());
-				playerManager.unbanPlayer(player);
-			}
-		}
-		else
+		if (unban == null)
 		{
 			String banReason = String.format(banMessageFormat, data.getBanReason());
 			event.playerBanned(banReason);
 			activeBans.put(event.getPlayer(), banReason);
+			return;
 		}
+
+		if (!unban.isAfter(DateTime.now()))
+		{
+			playerdb.logPlayerUnban(event.getPlayer());
+			playerManager.unbanPlayer(player);
+			return;
+		}
+
+		Duration left = new Duration(DateTime.now(), unban);
+		event.playerBanned(String.format(
+			tempBanMessageFormat,
+			data.getBanReason(),
+			PeriodFormat.getDefault().print(
+				left.toPeriod(ONE_MINUTE.isLongerThan(left) ? SHORT_TIME_LEFT : LONG_TIME_LEFT)
+		)));
 	}
 
 	@Override

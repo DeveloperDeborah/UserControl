@@ -66,7 +66,7 @@ public class PlayerSessionLog extends Repository
 	{
 		String group = null;
 		List<String> groups = player.getGroups();
-		if (groups.size() > 0)
+		if (!groups.isEmpty())
 			group = StringUtils.join(groups, ",");
 		database.update(
 			"INSERT INTO player_session (`name`, `ip`, `login`, `group`, `uuid`) VALUES (?, INET_ATON(?), NOW(), ?, ?)",

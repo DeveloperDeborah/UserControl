@@ -21,11 +21,12 @@ public class MaintenanceHandler implements IConfigurationChanged, IPlayerPreLogi
 	public void setMaintenance(boolean state)
 	{
 		this.isMaintenance = state;
-		if (this.config != null)
-		{
-			this.config.setConfigValue("maintenance", state);
-			this.config.save();
-		}
+		if (this.config == null)
+			return;
+
+		this.config.setConfigValue("maintenance", state);
+		this.config.save();
+
 	}
 
 	@Override

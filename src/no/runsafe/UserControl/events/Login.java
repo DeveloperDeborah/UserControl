@@ -32,9 +32,7 @@ public class Login implements IPlayerJoinEvent, IConfigurationChanged, IPlayerPr
 	{
 		IPlayer player = event.getPlayer();
 		if (this.loginRedirectManager.hasRedirectLocation())
-		{
 			player.teleport(this.loginRedirectManager.getRedirectLocation());
-		}
 		else if (this.newPlayers.contains(player) && firstSpawnLocation != null)
 		{
 			player.teleport(firstSpawnLocation);

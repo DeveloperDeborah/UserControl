@@ -57,7 +57,7 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 	{
 		if (operatorEvent.wasMadeOP())
 		{
-			operatorEvent.getPlayer().sendMessage(String.format("You are now an operator."));
+			operatorEvent.getPlayer().sendMessage("You are now an operator.");
 			if (timerDeOp != null)
 			{
 				opExpiration.put(operatorEvent.getPlayer(), DateTime.now().plus(timerDeOp));
@@ -66,7 +66,7 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 		}
 		else if (timerDeOp != null)
 		{
-			operatorEvent.getPlayer().sendMessage(String.format("You are no longer an operator."));
+			operatorEvent.getPlayer().sendMessage("You are no longer an operator.");
 			opExpiration.remove(operatorEvent.getPlayer());
 		}
 	}
