@@ -13,14 +13,12 @@ import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.timer.TimedCache;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.PeriodFormat;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -146,7 +144,7 @@ public class PlayerDatabase extends Repository
 		dataCache.Invalidate(player);
 	}
 
-	public void setPlayerTemporaryBan(IPlayer player, DateTime temporary)
+	public void setPlayerTemporaryBan(IPlayer player, Instant temporary)
 	{
 		database.update("UPDATE player_db SET temp_ban=? WHERE `uuid`=?", temporary, player);
 		dataCache.Invalidate(player);
@@ -182,16 +180,16 @@ public class PlayerDatabase extends Repository
 		else if (!player.getUniqueId().toString().equalsIgnoreCase(raw.String("uuid")))
 			output.logInformation("Player %s with UUID %s changed their username!", player.getName(), raw.String("uuid"));
 		data = new PlayerData();
-		data.setBanned(raw.DateTime("banned"));
+		data.setBanned(raw.Instant("banned"));
 		if (raw.String("ban_by") != null)
 			data.setBanningPlayer(UUID.fromString(raw.String("ban_by")));
 		else
 			data.setBanningPlayer(null);
 		data.setBanReason(raw.String("ban_reason"));
-		data.setJoined(raw.DateTime("joined"));
-		data.setLogin(raw.DateTime("login"));
-		data.setLogout(raw.DateTime("logout"));
-		data.setUnban(raw.DateTime("temp_ban"));
+		data.setJoined(raw.Instant("joined"));
+		data.setLogin(raw.Instant("login"));
+		data.setLogout(raw.Instant("logout"));
+		data.setUnban(raw.Instant("temp_ban"));
 
 		return dataCache.Cache(player, data);
 	}
@@ -204,24 +202,29 @@ public class PlayerDatabase extends Repository
 		if (data.getBanned() != null)
 		{
 			result.put("usercontrol.ban.status", "true");
-			result.put("usercontrol.ban.timestamp", DATE_FORMAT.print(data.getBanned()));
+			result.put("usercontrol.ban.timestamp", formatDate(data.getBanned()));
 			result.put("usercontrol.ban.reason", data.getBanReason());
 			if (data.getUnban() != null)
-				result.put("usercontrol.ban.temporary", DATE_FORMAT.print(data.getUnban()));
+				result.put("usercontrol.ban.temporary", formatDate(data.getUnban()));
 			result.put("usercontrol.ban.by", playerUsernameLog.getLatestUsername(data.getBanningPlayerUUID()));
 		}
 		else
 			result.put("usercontrol.ban.status", "false");
-		result.put("usercontrol.joined", DATE_FORMAT.print(data.getJoined()));
-		result.put("usercontrol.login", DATE_FORMAT.print(data.getLogin()));
-		result.put("usercontrol.logout", DATE_FORMAT.print(data.getLogout()));
+		result.put("usercontrol.joined", formatDate(data.getJoined()));
+		result.put("usercontrol.login", formatDate(data.getLogin()));
+		result.put("usercontrol.logout", formatDate(data.getLogout()));
 		result.put("usercontrol.pastNames", StringUtils.join(playerUsernameLog.getUsedUsernames(player.getUniqueId()), ", "));
 		if (data.getLogout() != null && data.getLogout().isAfter(data.getLogin()))
-		{
-			Period period = new Period(data.getLogout(), DateTime.now(), SEEN_FORMAT);
-			result.put("usercontrol.seen", PeriodFormat.getDefault().print(period));
-		}
+			result.put("usercontrol.seen", DurationFormatUtils.formatDurationWords(
+				Duration.between(data.getLogout(), Instant.now()).toMillis(), true, true)
+			);
+
 		return result;
+	}
+
+	private String formatDate (Instant date)
+	{
+		return date.toString().replace("T", " ").substring(0,16);
 	}
 
 	@Override
@@ -230,7 +233,8 @@ public class PlayerDatabase extends Repository
 		PlayerData data = getData(player);
 		if (data == null)
 			return null;
-		return data.getLogout();
+
+		return new DateTime(data.getLogout().getEpochSecond());
 	}
 
 	@Override
@@ -248,7 +252,5 @@ public class PlayerDatabase extends Repository
 	private final IConsole output;
 	private final IDebug console;
 	private final PlayerUsernameLog playerUsernameLog;
-	private final PeriodType SEEN_FORMAT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
-	private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private final TimedCache<IPlayer, PlayerData> dataCache;
 }

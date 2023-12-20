@@ -8,11 +8,9 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.player.IPlayer;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
-import org.joda.time.format.PeriodFormat;
+import org.apache.commons.lang.time.DurationFormatUtils;
+
+import java.time.Duration;
 
 public class PlayedOther extends AsyncCommand implements IBranchingExecution
 {
@@ -38,10 +36,8 @@ public class PlayedOther extends AsyncCommand implements IBranchingExecution
 		if (time == null)
 			return "null";
 
-		Period period = new Period(time, DateTime.now(), output_format);
-		return PeriodFormat.getDefault().print(period);
+		return DurationFormatUtils.formatDurationWords(time.toMillis(), true, true);
 	}
 
 	private final PlayerSessionLog database;
-	private final PeriodType output_format = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 }

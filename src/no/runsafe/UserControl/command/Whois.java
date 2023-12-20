@@ -29,7 +29,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		if (target == null)
 			return null;
 		Map<String, String> data = target.getData();
-		if (data == null || data.size() == 0)
+		if (data == null || data.isEmpty())
 			return String.format("No data found for player %s.", target.getPrettyName());
 		StringBuilder info = new StringBuilder();
 		info.append(String.format("Whois results for %s:", target.getPrettyName()));

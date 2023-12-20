@@ -5,15 +5,13 @@ import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
-import no.runsafe.framework.api.command.argument.IArgumentList;
-import no.runsafe.framework.api.command.argument.Period;
-import no.runsafe.framework.api.command.argument.Player;
-import no.runsafe.framework.api.command.argument.TrailingArgument;
+import no.runsafe.framework.api.command.argument.*;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.api.server.IBroadcast;
 import no.runsafe.framework.api.server.IPlayerManager;
-import org.joda.time.DateTime;
+
+import java.time.Instant;
 
 public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
@@ -26,7 +24,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	{
 		super(
 			"tempban", "Temporarily ban a player from the server", "runsafe.usercontrol.ban.temporary",
-			new Player().require(), new Period("time").require(), new TrailingArgument("reason")
+			new Player().require(), new Duration("time").require(), new TrailingArgument("reason")
 		);
 		this.logger = logger;
 		this.broadcaster = broadcaster;
@@ -37,10 +35,10 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 	@Override
 	public String OnExecute(ICommandExecutor executor, IArgumentList parameters)
 	{
-		org.joda.time.Period duration = parameters.getValue("time");
+		java.time.Duration duration = parameters.getValue("time");
 		if (duration == null)
 			return null;
-		DateTime expires = DateTime.now().plus(duration);
+		Instant expires = Instant.now().plus(duration);
 		String reason = parameters.getValue("reason");
 
 		IPlayer victim = parameters.getValue("player");
