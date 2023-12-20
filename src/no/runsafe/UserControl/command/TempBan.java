@@ -10,7 +10,8 @@ import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.api.server.IBroadcast;
 import no.runsafe.framework.api.server.IPlayerManager;
-import org.joda.time.DateTime;
+
+import java.time.Instant;
 
 public class TempBan extends ExecutableCommand implements IConfigurationChanged
 {
@@ -37,7 +38,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 		java.time.Duration duration = parameters.getValue("time");
 		if (duration == null)
 			return null;
-		DateTime expires = DateTime.now().plus(duration.toMillis());
+		Instant expires = Instant.now().plus(duration);
 		String reason = parameters.getValue("reason");
 
 		IPlayer victim = parameters.getValue("player");

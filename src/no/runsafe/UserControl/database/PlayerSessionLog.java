@@ -5,7 +5,7 @@ import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.Duration;
+import java.time.Duration;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -59,7 +59,7 @@ public class PlayerSessionLog extends Repository
 				"WHERE `uuid`=?",
 			player
 		);
-		return time == null ? null : Duration.standardMinutes(time);
+		return time == null ? null : Duration.ofMinutes(time);
 	}
 
 	public void logSessionStart(IPlayer player)

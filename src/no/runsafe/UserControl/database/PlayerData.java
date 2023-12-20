@@ -1,57 +1,58 @@
 package no.runsafe.UserControl.database;
 
-import org.joda.time.DateTime;
+//import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class PlayerData
 {
-	public DateTime getJoined()
+	public Instant getJoined()
 	{
 		return joined;
 	}
 
-	public void setJoined(DateTime joined)
+	public void setJoined(Instant joined)
 	{
 		this.joined = joined;
 	}
 
-	public DateTime getLogin()
+	public Instant getLogin()
 	{
 		return login;
 	}
 
-	public void setLogin(DateTime login)
+	public void setLogin(Instant login)
 	{
 		this.login = login;
 	}
 
-	public DateTime getLogout()
+	public Instant getLogout()
 	{
 		return logout;
 	}
 
-	public void setLogout(DateTime logout)
+	public void setLogout(Instant logout)
 	{
 		this.logout = logout;
 	}
 
-	public DateTime getBanned()
+	public Instant getBanned()
 	{
 		return banned;
 	}
 
-	public void setBanned(DateTime banned)
+	public void setBanned(Instant banned)
 	{
 		this.banned = banned;
 	}
 
-	public DateTime getUnban()
+	public Instant getUnban()
 	{
 		return unban;
 	}
 
-	public void setUnban(DateTime unbanned)
+	public void setUnban(Instant unbanned)
 	{
 		unban = unbanned;
 	}
@@ -76,11 +77,11 @@ public class PlayerData
 		banningPlayerUUID = uuid;
 	}
 
-	private DateTime joined;
-	private DateTime login;
-	private DateTime logout;
-	private DateTime banned;
+	private Instant joined;
+	private Instant login;
+	private Instant logout;
+	private Instant banned;
 	private UUID banningPlayerUUID;
-	private DateTime unban;
+	private Instant unban;
 	private String banReason;
 }

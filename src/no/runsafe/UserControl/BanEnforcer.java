@@ -8,11 +8,10 @@ import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.api.server.IPlayerManager;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.PeriodType;
-import org.joda.time.format.PeriodFormat;
+import org.apache.commons.lang.time.DurationFormatUtils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
@@ -47,7 +46,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 		if (data == null || data.getBanned() == null)
 			return;
 
-		DateTime unban = data.getUnban();
+		Instant unban = data.getUnban();
 		if (unban == null)
 		{
 			String banReason = String.format(banMessageFormat, data.getBanReason());
@@ -56,20 +55,19 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 			return;
 		}
 
-		if (!unban.isAfter(DateTime.now()))
+		if (!unban.isAfter(Instant.now()))
 		{
 			playerdb.logPlayerUnban(event.getPlayer());
 			playerManager.unbanPlayer(player);
 			return;
 		}
 
-		Duration left = new Duration(DateTime.now(), unban);
+		Duration left = Duration.between(Instant.now(), unban);
 		event.playerBanned(String.format(
 			tempBanMessageFormat,
 			data.getBanReason(),
-			PeriodFormat.getDefault().print(
-				left.toPeriod(ONE_MINUTE.isLongerThan(left) ? SHORT_TIME_LEFT : LONG_TIME_LEFT)
-		)));
+			DurationFormatUtils.formatDurationWords(left.toMillis(), true, true)
+		));
 	}
 
 	@Override
@@ -89,7 +87,4 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 	private String banMessageFormat = "Banned: %s";
 	private String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";
 	private final ConcurrentHashMap<IPlayer, String> activeBans = new ConcurrentHashMap<>();
-	private static final PeriodType LONG_TIME_LEFT = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
-	private static final PeriodType SHORT_TIME_LEFT = PeriodType.standard().withMillisRemoved();
-	private static final Duration ONE_MINUTE = Duration.standardMinutes(1);
 }

@@ -9,9 +9,9 @@ import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.event.player.RunsafeOperatorEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerLoginEvent;
 import no.runsafe.framework.timer.Timer;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class OpController extends Timer implements IConfigurationChanged, IPlayerLoginEvent, IPlayerOperatorEvent
@@ -27,7 +27,7 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 	public void OnElapsed()
 	{
 		for (IPlayer player : opExpiration.keySet())
-			if (opExpiration.get(player).isBefore(DateTime.now()))
+			if (opExpiration.get(player).isBefore(Instant.now()))
 			{
 				player.deOP();
 				opExpiration.remove(player);
@@ -42,7 +42,7 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 	{
 		loginDeOp = configuration.getConfigValueAsBoolean("control.op.login");
 		int duration = configuration.getConfigValueAsInt("control.op.timer");
-		timerDeOp = duration > 0 ? Duration.standardSeconds(duration) : null;
+		timerDeOp = duration > 0 ? Duration.ofSeconds(duration) : null;
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 			operatorEvent.getPlayer().sendMessage("You are now an operator.");
 			if (timerDeOp != null)
 			{
-				opExpiration.put(operatorEvent.getPlayer(), DateTime.now().plus(timerDeOp));
+				opExpiration.put(operatorEvent.getPlayer(), Instant.now().plus(timerDeOp));
 				start();
 			}
 		}
@@ -73,5 +73,5 @@ public class OpController extends Timer implements IConfigurationChanged, IPlaye
 
 	private boolean loginDeOp;
 	private Duration timerDeOp;
-	private final ConcurrentHashMap<IPlayer, DateTime> opExpiration = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<IPlayer, Instant> opExpiration = new ConcurrentHashMap<>();
 }

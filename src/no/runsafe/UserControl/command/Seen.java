@@ -8,10 +8,10 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.player.IPlayer;
-import org.joda.time.DateTime;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
-import org.joda.time.format.PeriodFormat;
+import org.apache.commons.lang.time.DurationFormatUtils;
+
+import java.time.Duration;
+import java.time.Instant;
 
 public class Seen extends AsyncCommand
 {
@@ -57,15 +57,15 @@ public class Seen extends AsyncCommand
 		);
 	}
 
-	private String formatTime(DateTime time)
+	private String formatTime(Instant time)
 	{
 		if (time == null)
 			return "null";
 
-		Period period = new Period(time, DateTime.now(), output_format);
-		return PeriodFormat.getDefault().print(period);
+		return DurationFormatUtils.formatDurationWords(
+			Duration.between(time, Instant.now()).toMillis(), true, true
+		);
 	}
 
 	private final PlayerDatabase playerDatabase;
-	private final PeriodType output_format = PeriodType.standard().withMillisRemoved().withSecondsRemoved();
 }
