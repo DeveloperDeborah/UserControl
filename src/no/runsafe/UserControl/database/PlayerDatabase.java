@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -210,9 +211,9 @@ public class PlayerDatabase extends Repository
 		return result;
 	}
 
-	private String formatDate (Instant date)
+	private String formatDate(Instant date)
 	{
-		return date.toString().replace("T", " ").substring(0,16);
+		return date.atZone(ZoneId.systemDefault()).toString().replace("T", " ").substring(0,16);
 	}
 
 	@Override
