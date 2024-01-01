@@ -4,6 +4,7 @@ import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.UserControl.database.PlayerUsernameLog;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.api.event.player.IPlayerKickEvent;
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
@@ -22,7 +23,8 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		PlayerSessionLog sessions,
 		PlayerKickLog kickLog,
 		PlayerUsernameLog playerUsernameLog,
-		IPlayerProvider playerProvider
+		IPlayerProvider playerProvider,
+		IServer server
 	)
 	{
 		playerdb = players;
@@ -30,6 +32,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		kicklogger = kickLog;
 		this.playerUsernameLog = playerUsernameLog;
 		this.playerProvider = playerProvider;
+		this.server = server;
 	}
 
 	@Override
@@ -72,6 +75,8 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	public void OnPluginDisabled()
 	{
 		sessiondb.closeAllSessions("Shutting down");
+		for (IPlayer player : server.getOnlinePlayers())
+			playerdb.logPlayerLogout(player);
 	}
 
 	private final PlayerDatabase playerdb;
@@ -79,4 +84,5 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	private final PlayerKickLog kicklogger;
 	private final PlayerUsernameLog playerUsernameLog;
 	private final IPlayerProvider playerProvider;
+	private final IServer server;
 }
