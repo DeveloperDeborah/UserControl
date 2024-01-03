@@ -1,5 +1,6 @@
 package no.runsafe.UserControl.database;
 
+import no.runsafe.UserControl.TimeFormatter;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.IRow;
 import no.runsafe.framework.api.database.ISchemaUpdate;
@@ -13,13 +14,10 @@ import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.timer.TimedCache;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nonnull;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -191,32 +189,22 @@ public class PlayerDatabase extends Repository
 		if (data.getBanned() != null)
 		{
 			result.put("usercontrol.ban.status", "true");
-			result.put("usercontrol.ban.timestamp", formatDate(data.getBanned()));
+			result.put("usercontrol.ban.timestamp", TimeFormatter.formatDate(data.getBanned()));
 			result.put("usercontrol.ban.reason", data.getBanReason());
 			if (data.getUnban() != null)
-				result.put("usercontrol.ban.temporary", formatDate(data.getUnban()));
+				result.put("usercontrol.ban.temporary", TimeFormatter.formatDate(data.getUnban()));
 			result.put("usercontrol.ban.by", playerUsernameLog.getLatestUsername(data.getBanningPlayerUUID()));
 		}
 		else
 			result.put("usercontrol.ban.status", "false");
-		result.put("usercontrol.joined", formatDate(data.getJoined()));
-		result.put("usercontrol.login", formatDate(data.getLogin()));
-		result.put("usercontrol.logout", formatDate(data.getLogout()));
+		result.put("usercontrol.joined", TimeFormatter.formatDate(data.getJoined()));
+		result.put("usercontrol.login", TimeFormatter.formatDate(data.getLogin()));
+		result.put("usercontrol.logout", TimeFormatter.formatDate(data.getLogout()));
 		result.put("usercontrol.pastNames", StringUtils.join(playerUsernameLog.getUsedUsernames(player.getUniqueId()), ", "));
 		if (data.getLogout() != null && data.getLogout().isAfter(data.getLogin()))
-			result.put("usercontrol.seen", DurationFormatUtils.formatDurationWords(
-				Duration.between(data.getLogout(), Instant.now()).toMillis(), true, true)
-			);
+			result.put("usercontrol.seen", TimeFormatter.formatInstant(data.getLogout()));
 
 		return result;
-	}
-
-	private String formatDate(Instant date)
-	{
-		if (date == null)
-			return "Invalid Date";
-
-		return date.atZone(ZoneId.systemDefault()).toString().replace("T", " ").substring(0,16);
 	}
 
 	@Override
