@@ -131,8 +131,8 @@ public class TimeFormatter
 		return timeReturn.substring(1); // Get rid of first space
 	}
 
-	private static final long YEAR_MILLISECONDS = 31449600000L; // 364 days
-	private static final long MONTH_MILLISECONDS = 2620799997L; // 1/12 of a year
+	private static final long YEAR_MILLISECONDS = 31536000000L; // 365 days
+	private static final long MONTH_MILLISECONDS = 2628000000L; // 1/12 of a year
 	private static final long WEEK_MILLISECONDS = 604800000L;
 	private static final long DAY_MILLISECONDS = 86400000L;
 	private static final long HOUR_MILLISECONDS = 3600000L;
