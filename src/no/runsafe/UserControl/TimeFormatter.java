@@ -34,95 +34,68 @@ public class TimeFormatter
 	{
 		if (millis < SECOND_MILLISECONDS)
 			return "Less than one second";
+
 		long millisOriginalValue = millis;
-		int years = 0;
-		int months = 0;
-		int weeks = 0;
-		int days = 0;
-		int hours = 0;
-		int minutes = 0;
-		int seconds = 0;
+		String timeReturn = "";
 
 		if (millis >= YEAR_MILLISECONDS) // Years
 		{
-			years = (int) (millis / YEAR_MILLISECONDS);
+			int years = (int) (millis / YEAR_MILLISECONDS);
 			millis -= (years * YEAR_MILLISECONDS);
-		}
-		if (millis >= MONTH_MILLISECONDS) // Months
-		{
-			months = (int) (millis / MONTH_MILLISECONDS);
-			millis -= (months * MONTH_MILLISECONDS);
-		}
-		if (millis >= WEEK_MILLISECONDS) // Weeks
-		{
-			weeks = (int) (millis / WEEK_MILLISECONDS);
-			millis -= (weeks * WEEK_MILLISECONDS);
-		}
-		if (millis >= DAY_MILLISECONDS) // Days
-		{
-			days = (int) (millis / DAY_MILLISECONDS);
-			millis -= (days * DAY_MILLISECONDS);
-		}
-		if (millis >= HOUR_MILLISECONDS) // Hours
-		{
-			hours = (int) (millis / HOUR_MILLISECONDS);
-			millis -= (hours * HOUR_MILLISECONDS);
-		}
-		if (millis >= MINUTE_MILLISECONDS) // Minutes
-		{
-			minutes = (int) (millis / MINUTE_MILLISECONDS);
-			millis -= (minutes * MINUTE_MILLISECONDS);
-		}
 
-		if (millisOriginalValue < 5 * MINUTE_MILLISECONDS) // Only display seconds if total time is less than 5 minutes
-			seconds = (int)(millis / SECOND_MILLISECONDS);
-
-		String timeReturn = "";
-
-		if (years != 0)
-		{
 			timeReturn += (" " + years + " year");
 			if (years != 1)
 				timeReturn += "s";
 		}
-
-		if (months != 0)
+		if (millis >= MONTH_MILLISECONDS) // Months
 		{
+			int months = (int) (millis / MONTH_MILLISECONDS);
+			millis -= (months * MONTH_MILLISECONDS);
+
 			timeReturn += (" " + months + " month");
 			if (months != 1)
 				timeReturn += "s";
 		}
-
-		if (weeks != 0)
+		if (millis >= WEEK_MILLISECONDS) // Weeks
 		{
+			int weeks = (int) (millis / WEEK_MILLISECONDS);
+			millis -= (weeks * WEEK_MILLISECONDS);
+
 			timeReturn += (" " + weeks + " week");
 			if (weeks != 1)
 				timeReturn += "s";
 		}
-
-		if (days != 0)
+		if (millis >= DAY_MILLISECONDS) // Days
 		{
+			int days = (int) (millis / DAY_MILLISECONDS);
+			millis -= (days * DAY_MILLISECONDS);
+
 			timeReturn += (" " + days + " day");
 			if (days != 1)
 				timeReturn += "s";
 		}
-
-		if (hours != 0)
+		if (millis >= HOUR_MILLISECONDS) // Hours
 		{
+			int hours = (int) (millis / HOUR_MILLISECONDS);
+			millis -= (hours * HOUR_MILLISECONDS);
+
 			timeReturn += (" " + hours + " hour");
 			if (hours != 1)
 				timeReturn += "s";
 		}
-
-		if (minutes != 0)
+		if (millis >= MINUTE_MILLISECONDS) // Minutes
 		{
+			int minutes = (int) (millis / MINUTE_MILLISECONDS);
+			millis -= (minutes * MINUTE_MILLISECONDS);
+
 			timeReturn += (" " + minutes + " minute");
 			if (minutes != 1)
 				timeReturn += "s";
 		}
-
-		if (seconds != 0)
+		if (millisOriginalValue < 5 * MINUTE_MILLISECONDS) // Only display seconds if total time is less than 5 minutes
 		{
+			int seconds = (int) (millis / SECOND_MILLISECONDS);
+
 			timeReturn += (" " + seconds + " second");
 			if (seconds != 1)
 				timeReturn += "s";
