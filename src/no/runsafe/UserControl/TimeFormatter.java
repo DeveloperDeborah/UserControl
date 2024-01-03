@@ -32,7 +32,7 @@ public class TimeFormatter
 
 	private static String formatMillis(long millis)
 	{
-		if (millis < 1000L)
+		if (millis < SECOND_MILLISECONDS)
 			return "Less than one second";
 		long millisOriginalValue = millis;
 		int years = 0;
@@ -43,39 +43,39 @@ public class TimeFormatter
 		int minutes = 0;
 		int seconds = 0;
 
-		if (millis >= 31449600000L) // Years
+		if (millis >= YEAR_MILLISECONDS) // Years
 		{
-			years = (int) (millis / 31449600000L);
-			millis -= (years * 31449600000L);
+			years = (int) (millis / YEAR_MILLISECONDS);
+			millis -= (years * YEAR_MILLISECONDS);
 		}
-		if (millis >= 2620799997L) // Months
+		if (millis >= MONTH_MILLISECONDS) // Months
 		{
-			months = (int) (millis / 2620799997L);
-			millis -= (months * 2620799997L);
+			months = (int) (millis / MONTH_MILLISECONDS);
+			millis -= (months * MONTH_MILLISECONDS);
 		}
-		if (millis >= 604800000L) // Weeks
+		if (millis >= WEEK_MILLISECONDS) // Weeks
 		{
-			weeks = (int) (millis / 604800000L);
-			millis -= (weeks * 604800000L);
+			weeks = (int) (millis / WEEK_MILLISECONDS);
+			millis -= (weeks * WEEK_MILLISECONDS);
 		}
-		if (millis >= 86400000L) // Days
+		if (millis >= DAY_MILLISECONDS) // Days
 		{
-			days = (int) (millis / 86400000L);
-			millis -= (days * 86400000L);
+			days = (int) (millis / DAY_MILLISECONDS);
+			millis -= (days * DAY_MILLISECONDS);
 		}
-		if (millis >= 3600000L) // Hours
+		if (millis >= HOUR_MILLISECONDS) // Hours
 		{
-			hours = (int) (millis / 3600000L);
-			millis -= (hours * 3600000L);
+			hours = (int) (millis / HOUR_MILLISECONDS);
+			millis -= (hours * HOUR_MILLISECONDS);
 		}
-		if (millis >= 60000L) // Minutes
+		if (millis >= MINUTE_MILLISECONDS) // Minutes
 		{
-			minutes = (int) (millis / 60000L);
-			millis -= (minutes * 60000L);
+			minutes = (int) (millis / MINUTE_MILLISECONDS);
+			millis -= (minutes * MINUTE_MILLISECONDS);
 		}
 
-		if (millisOriginalValue < 300000L) // Only display seconds if total time is less than 5 minutes
-			seconds = (int)(millis / 1000L);
+		if (millisOriginalValue < 5 * MINUTE_MILLISECONDS) // Only display seconds if total time is less than 5 minutes
+			seconds = (int)(millis / SECOND_MILLISECONDS);
 
 		String timeReturn = "";
 
@@ -130,4 +130,12 @@ public class TimeFormatter
 
 		return timeReturn.substring(1); // Get rid of first space
 	}
+
+	private static final long YEAR_MILLISECONDS = 31449600000L; // 364 days
+	private static final long MONTH_MILLISECONDS = 2620799997L; // 1/12 of a year
+	private static final long WEEK_MILLISECONDS = 604800000L;
+	private static final long DAY_MILLISECONDS = 86400000L;
+	private static final long HOUR_MILLISECONDS = 3600000L;
+	private static final long MINUTE_MILLISECONDS = 60000L;
+	private static final long SECOND_MILLISECONDS = 1000L;
 }
