@@ -50,9 +50,9 @@ public class Seen extends AsyncCommand
 		if (player.hasPermission("runsafe.secret.offline"))
 		{
 			return String.format(
-					"Player %s is &coffline&r since &k%s&r",
-					player.getPrettyName(),
-					formatTime(player.isOnline() ? data.getLogin() : data.getLogout())
+				"Player %s is &coffline&r since &k%s&r",
+				player.getPrettyName(),
+				TimeFormatter.formatInstant(player.isOnline() ? data.getLogin() : data.getLogout())
 			);
 		}
 
