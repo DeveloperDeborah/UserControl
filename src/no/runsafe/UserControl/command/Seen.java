@@ -47,15 +47,6 @@ public class Seen extends AsyncCommand
 				TimeFormatter.formatInstant(data.getLogin())
 			);
 
-		if (player.hasPermission("runsafe.secret.offline"))
-		{
-			return String.format(
-					"Player %s is &coffline&r since &k%s&r",
-					player.getPrettyName(),
-					formatTime(player.isOnline() ? data.getLogin() : data.getLogout())
-			);
-		}
-
 		return String.format(
 			"Player %s is &coffline&r since %s",
 			player.getPrettyName(),
