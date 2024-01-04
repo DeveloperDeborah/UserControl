@@ -1,5 +1,6 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.UserControl.TimeFormatter;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.api.IConfiguration;
@@ -59,7 +60,11 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 			playerManager.banPlayer(banningPlayer, victim, reason);
 			logger.logKick(banningPlayer, victim, reason, true);
 			playerdb.logPlayerBan(victim, banningPlayer, reason);
-			return String.format("Temporarily banned offline player %s.", victim.getPrettyName());
+			return String.format(
+				"Temporarily banned offline player %s for: %s",
+				victim.getPrettyName(),
+				TimeFormatter.formatDuration(duration)
+			);
 		}
 		if (lightning)
 			victim.strikeWithLightning(fakeLightning);

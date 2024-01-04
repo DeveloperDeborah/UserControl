@@ -1,5 +1,6 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.UserControl.TimeFormatter;
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IScheduler;
@@ -8,10 +9,6 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.player.IPlayer;
-import org.apache.commons.lang.time.DurationFormatUtils;
-
-import java.time.Duration;
-import java.time.Instant;
 
 public class Seen extends AsyncCommand
 {
@@ -40,14 +37,14 @@ public class Seen extends AsyncCommand
 			return String.format(
 				"Player %s has been &4banned&r since %s",
 				player.getPrettyName(),
-				formatTime(data.getBanned())
+				TimeFormatter.formatInstant(data.getBanned())
 			);
 
 		if (player.isOnline() && (checker == null || !checker.shouldNotSee(player)))
 			return String.format(
 				"Player %s is &aonline&r since %s",
 				player.getPrettyName(),
-				formatTime(data.getLogin())
+				TimeFormatter.formatInstant(data.getLogin())
 			);
 
 		if (player.hasPermission("runsafe.secret.offline"))
@@ -62,17 +59,7 @@ public class Seen extends AsyncCommand
 		return String.format(
 			"Player %s is &coffline&r since %s",
 			player.getPrettyName(),
-			formatTime(player.isOnline() ? data.getLogin() : data.getLogout())
-		);
-	}
-
-	private String formatTime(Instant time)
-	{
-		if (time == null)
-			return "null";
-
-		return DurationFormatUtils.formatDurationWords(
-			Duration.between(time, Instant.now()).toMillis(), true, true
+			TimeFormatter.formatInstant(player.isOnline() ? data.getLogin() : data.getLogout())
 		);
 	}
 

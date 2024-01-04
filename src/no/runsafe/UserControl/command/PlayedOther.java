@@ -1,5 +1,6 @@
 package no.runsafe.UserControl.command;
 
+import no.runsafe.UserControl.TimeFormatter;
 import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.command.AsyncCommand;
@@ -8,7 +9,6 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.player.IPlayer;
-import org.apache.commons.lang.time.DurationFormatUtils;
 
 import java.time.Duration;
 
@@ -28,15 +28,7 @@ public class PlayedOther extends AsyncCommand implements IBranchingExecution
 			return "&cPlayer not found!";
 
 		Duration played = database.GetTimePlayed(player);
-		return String.format("%s has played for &6%s", player.getPrettyName(), formatTime(played));
-	}
-
-	private String formatTime(Duration time)
-	{
-		if (time == null)
-			return "null";
-
-		return DurationFormatUtils.formatDurationWords(time.toMillis(), true, true);
+		return String.format("%s has played for &6%s", player.getPrettyName(), TimeFormatter.formatDuration(played));
 	}
 
 	private final PlayerSessionLog database;
