@@ -1,7 +1,5 @@
 package no.runsafe.UserControl.database;
 
-//import org.joda.time.DateTime;
-
 import java.time.Instant;
 import java.util.UUID;
 
