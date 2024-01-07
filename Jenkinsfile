@@ -17,7 +17,7 @@ pipeline {
         checkout scm
         copyArtifacts(projectName: '/Runsafe/Framework/master', filter:'framework.tar', optional: false, target: 'framework');
         sh 'tar -C framework -xvf framework/framework.tar'
-        sh "ant -Drunsafe.dir=framework -Dlib.dir=framework -f ant.xml"
+        sh "ant -Drunsafe.dir=framework/runsafe -Dlib.dir=framework/runsafe -f ant.xml"
         recordIssues enabledForFailure: true, tool: java(), unhealthy: 10
         archivePlugin '', '../build/jar/*.jar', "${env.plugin}.tar"
       }
