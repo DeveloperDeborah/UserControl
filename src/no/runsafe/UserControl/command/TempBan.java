@@ -1,6 +1,5 @@
 package no.runsafe.UserControl.command;
 
-import no.runsafe.UserControl.TimeFormatter;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.UserControl.database.PlayerKickLog;
 import no.runsafe.framework.api.IConfiguration;
@@ -11,6 +10,7 @@ import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.api.server.IBroadcast;
 import no.runsafe.framework.api.server.IPlayerManager;
+import no.runsafe.framework.tools.TimeFormatter;
 
 import java.time.Instant;
 

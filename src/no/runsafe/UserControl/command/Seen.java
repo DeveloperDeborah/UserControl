@@ -1,6 +1,5 @@
 package no.runsafe.UserControl.command;
 
-import no.runsafe.UserControl.TimeFormatter;
 import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.IScheduler;
@@ -9,6 +8,7 @@ import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.Player;
 import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.tools.TimeFormatter;
 
 public class Seen extends AsyncCommand
 {

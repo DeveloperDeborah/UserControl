@@ -1,6 +1,5 @@
 package no.runsafe.UserControl.database;
 
-import no.runsafe.UserControl.TimeFormatter;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.database.IRow;
 import no.runsafe.framework.api.database.ISchemaUpdate;
@@ -13,6 +12,7 @@ import no.runsafe.framework.api.log.IConsole;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.timer.TimedCache;
+import no.runsafe.framework.tools.TimeFormatter;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 

@@ -4,6 +4,7 @@ import no.runsafe.UserControl.database.PlayerData;
 import no.runsafe.UserControl.database.PlayerDatabase;
 import no.runsafe.framework.api.hook.IPlayerSeen;
 import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.tools.TimeFormatter;
 
 public class PlayerHandler implements IPlayerSeen
 {
