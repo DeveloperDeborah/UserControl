@@ -14,7 +14,6 @@ import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.timer.TimedCache;
 import no.runsafe.framework.tools.TimeFormatter;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
@@ -220,7 +219,7 @@ public class PlayerDatabase extends Repository
 	}
 
 	@Override
-	public DateTime GetPlayerLogout(IPlayer player)
+	public Instant GetPlayerLogout(IPlayer player)
 	{
 		if (player == null)
 			return null;
@@ -229,7 +228,7 @@ public class PlayerDatabase extends Repository
 		if (data == null || data.getLogout() == null)
 			return null;
 
-		return new DateTime(data.getLogout().getEpochSecond());
+		return data.getLogout();
 	}
 
 	@Override
