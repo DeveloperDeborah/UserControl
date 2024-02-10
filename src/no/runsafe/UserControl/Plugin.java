@@ -34,7 +34,6 @@ public class Plugin extends RunsafeConfigurablePlugin
 		addComponent(OpController.class);
 		addComponent(LoginRedirectManager.class);
 		addComponent(MaintenanceHandler.class);
-		addComponent(TimeFormatter.class);
 
 		// Commands
 		addComponent(Ban.class);
