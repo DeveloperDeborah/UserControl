@@ -18,7 +18,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 {
 	public BanEnforcer(PlayerDatabase playerDatabase, IPlayerManager playerManager)
 	{
-		playerdb = playerDatabase;
+		playerDb = playerDatabase;
 		this.playerManager = playerManager;
 	}
 
@@ -42,7 +42,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 		if (player == null)
 			return;
 
-		PlayerData data = playerdb.getData(player);
+		PlayerData data = playerDb.getData(player);
 		if (data == null || data.getBanned() == null)
 			return;
 
@@ -57,7 +57,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 
 		if (!unban.isAfter(Instant.now()))
 		{
-			playerdb.logPlayerUnban(event.getPlayer());
+			playerDb.logPlayerUnban(event.getPlayer());
 			playerManager.unbanPlayer(player);
 			return;
 		}
@@ -82,7 +82,7 @@ public class BanEnforcer implements IPlayerPreLoginEvent, IConfigurationChanged
 		activeBans.clear();
 	}
 
-	private final PlayerDatabase playerdb;
+	private final PlayerDatabase playerDb;
 	private final IPlayerManager playerManager;
 	private String banMessageFormat = "Banned: %s";
 	private String tempBanMessageFormat = "Temporarily banned: %s [expires in %s]";

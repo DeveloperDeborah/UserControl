@@ -24,7 +24,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	{
 		super("ban", "Permanently bans a player from the server", "runsafe.usercontrol.ban", new Player().require(), new TrailingArgument("reason"));
 		logger = log;
-		playerdb = playerDatabase;
+		playerDb = playerDatabase;
 		this.broadcaster = broadcaster;
 		this.playerManager = playerManager;
 	}
@@ -47,7 +47,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 
 		if (!victim.isOnline() || (banningPlayer != null && banningPlayer.shouldNotSee(victim)))
 		{
-			playerdb.logPlayerBan(victim, banningPlayer, reason);
+			playerDb.logPlayerBan(victim, banningPlayer, reason);
 			logger.logKick(banningPlayer, victim, reason, true);
 			return String.format("Banned offline player %s.", victim.getPrettyName());
 		}
@@ -76,7 +76,7 @@ public class Ban extends ExecutableCommand implements IConfigurationChanged
 	}
 
 	private final PlayerKickLog logger;
-	private final PlayerDatabase playerdb;
+	private final PlayerDatabase playerDb;
 	private final IBroadcast broadcaster;
 	private final IPlayerManager playerManager;
 	private boolean lightning;

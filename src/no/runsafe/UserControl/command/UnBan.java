@@ -18,7 +18,7 @@ public class UnBan extends ExecutableCommand
 			"unban", "Unbans a player from the server", "runsafe.usercontrol.unban",
 			new Player().require(), new RequiredArgument("reason")
 		);
-		playerdb = playerDatabase;
+		playerDb = playerDatabase;
 		this.enforcer = enforcer;
 		this.playerManager = playerManager;
 	}
@@ -31,16 +31,16 @@ public class UnBan extends ExecutableCommand
 		if (player == null)
 			return null;
 
-		if (player.isNotBanned() && playerdb.getData(player).getBanned() == null)
+		if (player.isNotBanned() && playerDb.getData(player).getBanned() == null)
 			return String.format("Player %s is not banned.", player.getPrettyName());
 
 		// TODO Log unbanning reason
-		playerdb.logPlayerUnban(player);
+		playerDb.logPlayerUnban(player);
 		playerManager.unbanPlayer(player);
 		return String.format("Player %s was unbanned.", player.getPrettyName());
 	}
 
-	private final PlayerDatabase playerdb;
+	private final PlayerDatabase playerDb;
 	private final BanEnforcer enforcer;
 	private final IPlayerManager playerManager;
 }

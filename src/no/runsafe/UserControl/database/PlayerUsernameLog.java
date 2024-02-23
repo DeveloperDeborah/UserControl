@@ -157,7 +157,7 @@ public class PlayerUsernameLog extends Repository implements IPlayerLookupServic
 	}
 
 	/**
-	 * Looks up the Unique Id of the player who logged the most recently with a specified username.
+	 * Looks up the Unique ID of the player who logged the most recently with a specified username.
 	 *
 	 * @param playerName Exact name of the player to lookup.
 	 *                   Not case-sensitive.

@@ -30,7 +30,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 		this.logger = logger;
 		this.broadcaster = broadcaster;
 		this.playerManager = playerManager;
-		playerdb = playerDatabase;
+		playerDb = playerDatabase;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 		if (victim.hasPermission("runsafe.usercontrol.ban.immune"))
 			return "You cannot ban that player";
 
-		playerdb.setPlayerTemporaryBan(victim, expires);
+		playerDb.setPlayerTemporaryBan(victim, expires);
 
 		IPlayer banningPlayer = null;
 		if (executor instanceof IPlayer)
@@ -59,7 +59,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 		{
 			playerManager.banPlayer(banningPlayer, victim, reason);
 			logger.logKick(banningPlayer, victim, reason, true);
-			playerdb.logPlayerBan(victim, banningPlayer, reason);
+			playerDb.logPlayerBan(victim, banningPlayer, reason);
 			return String.format(
 				"Temporarily banned offline player %s for: %s",
 				victim.getPrettyName(),
@@ -90,7 +90,7 @@ public class TempBan extends ExecutableCommand implements IConfigurationChanged
 		this.onServerTempBanMessage = configuration.getConfigValueAsString("messages.onServerTempBan");
 	}
 
-	private final PlayerDatabase playerdb;
+	private final PlayerDatabase playerDb;
 	private final PlayerKickLog logger;
 	private final IBroadcast broadcaster;
 	private final IPlayerManager playerManager;

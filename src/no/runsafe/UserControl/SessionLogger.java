@@ -27,9 +27,9 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		IServer server
 	)
 	{
-		playerdb = players;
-		sessiondb = sessions;
-		kicklogger = kickLog;
+		playerDb = players;
+		sessionDb = sessions;
+		kickLogger = kickLog;
 		this.playerUsernameLog = playerUsernameLog;
 		this.playerProvider = playerProvider;
 		this.server = server;
@@ -39,49 +39,49 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	public void OnPlayerJoinEvent(RunsafePlayerJoinEvent event)
 	{
 		IPlayer player = event.getPlayer();
-		playerdb.logPlayerInfo(player);
-		sessiondb.logSessionStart(player);
+		playerDb.logPlayerInfo(player);
+		sessionDb.logSessionStart(player);
 		playerUsernameLog.logPlayerLogin(player);
 	}
 
 	@Override
 	public void OnPlayerQuit(RunsafePlayerQuitEvent event)
 	{
-		playerdb.logPlayerLogout(event.getPlayer());
-		sessiondb.logSessionClosed(event.getPlayer(), event.getQuitMessage());
+		playerDb.logPlayerLogout(event.getPlayer());
+		sessionDb.logSessionClosed(event.getPlayer(), event.getQuitMessage());
 	}
 
 	@Override
 	public void OnPlayerKick(RunsafePlayerKickEvent event)
 	{
-		sessiondb.logSessionClosed(event.getPlayer(), event.getLeaveMessage());
-		kicklogger.logKick(event.getKicker(), event.getPlayer(), event.getReason(), !event.getPlayer().isNotBanned());
+		sessionDb.logSessionClosed(event.getPlayer(), event.getLeaveMessage());
+		kickLogger.logKick(event.getKicker(), event.getPlayer(), event.getReason(), !event.getPlayer().isNotBanned());
 		if (!event.getPlayer().isNotBanned())
-			playerdb.logPlayerBan(event.getPlayer(), event.getKicker(), event.getReason());
+			playerDb.logPlayerBan(event.getPlayer(), event.getKicker(), event.getReason());
 	}
 
 	@Override
 	public void OnPluginEnabled()
 	{
-		sessiondb.closeAllSessions("Possible crash");
+		sessionDb.closeAllSessions("Possible crash");
 		for (IPlayer player : playerProvider.getOnlinePlayers())
 		{
-			playerdb.logPlayerInfo(player);
-			sessiondb.logSessionStart(player);
+			playerDb.logPlayerInfo(player);
+			sessionDb.logSessionStart(player);
 		}
 	}
 
 	@Override
 	public void OnPluginDisabled()
 	{
-		sessiondb.closeAllSessions("Shutting down");
+		sessionDb.closeAllSessions("Shutting down");
 		for (IPlayer player : server.getOnlinePlayers())
-			playerdb.logPlayerLogout(player);
+			playerDb.logPlayerLogout(player);
 	}
 
-	private final PlayerDatabase playerdb;
-	private final PlayerSessionLog sessiondb;
-	private final PlayerKickLog kicklogger;
+	private final PlayerDatabase playerDb;
+	private final PlayerSessionLog sessionDb;
+	private final PlayerKickLog kickLogger;
 	private final PlayerUsernameLog playerUsernameLog;
 	private final IPlayerProvider playerProvider;
 	private final IServer server;
