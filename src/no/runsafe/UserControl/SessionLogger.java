@@ -58,7 +58,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 				altNames.add(alt.getPrettyName());
 			}
 		}
-		String message = alts.isEmpty()
+		String message = altNames.isEmpty()
 			? String.format("Player %s does not have any apparent alts", player.getPrettyName())
 			: String.format("Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames));
 

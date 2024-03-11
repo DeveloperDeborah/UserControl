@@ -96,10 +96,23 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 
 	public List<IPlayer> findAlternateAccounts(IPlayer player)
 	{
-		return database.queryPlayers(
+		List<IPlayer> alts = database.queryPlayers(
 			"SELECT DISTINCT uuid FROM player_session WHERE uuid != ? AND ip IN (SELECT DISTINCT ip FROM player_session WHERE uuid = ?)",
 			player, player
 		);
+		List<IPlayer> filteredAlts = new ArrayList<>();
+		if (alts.isEmpty() || player.hasPermission("runsafe.usercontrol.secretAlt"))
+		{
+			return filteredAlts;
+		}
+		for (IPlayer alt : alts)
+		{
+			if (!alt.hasPermission("runsafe.usercontrol.secretAlt"))
+			{
+				filteredAlts.add(alt);
+			}
+		}
+		return filteredAlts;
 	}
 
 	@Override
