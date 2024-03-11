@@ -10,6 +10,7 @@ import no.runsafe.framework.api.event.player.IPlayerKickEvent;
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
 import no.runsafe.framework.api.event.plugin.IPluginDisabled;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
+import no.runsafe.framework.api.log.IConsole;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.api.server.IPlayerProvider;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
@@ -27,7 +28,8 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		PlayerKickLog kickLog,
 		PlayerUsernameLog playerUsernameLog,
 		IPlayerProvider playerProvider,
-		IServer server
+		IServer server,
+		IConsole console
 	)
 	{
 		playerDb = players;
@@ -36,6 +38,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		this.playerUsernameLog = playerUsernameLog;
 		this.playerProvider = playerProvider;
 		this.server = server;
+		this.console = console;
 	}
 
 	@Override
@@ -47,23 +50,28 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		playerUsernameLog.logPlayerLogin(player);
 
 		List<IPlayer> alts = sessionDb.findAlternateAccounts(player);
-		if (alts.isEmpty())
-		{
-			server.broadcastMessage(
-				String.format("Player %s does not have any known alts", player.getPrettyName()),
-				"runsafe.usercontrol.alts"
-			);
-			return;
-		}
 		List<String> altNames = new ArrayList<>();
-		for (IPlayer alt : alts)
+		if (!alts.isEmpty())
 		{
-			altNames.add(alt.getPrettyName());
+			for (IPlayer alt : alts)
+			{
+				altNames.add(alt.getPrettyName());
+			}
 		}
-		server.broadcastMessage(
-			String.format("Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames)),
-			"runsafe.usercontrol.alts"
-		);
+		String message = alts.isEmpty()
+			? String.format("Player %s does not have any apparent alts", player.getPrettyName())
+			: String.format("Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames));
+
+		console.logInformation(message + " ");
+		List<IPlayer> players = server.getPlayersWithPermission("runsafe.usercontrol.alts");
+		for(IPlayer online : players)
+		{
+			if (online.shouldNotSee(player))
+			{
+				continue;
+			}
+			online.sendColouredMessage(message);
+		}
 	}
 
 	@Override
@@ -107,4 +115,5 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	private final PlayerUsernameLog playerUsernameLog;
 	private final IPlayerProvider playerProvider;
 	private final IServer server;
+	private final IConsole console;
 }
