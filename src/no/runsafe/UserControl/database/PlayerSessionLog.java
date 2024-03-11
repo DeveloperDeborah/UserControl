@@ -3,14 +3,15 @@ package no.runsafe.UserControl.database;
 import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
+import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 import java.time.Duration;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.*;
 
-public class PlayerSessionLog extends Repository
+public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 {
 	@Nonnull
 	@Override
@@ -91,5 +92,34 @@ public class PlayerSessionLog extends Repository
 			"UPDATE player_session SET logout=NOW(), quit_message=? WHERE logout IS NULL",
 			quitMessage
 		);
+	}
+
+	public List<IPlayer> findAlternateAccounts(IPlayer player)
+	{
+		return database.queryPlayers(
+			"SELECT DISTINCT uuid FROM player_session WHERE uuid != ? AND ip IN (SELECT DISTINCT ip FROM player_session WHERE uuid = ?)",
+			player.getUniqueId(),
+			player.getUniqueId()
+		);
+	}
+
+	@Override
+	public Map<String, String> GetPlayerData(IPlayer player)
+	{
+		HashMap<String, String> result = new LinkedHashMap<>();
+
+		List<IPlayer> alts = findAlternateAccounts(player);
+		if (alts.isEmpty())
+		{
+			result.put("usercontrol.alts", "none");
+			return result;
+		}
+		List<String> altNames = new ArrayList<>();
+		for (IPlayer alt : alts)
+		{
+			altNames.add(alt.getPrettyName());
+		}
+		result.put("usercontrol.alts", String.join(", ", altNames));
+		return result;
 	}
 }

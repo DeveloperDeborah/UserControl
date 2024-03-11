@@ -16,6 +16,9 @@ import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerKickEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {
 	public SessionLogger(
@@ -42,6 +45,25 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		playerDb.logPlayerInfo(player);
 		sessionDb.logSessionStart(player);
 		playerUsernameLog.logPlayerLogin(player);
+
+		List<IPlayer> alts = sessionDb.findAlternateAccounts(player);
+		if (alts.isEmpty())
+		{
+			server.broadcastMessage(
+				String.format("Player %s does not have any known alts", player.getPrettyName()),
+				"runsafe.usercontrol.alts"
+			);
+			return;
+		}
+		List<String> altNames = new ArrayList<>();
+		for (IPlayer alt : alts)
+		{
+			altNames.add(alt.getPrettyName());
+		}
+		server.broadcastMessage(
+			String.format("Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames)),
+			"runsafe.usercontrol.alts"
+		);
 	}
 
 	@Override
