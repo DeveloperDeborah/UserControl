@@ -98,8 +98,7 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 	{
 		return database.queryPlayers(
 			"SELECT DISTINCT uuid FROM player_session WHERE uuid != ? AND ip IN (SELECT DISTINCT ip FROM player_session WHERE uuid = ?)",
-			player.getUniqueId(),
-			player.getUniqueId()
+			player, player
 		);
 	}
 
