@@ -50,18 +50,13 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		sessionDb.logSessionStart(player);
 		playerUsernameLog.logPlayerLogin(player);
 
-		Map<String, List<IPlayer>> alts = sessionDb.findAlternateAccounts(player);
+		Map<IPlayer, List<String>> alts = sessionDb.findAlternateAccounts(player);
 		List<String> altNames = new ArrayList<>();
 		if (!alts.isEmpty())
 		{
-			for (String ip : alts.keySet())
+			for (IPlayer alt : alts.keySet())
 			{
-				List<String> ipAlts = new ArrayList<>();
-				for (IPlayer ipAlt : alts.get(ip))
-				{
-					ipAlts.add(ipAlt.getPrettyName());
-				}
-				altNames.add(String.format("&a%s&r: %s", ip, String.join(" ", ipAlts)));
+				altNames.add(String.format("%s: &a%s&r", alt.getPrettyName(), String.join("%r,%a", alts.get(alt))));
 			}
 		}
 		String message = altNames.isEmpty()

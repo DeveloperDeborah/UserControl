@@ -4,7 +4,6 @@ import no.runsafe.framework.api.database.*;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.PlayerData;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.internal.database.Set;
 import org.apache.commons.lang.StringUtils;
 import java.time.Duration;
 
@@ -94,13 +93,13 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 		);
 	}
 
-	public Map<String, List<IPlayer>> findAlternateAccounts(IPlayer player)
+	public Map<IPlayer, List<String>> findAlternateAccounts(IPlayer player)
 	{
 		ISet alts = database.query(
 			"SELECT DISTINCT uuid, INET_NTOA(ip) AS ip FROM player_session WHERE uuid != ? AND ip IN (SELECT DISTINCT ip FROM player_session WHERE uuid = ?)",
 			player, player
 		);
-		Map<String, List<IPlayer>> filteredAlts = new HashMap<>();
+		Map<IPlayer, List<String>> filteredAlts = new HashMap<>();
 		if (alts.isEmpty() || player.hasPermission("runsafe.usercontrol.secretAlt"))
 		{
 			return filteredAlts;
@@ -112,12 +111,12 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 			{
 				continue;
 			}
-			String ip = alt.String("ip");
-			if (!filteredAlts.containsKey(ip))
+			if (!filteredAlts.containsKey(altPlayer))
 			{
-				filteredAlts.put(ip, new ArrayList<>());
+				filteredAlts.put(altPlayer, new ArrayList<>());
 			}
-			filteredAlts.get(ip).add(altPlayer);
+			String ip = alt.String("ip");
+			filteredAlts.get(altPlayer).add(ip);
 		}
 		return filteredAlts;
 	}
@@ -129,18 +128,13 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 			"usercontrol.alts",
 			() ->
 			{
-				Map<String, List<IPlayer>> alts = findAlternateAccounts(data.getPlayer());
+				Map<IPlayer, List<String>> alts = findAlternateAccounts(data.getPlayer());
 				if (alts.isEmpty())
 					return "none";
 				List<String> altNames = new ArrayList<>();
-				for (String ip : alts.keySet())
+				for (IPlayer alt : alts.keySet())
 				{
-					List<String> ipNames = new ArrayList<>();
-					for (IPlayer alt : alts.get(ip))
-					{
-						ipNames.add(alt.getPrettyName());
-					}
-					altNames.add(String.format("%s: %s", ip, String.join(" ", ipNames)));
+					altNames.add(String.format("%s: %s", alt.getPrettyName(), String.join(" ", alts.get(alt))));
 				}
 				return String.join(", ", altNames);
 			}
