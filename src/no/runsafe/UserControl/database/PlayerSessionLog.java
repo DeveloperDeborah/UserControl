@@ -1,11 +1,10 @@
 package no.runsafe.UserControl.database;
 
-import no.runsafe.framework.api.database.ISchemaUpdate;
-import no.runsafe.framework.api.database.Repository;
-import no.runsafe.framework.api.database.SchemaUpdate;
+import no.runsafe.framework.api.database.*;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
 import no.runsafe.framework.api.hook.PlayerData;
 import no.runsafe.framework.api.player.IPlayer;
+import no.runsafe.framework.internal.database.Set;
 import org.apache.commons.lang.StringUtils;
 import java.time.Duration;
 
@@ -95,23 +94,30 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 		);
 	}
 
-	public List<IPlayer> findAlternateAccounts(IPlayer player)
+	public Map<String, List<IPlayer>> findAlternateAccounts(IPlayer player)
 	{
-		List<IPlayer> alts = database.queryPlayers(
-			"SELECT DISTINCT uuid FROM player_session WHERE uuid != ? AND ip IN (SELECT DISTINCT ip FROM player_session WHERE uuid = ?)",
+		ISet alts = database.query(
+			"SELECT DISTINCT uuid, INET_NTOA(ip) AS ip FROM player_session WHERE uuid != ? AND ip IN (SELECT DISTINCT ip FROM player_session WHERE uuid = ?)",
 			player, player
 		);
-		List<IPlayer> filteredAlts = new ArrayList<>();
+		Map<String, List<IPlayer>> filteredAlts = new HashMap<>();
 		if (alts.isEmpty() || player.hasPermission("runsafe.usercontrol.secretAlt"))
 		{
 			return filteredAlts;
 		}
-		for (IPlayer alt : alts)
+		for (IRow alt : alts)
 		{
-			if (!alt.hasPermission("runsafe.usercontrol.secretAlt"))
+			IPlayer altPlayer = alt.Player("uuid");
+			if (altPlayer.hasPermission("runsafe.usercontrol.secretAlt"))
 			{
-				filteredAlts.add(alt);
+				continue;
 			}
+			String ip = alt.String("ip");
+			if (!filteredAlts.containsKey(ip))
+			{
+				filteredAlts.put(ip, new ArrayList<>());
+			}
+			filteredAlts.get(ip).add(altPlayer);
 		}
 		return filteredAlts;
 	}
@@ -123,13 +129,18 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 			"usercontrol.alts",
 			() ->
 			{
-				List<IPlayer> alts = findAlternateAccounts(data.getPlayer());
+				Map<String, List<IPlayer>> alts = findAlternateAccounts(data.getPlayer());
 				if (alts.isEmpty())
 					return "none";
 				List<String> altNames = new ArrayList<>();
-				for (IPlayer alt : alts)
+				for (String ip : alts.keySet())
 				{
-					altNames.add(alt.getPrettyName());
+					List<String> ipNames = new ArrayList<>();
+					for (IPlayer alt : alts.get(ip))
+					{
+						ipNames.add(alt.getPrettyName());
+					}
+					altNames.add(String.format("%s: %s", ip, String.join(" ", ipNames)));
 				}
 				return String.join(", ", altNames);
 			}

@@ -46,9 +46,9 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 			String format = "\n- &6%s: &r%s";
 			if (value == null)
 				format = "\n- &6%s: &4NULL&r";
-			else if (value.equals("true"))
+			else if (value.equalsIgnoreCase("true"))
 				format = "\n- &6%s: &a%s&r";
-			else if (value.equals("false"))
+			else if (value.equalsIgnoreCase("false"))
 				format = "\n- &6%s: &c%s&r";
 			info.append(String.format(format, label, value));
 		}

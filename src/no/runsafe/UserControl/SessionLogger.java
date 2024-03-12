@@ -19,6 +19,7 @@ import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {
@@ -49,13 +50,18 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		sessionDb.logSessionStart(player);
 		playerUsernameLog.logPlayerLogin(player);
 
-		List<IPlayer> alts = sessionDb.findAlternateAccounts(player);
+		Map<String, List<IPlayer>> alts = sessionDb.findAlternateAccounts(player);
 		List<String> altNames = new ArrayList<>();
 		if (!alts.isEmpty())
 		{
-			for (IPlayer alt : alts)
+			for (String ip : alts.keySet())
 			{
-				altNames.add(alt.getPrettyName());
+				List<String> ipAlts = new ArrayList<>();
+				for (IPlayer ipAlt : alts.get(ip))
+				{
+					ipAlts.add(ipAlt.getPrettyName());
+				}
+				altNames.add(String.format("&a%s&r: %s", ip, String.join(" ", ipAlts)));
 			}
 		}
 		String message = altNames.isEmpty()
