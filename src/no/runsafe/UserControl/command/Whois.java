@@ -28,7 +28,7 @@ public class Whois extends AsyncCommand implements IConfigurationChanged
 		IPlayer target = parameters.getValue("player");
 		if (target == null)
 			return null;
-		Map<String, String> data = target.getData();
+		Map<String, String> data = target.getData(executor);
 		if (data == null || data.isEmpty())
 			return String.format("No data found for player %s.", target.getPrettyName());
 		StringBuilder info = new StringBuilder();

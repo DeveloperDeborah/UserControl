@@ -191,29 +191,28 @@ public class PlayerDatabase extends Repository
 	}
 
 	@Override
-	public HashMap<String, String> GetPlayerData(IPlayer player)
+	public void GetPlayerData(no.runsafe.framework.api.hook.PlayerData data)
 	{
-		PlayerData data = getData(player);
-		HashMap<String, String> result = new LinkedHashMap<>();
-		if (data.getBanned() != null)
+		PlayerData playerData = getData(data.getPlayer());
+		data.addData("usercontrol.ban.status", () -> playerData.getBanned() == null ? "false" : "true");
+		if (playerData.getBanned() != null)
 		{
-			result.put("usercontrol.ban.status", "true");
-			result.put("usercontrol.ban.timestamp", TimeFormatter.formatDate(data.getBanned()));
-			result.put("usercontrol.ban.reason", data.getBanReason());
-			if (data.getUnban() != null)
-				result.put("usercontrol.ban.temporary", TimeFormatter.formatDate(data.getUnban()));
-			result.put("usercontrol.ban.by", playerUsernameLog.getLatestUsername(data.getBanningPlayerUUID()));
+			data.addData("usercontrol.ban.timestamp", () -> TimeFormatter.formatDate(playerData.getBanned()));
+			data.addData("usercontrol.ban.reason", playerData.getBanReason());
+			if (playerData.getUnban() != null)
+				data.addData("usercontrol.ban.temporary", () -> TimeFormatter.formatDate(playerData.getUnban()));
+			data.addData("usercontrol.ban.by", () -> playerUsernameLog.getLatestUsername(playerData.getBanningPlayerUUID()));
 		}
-		else
-			result.put("usercontrol.ban.status", "false");
-		result.put("usercontrol.joined", TimeFormatter.formatDate(data.getJoined()));
-		result.put("usercontrol.login", TimeFormatter.formatDate(data.getLogin()));
-		result.put("usercontrol.logout", TimeFormatter.formatDate(data.getLogout()));
-		result.put("usercontrol.pastNames", StringUtils.join(playerUsernameLog.getUsedUsernames(player.getUniqueId()), ", "));
-		if (data.getLogout() != null && data.getLogout().isAfter(data.getLogin()))
-			result.put("usercontrol.seen", TimeFormatter.formatInstant(data.getLogout()));
-
-		return result;
+		data.addData("usercontrol.joined", () -> TimeFormatter.formatDate(playerData.getJoined()));
+		data.addData("usercontrol.login", () -> TimeFormatter.formatDate(playerData.getLogin()));
+		data.addData("usercontrol.logout", () -> TimeFormatter.formatDate(playerData.getLogout()));
+		data.addData("usercontrol.pastNames", () -> StringUtils.join(playerUsernameLog.getUsedUsernames(data.getPlayer().getUniqueId()), ", "));
+		data.addData(
+			"usercontrol.seen",
+			() -> playerData.getLogout() == null || !playerData.getLogout().isAfter(playerData.getLogin())
+				? null
+				: TimeFormatter.formatInstant(playerData.getLogout())
+		);
 	}
 
 	@Override

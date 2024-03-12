@@ -4,6 +4,7 @@ import no.runsafe.framework.api.database.ISchemaUpdate;
 import no.runsafe.framework.api.database.Repository;
 import no.runsafe.framework.api.database.SchemaUpdate;
 import no.runsafe.framework.api.hook.IPlayerDataProvider;
+import no.runsafe.framework.api.hook.PlayerData;
 import no.runsafe.framework.api.player.IPlayer;
 import org.apache.commons.lang.StringUtils;
 import java.time.Duration;
@@ -116,22 +117,22 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 	}
 
 	@Override
-	public Map<String, String> GetPlayerData(IPlayer player)
+	public void GetPlayerData(PlayerData data)
 	{
-		HashMap<String, String> result = new LinkedHashMap<>();
-
-		List<IPlayer> alts = findAlternateAccounts(player);
-		if (alts.isEmpty())
-		{
-			result.put("usercontrol.alts", "none");
-			return result;
-		}
-		List<String> altNames = new ArrayList<>();
-		for (IPlayer alt : alts)
-		{
-			altNames.add(alt.getPrettyName());
-		}
-		result.put("usercontrol.alts", String.join(", ", altNames));
-		return result;
+		data.addData(
+			"usercontrol.alts",
+			() ->
+			{
+				List<IPlayer> alts = findAlternateAccounts(data.getPlayer());
+				if (alts.isEmpty())
+					return "none";
+				List<String> altNames = new ArrayList<>();
+				for (IPlayer alt : alts)
+				{
+					altNames.add(alt.getPrettyName());
+				}
+				return String.join(", ", altNames);
+			}
+		);
 	}
 }
