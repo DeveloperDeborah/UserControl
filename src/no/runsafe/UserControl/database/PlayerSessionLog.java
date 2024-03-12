@@ -134,10 +134,29 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 				List<String> altNames = new ArrayList<>();
 				for (IPlayer alt : alts.keySet())
 				{
-					altNames.add(String.format("%s: %s", alt.getPrettyName(), String.join(" ", alts.get(alt))));
+					altNames.add(String.format("%s: %s", alt.getPrettyName(), formatIPList(alts.get(alt))));
 				}
 				return String.join(", ", altNames);
 			}
 		);
+		if (data.getContext().hasPermission("runsafe.usercontrol.ip"))
+		{
+			data.addData(
+				"usercontrol.ips",
+				() ->
+				{
+					List<String> ipList = database.queryStrings(
+						"SELECT DISTINCT INET_NTOA(ip) FROM player_session WHERE uuid = ?",
+						data.getPlayer()
+					);
+					return formatIPList(ipList);
+				}
+			);
+		}
+	}
+
+	private static String formatIPList(List<String> ipList)
+	{
+		return "&3" + String.join("&r,&3", ipList) + "&r";
 	}
 }
