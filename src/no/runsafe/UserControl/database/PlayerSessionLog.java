@@ -157,6 +157,6 @@ public class PlayerSessionLog extends Repository implements IPlayerDataProvider
 
 	private static String formatIPList(List<String> ipList)
 	{
-		return String.format("&3%s&r", String.join(" ", ipList));
+		return String.format("&8%s&r", String.join(" ", ipList));
 	}
 }
