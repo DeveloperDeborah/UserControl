@@ -20,6 +20,7 @@ import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
 {
@@ -63,7 +64,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 			? String.format("Player %s does not have any apparent alts", player.getPrettyName())
 			: String.format("Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames));
 
-		console.logInformation(message + " ");
+		console.writeColoured(message, Level.INFO);
 		List<IPlayer> players = server.getPlayersWithPermission("runsafe.usercontrol.alts");
 		for(IPlayer online : players)
 		{
