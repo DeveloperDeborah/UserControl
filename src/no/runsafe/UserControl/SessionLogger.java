@@ -57,7 +57,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 		{
 			for (IPlayer alt : alts.keySet())
 			{
-				altNames.add(String.format("%s: &a%s&r", alt.getPrettyName(), String.join("&r,%a", alts.get(alt))));
+				altNames.add(String.format("%s: &a%s&r", alt.getPrettyName(), String.join("&r,&a", alts.get(alt))));
 			}
 		}
 		String message = altNames.isEmpty()
