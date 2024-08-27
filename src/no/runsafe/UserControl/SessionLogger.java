@@ -74,13 +74,10 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 			}
 		}
 
-		String message;
-		if (oldPlayer)
-			message = String.format("Player %s may have %d possible alts.", player.getPrettyName(), altNames.size());
-		else
-			message = altNames.isEmpty()
-				? String.format("New Player %s does not have any apparent alts", player.getPrettyName())
-				: String.format("New Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames));
+		String message = altNames.isEmpty()
+			? String.format("New Player %s does not have any apparent alts.", player.getPrettyName())
+			: String.format("Player %s may have %d possible alts.", player.getPrettyName(), altNames.size());
+		String hoverText = String.join(", ", altNames);
 
 		console.writeColoured(message, Level.INFO);
 		List<IPlayer> players = server.getPlayersWithPermission("runsafe.usercontrol.alts");
@@ -90,7 +87,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 			{
 				continue;
 			}
-			online.sendColouredMessage(message);
+			online.sendComplexMessage(message, hoverText, "/whois " + player.getName());
 		}
 	}
 
