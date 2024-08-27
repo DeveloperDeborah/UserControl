@@ -6,6 +6,7 @@ import no.runsafe.UserControl.database.PlayerSessionLog;
 import no.runsafe.UserControl.database.PlayerUsernameLog;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
+import no.runsafe.framework.api.event.player.IPlayerPreLoginEvent;
 import no.runsafe.framework.api.event.player.IPlayerKickEvent;
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
 import no.runsafe.framework.api.event.plugin.IPluginDisabled;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent
+public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerKickEvent, IPlayerPreLoginEvent
 {
 	public SessionLogger(
 		PlayerDatabase players,
@@ -44,14 +45,26 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	}
 
 	@Override
+	public void OnBeforePlayerLogin(no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent event)
+	{
+		if (event.getPlayer().isNew())
+			this.newPlayers.add(event.getPlayer());
+	}
+
+	@Override
 	public void OnPlayerJoinEvent(RunsafePlayerJoinEvent event)
 	{
 		IPlayer player = event.getPlayer();
 		playerDb.logPlayerInfo(player);
 		sessionDb.logSessionStart(player);
 		playerUsernameLog.logPlayerLogin(player);
+		boolean oldPlayer = !newPlayers.contains(player);
+		newPlayers.remove(player);
 
 		Map<IPlayer, List<String>> alts = sessionDb.findAlternateAccounts(player);
+		if (oldPlayer && alts.isEmpty())
+			return;
+
 		List<String> altNames = new ArrayList<>();
 		if (!alts.isEmpty())
 		{
@@ -60,9 +73,14 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 				altNames.add(String.format("%s: &a%s&r", alt.getPrettyName(), String.join("&r,&a", alts.get(alt))));
 			}
 		}
-		String message = altNames.isEmpty()
-			? String.format("Player %s does not have any apparent alts", player.getPrettyName())
-			: String.format("Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames));
+
+		String message;
+		if (oldPlayer)
+			message = String.format("Player %s may have %d possible alts.", player.getPrettyName(), altNames.size());
+		else
+			message = altNames.isEmpty()
+				? String.format("New Player %s does not have any apparent alts", player.getPrettyName())
+				: String.format("New Player %s may have alts: %s", player.getPrettyName(), String.join(", ", altNames));
 
 		console.writeColoured(message, Level.INFO);
 		List<IPlayer> players = server.getPlayersWithPermission("runsafe.usercontrol.alts");
@@ -111,6 +129,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 			playerDb.logPlayerLogout(player);
 	}
 
+	private final List<IPlayer> newPlayers = new ArrayList<>();
 	private final PlayerDatabase playerDb;
 	private final PlayerSessionLog sessionDb;
 	private final PlayerKickLog kickLogger;
