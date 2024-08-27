@@ -17,6 +17,7 @@ import no.runsafe.framework.api.server.IPlayerProvider;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerJoinEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerKickEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class SessionLogger implements IPluginEnabled, IPluginDisabled, IPlayerJo
 	}
 
 	@Override
-	public void OnBeforePlayerLogin(no.runsafe.framework.minecraft.event.player.RunsafePlayerPreLoginEvent event)
+	public void OnBeforePlayerLogin(RunsafePlayerPreLoginEvent event)
 	{
 		if (event.getPlayer().isNew())
 			this.newPlayers.add(event.getPlayer());
